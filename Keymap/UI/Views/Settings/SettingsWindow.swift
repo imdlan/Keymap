@@ -122,7 +122,8 @@ struct SettingsView: View {
 
             Spacer()
         }
-        .padding(.vertical, 16)
+        .padding(.top, 16)
+        .padding(.bottom, 16)
     }
 
     // MARK: - Content
@@ -148,7 +149,11 @@ struct SettingsView: View {
     private var generalSettingsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                settingsSectionHeader("通用设置")
+                Text("通用设置")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom, 4)
+                    .padding(.top, 16)
 
                 // 开机自动启动
                 HStack(alignment: .center) {
@@ -223,10 +228,10 @@ struct SettingsView: View {
                         .toggleStyle(.switch)
                 }
             }
-            .padding(.top, 16)
             .padding(.horizontal)
             .padding(.bottom, 16)
         }
+        .padding(.top, 16)
     }
 
     // MARK: - Shortcut Settings
@@ -234,7 +239,11 @@ struct SettingsView: View {
     private var shortcutSettingsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                settingsSectionHeader("快捷键设置")
+                Text("快捷键设置")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom, 4)
+                    .padding(.top, 16)
 
                 // 双击Cmd阈值
                 VStack(alignment: .leading, spacing: 8) {
@@ -295,10 +304,10 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .padding(.top, 16)
             .padding(.horizontal)
             .padding(.bottom, 16)
         }
+        .padding(.top, 16)
     }
 
     // MARK: - Data Settings
@@ -306,7 +315,11 @@ struct SettingsView: View {
     private var dataSettingsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                settingsSectionHeader("数据管理")
+                Text("数据管理")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom, 4)
+                    .padding(.top, 16)
 
                 // 缓存设置
                 VStack(alignment: .leading, spacing: 8) {
@@ -427,10 +440,10 @@ struct SettingsView: View {
                     }
                 }
             }
-            .padding(.top, 16)
             .padding(.horizontal)
             .padding(.bottom, 16)
         }
+        .padding(.top, 16)
     }
 
     // MARK: - Advanced Settings
@@ -438,7 +451,11 @@ struct SettingsView: View {
     private var advancedSettingsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                settingsSectionHeader("高级设置")
+                Text("高级设置")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.bottom, 4)
+                    .padding(.top, 16)
 
                 // 日志级别
                 HStack(alignment: .center) {
@@ -536,10 +553,10 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .padding(.top, 16)
             .padding(.horizontal)
             .padding(.bottom, 16)
         }
+        .padding(.top, 16)
     }
 
     // MARK: - About View
@@ -563,7 +580,7 @@ struct SettingsView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
                 }
-                .padding(.top, 40)
+                .padding(.top, 16)
 
                 Divider()
                     .padding(.horizontal, 40)
@@ -605,17 +622,8 @@ struct SettingsView: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity)
-            .padding(.top, 16)
         }
-    }
-
-    // MARK: - Helper Views
-
-    private func settingsSectionHeader(_ title: String) -> some View {
-        Text(title)
-            .font(.title2)
-            .fontWeight(.semibold)
-            .padding(.bottom, 4)
+        .padding(.top, 16)
     }
 }
 
