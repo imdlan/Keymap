@@ -63,7 +63,7 @@ open -a Xcode
 
 ```bash
 # 验证项目结构
-./verify-structure.sh
+./scripts/verify/verify-structure.sh
 
 # 查看所有Swift文件
 find Keymap -name "*.swift" -type f
@@ -72,33 +72,32 @@ find Keymap -name "*.swift" -type f
 find Keymap -name "*.swift" -exec wc -l {} + | tail -1
 ```
 
-## 📋 下一步开发任务
+## 📋 项目已完成功能
 
-### 当前阶段: 在Xcode中创建项目（待完成）
+### ✅ 核心功能（全部完成）
 
-1. [ ] 在Xcode中创建新项目
-2. [ ] 导入所有源文件
-3. [ ] 配置项目设置
-4. [ ] 编译并运行
-5. [ ] 测试基础功能
+1. [x] Xcode项目创建和配置
+2. [x] 全局快捷键监控（CGEvent API）
+3. [x] 双击Cmd触发面板
+4. [x] 快捷键自动提取（Accessibility API）
+5. [x] 系统快捷键Provider（30个）
+6. [x] 两层缓存机制
+7. [x] 冲突检测引擎（4种类型）
+8. [x] 实时冲突检测
+9. [x] 数据持久化（SQLite，5张表）
+10. [x] 快捷键重映射（CGEvent拦截）
+11. [x] 统计分析窗口
+12. [x] 设置窗口
+13. [x] 重映射UI（集成在快捷键面板）
 
-### 下一阶段: 快捷键提取功能
+### 🚧 待完善功能
 
-1. [ ] 实现 `AppShortcutExtractor.swift`
-2. [ ] 实现 `MenuItemParser.swift`（Accessibility API）
-3. [ ] 实现 `SystemShortcutProvider.swift`
-4. [ ] 添加缓存机制
-5. [ ] 集成到面板ViewModel
+- [ ] 性能优化（CPU<5%，内存<100MB）
+- [ ] 完整的冲突解决流程UI
+- [ ] 配置导入/导出功能
+- [ ] App Store版本准备
 
-### 后续阶段
-
-- 冲突检测引擎
-- 临时重映射功能
-- 统计分析模块
-- Core Data持久化
-- 完整的UI界面
-
-详见: `/Users/David/.claude/plans/glowing-snacking-parrot.md`
+详见: `docs/development/PLAN.md`
 
 ## 🎯 核心功能演示
 
@@ -162,10 +161,14 @@ if Date().timeIntervalSince(lastPress) < 0.3 {
 
 ## 📖 文档索引
 
-- **设计文档**: `快捷键冲突管理 2025-12-18-20-30-02.md`
-- **开发计划**: `/Users/David/.claude/plans/glowing-snacking-parrot.md`
+- **设计文档**: `docs/design/快捷键冲突管理 2025-12-18-20-30-02.md`
+- **开发计划**: `docs/development/PLAN.md`
+- **构建指南**: `docs/development/BUILD_README.md`
+- **测试指南**: `docs/testing/TEST_GUIDE.md`
 - **使用说明**: `README.md`
+- **开发指南**: `CLAUDE.md`
 - **本指南**: `QUICKSTART.md`
+- **工具脚本**: `scripts/README.md`
 
 ## ⚠️ 注意事项
 
@@ -213,5 +216,5 @@ if Date().timeIntervalSince(lastPress) < 0.3 {
 
 ---
 
-**状态**: 基础架构完成，可以开始Xcode项目创建和测试 ✅
-**下一步**: 在Xcode中创建项目并运行测试
+**状态**: ✅ 核心功能已完成95% - 基础UI已实现，可以开始使用和测试
+**下一步**: 性能优化和功能完善

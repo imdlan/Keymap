@@ -10,8 +10,10 @@ Keymap 是一个 macOS 快捷键管理工具，使用 Swift + SwiftUI + AppKit �
 - 全局快捷键监控（使用 CGEvent API）
 - 从应用菜单自动提取快捷键（Accessibility API）
 - 双击 Cmd 触发快捷键面板
-- 快捷键冲突检测（开发中）
-- 临时快捷键重映射（计划中）
+- 快捷键冲突检测（已完成）
+- 临时快捷键重映射（已完成）
+- 使用统计分析（已完成）
+- 可视化UI界面（基础版已完成）
 
 ## 构建和运行
 
@@ -276,35 +278,36 @@ defaults delete com.yourcompany.Keymap
 
 ## 开发进度
 
-参考 `PLAN.md`。当前状态:
-- ✅ 阶段1: Xcode 项目创建（90% - 编译成功，待运行测试）
+参考 `docs/development/PLAN.md`。当前状态:
+- ✅ 阶段1: Xcode 项目创建（100% - 编译成功，运行正常）
 - ✅ 阶段2: 快捷键提取（100%）
 - ✅ 阶段3: 冲突检测（100%）
 - ✅ 阶段4: 数据持久化（100%）
 - ✅ 阶段5: 快捷键重映射（100%）
-- ⏳ 阶段6: UI 完善（0%）- **下一步**
+- ✅ 阶段6: UI 完善（100% - 基础版已完成：快捷键面板、统计分析窗口、设置窗口）
 
-**总体进度**: 90%
+**总体进度**: 95%
 
-### ⏸️ 阶段1剩余工作（10%）
-虽然编译成功，但需要完成运行时验证测试（参考 `TEST_CHECKLIST.md`）：
-- [ ] 应用成功启动
-- [ ] Dock 无图标，菜单栏有图标
-- [ ] 辅助功能权限请求流程
-- [ ] 双击 Cmd 触发面板
-- [ ] 快捷键检测正常
-- [ ] 性能指标达标
+### ✅ 已完成功能
+- [x] 应用成功启动
+- [x] Dock 无图标，菜单栏有图标
+- [x] 辅助功能权限请求流程
+- [x] 双击 Cmd 触发面板（浮动层级窗口）
+- [x] 快捷键检测正常
+- [x] ESC 关闭快捷键面板
+- [x] 统计分析窗口（使用频率、趋势图）
+- [x] 设置窗口（配置管理）
+- [x] 快捷键重映射UI（ShortcutPanelView中）
 
-### 下一阶段任务（阶段6）
-创建UI完善功能，需要新建:
-- `UI/Views/Statistics/StatisticsWindow.swift` - 统计分析窗口
-- `UI/Views/Settings/SettingsWindow.swift` - 设置窗口
-- 修改 `ShortcutPanelView.swift` - 添加重映射按钮
-- 修改 `AppDelegate.swift` - 实现窗口显示方法
+### 🚧 待完善功能
+- [ ] 性能优化（目标：CPU<5%，内存<100MB）
+- [ ] 完整的冲突解决UI
+- [ ] 导入/导出配置
+- [ ] App Store 版本准备
 
 ## 测试
 
-参考 `TEST_GUIDE.md` 进行功能测试。
+参考 `docs/testing/TEST_GUIDE.md` 进行功能测试。
 
 **基础验证**:
 1. 应用启动后 Dock 不显示图标
@@ -314,7 +317,7 @@ defaults delete com.yourcompany.Keymap
 
 **验证脚本**:
 ```bash
-swift verify_shortcuts.swift  # 验证系统快捷键数量
+swift scripts/verify/verify_shortcuts.swift  # 验证系统快捷键数量
 ```
 
 ## 性能目标
@@ -350,14 +353,18 @@ swift verify_shortcuts.swift  # 验证系统快捷键数量
 
 ## 相关文档
 
-- **PLAN.md**: 详细开发计划和进度跟踪
-- **TEST_CHECKLIST.md**: 阶段1运行时测试清单
-- **STAGE1_SUMMARY.md**: 阶段1完成总结（Xcode项目创建）
-- **STAGE2_SUMMARY.md**: 阶段2完成总结（快捷键提取）
-- **STAGE3_SUMMARY.md**: 阶段3完成总结（冲突检测）
-- **STAGE4_SUMMARY.md**: 阶段4完成总结（数据持久化）
-- **STAGE5_SUMMARY.md**: 阶段5完成总结（快捷键重映射）
-- **TEST_GUIDE.md**: 功能测试指南
+- **docs/development/PLAN.md**: 详细开发计划和进度跟踪
+- **docs/development/BUILD_README.md**: 构建和编译指南
+- **docs/testing/TEST_CHECKLIST.md**: 阶段1运行时测试清单
+- **docs/testing/TEST_GUIDE.md**: 功能测试指南
+- **docs/stages/STAGE1_SUMMARY.md**: 阶段1完成总结（Xcode项目创建）
+- **docs/stages/STAGE2_SUMMARY.md**: 阶段2完成总结（快捷键提取）
+- **docs/stages/STAGE3_SUMMARY.md**: 阶段3完成总结（冲突检测）
+- **docs/stages/STAGE4_SUMMARY.md**: 阶段4完成总结（数据持久化）
+- **docs/stages/STAGE5_SUMMARY.md**: 阶段5完成总结（快捷键重映射）
+- **docs/stages/STAGE6_SUMMARY.md**: 阶段6完成总结（UI完善）
+- **docs/design/快捷键冲突管理 2025-12-18-20-30-02.md**: 原始设计文档
 - **QUICKSTART.md**: 快速启动指南
-- **快捷键冲突管理 2025-12-18-20-30-02.md**: 原始设计文档
+- **README.md**: 项目说明
+- **scripts/README.md**: 工具脚本说明
 
