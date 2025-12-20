@@ -122,7 +122,7 @@ struct SettingsView: View {
 
             Spacer()
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, 16)
     }
 
     // MARK: - Content
@@ -225,7 +225,7 @@ struct SettingsView: View {
             }
             .padding(.top, 16)
             .padding(.horizontal)
-            .padding(.bottom)
+            .padding(.bottom, 16)
         }
     }
 
@@ -297,7 +297,7 @@ struct SettingsView: View {
             }
             .padding(.top, 16)
             .padding(.horizontal)
-            .padding(.bottom)
+            .padding(.bottom, 16)
         }
     }
 
@@ -429,7 +429,7 @@ struct SettingsView: View {
             }
             .padding(.top, 16)
             .padding(.horizontal)
-            .padding(.bottom)
+            .padding(.bottom, 16)
         }
     }
 
@@ -538,7 +538,7 @@ struct SettingsView: View {
             }
             .padding(.top, 16)
             .padding(.horizontal)
-            .padding(.bottom)
+            .padding(.bottom, 16)
         }
     }
 
