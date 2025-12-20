@@ -74,7 +74,7 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         LSUIElement: true
-        NSHumanReadableCopyright: ""
+        NSHumanReadableCopyright: "Copyright 2025 Keymap Contributors. Licensed under Apache-2.0."
         NSMainStoryboardFile: ""
         NSPrincipalClass: NSApplication
 

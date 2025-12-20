@@ -317,7 +317,9 @@ Keymap/
 
 ## 许可证
 
-待定
+本项目采用 Apache License 2.0 开源许可证。详见 [LICENSE](LICENSE) 文件。
+
+Copyright 2025 Keymap Contributors
 
 ## 联系方式
 
