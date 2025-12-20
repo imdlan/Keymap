@@ -104,10 +104,11 @@ struct SettingsView: View {
                 Button(action: {
                     selectedTab = tab
                 }) {
-                    HStack {
+                    HStack(alignment: .center, spacing: 8) {
                         Image(systemName: tab.icon)
+                            .frame(width: 20, alignment: .center)
                         Text(tab.title)
-                        Spacer()
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
@@ -137,6 +138,8 @@ struct SettingsView: View {
             dataSettingsView
         case .advanced:
             advancedSettingsView
+        case .about:
+            aboutView
         }
     }
 
@@ -148,47 +151,81 @@ struct SettingsView: View {
                 settingsSectionHeader("通用设置")
 
                 // 开机自动启动
-                Toggle("开机自动启动", isOn: $viewModel.launchAtLogin)
-                    .toggleStyle(.switch)
-                    .onChange(of: viewModel.launchAtLogin) { newValue in
-                        viewModel.updateLaunchAtLogin(newValue)
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("开机自动启动")
+                            .font(.body)
+                        Text("应用将在系统启动时自动运行")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
 
-                Text("应用将在系统启动时自动运行")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.launchAtLogin)
+                        .toggleStyle(.switch)
+                        .onChange(of: viewModel.launchAtLogin) { newValue in
+                            viewModel.updateLaunchAtLogin(newValue)
+                        }
+                }
 
                 Divider()
 
                 // 实时冲突检测
-                Toggle("启用实时冲突检测", isOn: $viewModel.enableRealTimeDetection)
-                    .toggleStyle(.switch)
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("启用实时冲突检测")
+                            .font(.body)
+                        Text("在使用快捷键时实时检测并提示冲突")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
 
-                Text("在使用快捷键时实时检测并提示冲突")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.enableRealTimeDetection)
+                        .toggleStyle(.switch)
+                }
 
                 Divider()
 
                 // 使用统计追踪
-                Toggle("启用使用统计追踪", isOn: $viewModel.enableUsageTracking)
-                    .toggleStyle(.switch)
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("启用使用统计追踪")
+                            .font(.body)
+                        Text("记录快捷键使用情况以提供统计分析")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
 
-                Text("记录快捷键使用情况以提供统计分析")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.enableUsageTracking)
+                        .toggleStyle(.switch)
+                }
 
                 Divider()
 
                 // 冲突通知
-                Toggle("显示冲突通知", isOn: $viewModel.showConflictNotifications)
-                    .toggleStyle(.switch)
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("显示冲突通知")
+                            .font(.body)
+                        Text("检测到冲突时显示系统通知")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
 
-                Text("检测到冲突时显示系统通知")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.showConflictNotifications)
+                        .toggleStyle(.switch)
+                }
             }
-            .padding()
+            .padding(.top, 16)
+            .padding(.horizontal)
+            .padding(.bottom)
         }
     }
 
@@ -219,19 +256,24 @@ struct SettingsView: View {
                 Divider()
 
                 // 触发快捷键选择
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("触发快捷键")
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("触发快捷键")
+                            .font(.body)
+                        Text("选择触发快捷键面板的方式")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
 
                     Picker("", selection: $viewModel.triggerKey) {
                         Text("双击Cmd").tag("doubleCmd")
                         Text("双击Option").tag("doubleOption")
                         Text("双击Control").tag("doubleControl")
                     }
-                    .pickerStyle(.radioGroup)
-
-                    Text("选择触发快捷键面板的方式")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    .pickerStyle(.segmented)
+                    .frame(width: 280)
                 }
 
                 Divider()
@@ -253,7 +295,9 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .padding()
+            .padding(.top, 16)
+            .padding(.horizontal)
+            .padding(.bottom)
         }
     }
 
@@ -383,7 +427,9 @@ struct SettingsView: View {
                     }
                 }
             }
-            .padding()
+            .padding(.top, 16)
+            .padding(.horizontal)
+            .padding(.bottom)
         }
     }
 
@@ -395,8 +441,16 @@ struct SettingsView: View {
                 settingsSectionHeader("高级设置")
 
                 // 日志级别
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("日志级别")
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("日志级别")
+                            .font(.body)
+                        Text("设置控制台日志的详细程度")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
 
                     Picker("", selection: $viewModel.logLevel) {
                         Text("关闭").tag(0)
@@ -405,45 +459,64 @@ struct SettingsView: View {
                         Text("信息").tag(3)
                         Text("调试").tag(4)
                     }
-                    .pickerStyle(.radioGroup)
-
-                    Text("设置控制台日志的详细程度")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    .pickerStyle(.menu)
+                    .frame(width: 100)
                 }
 
                 Divider()
 
                 // 性能监控
-                VStack(alignment: .leading, spacing: 8) {
-                    Toggle("启用性能监控", isOn: $viewModel.enablePerformanceMonitoring)
-                        .toggleStyle(.switch)
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("启用性能监控")
+                            .font(.body)
+                        Text("监控CPU和内存使用情况（可能影响性能）")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
 
-                    Text("监控CPU和内存使用情况（可能影响性能）")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.enablePerformanceMonitoring)
+                        .toggleStyle(.switch)
                 }
 
                 Divider()
 
                 // 实验性功能
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("实验性功能")
                         .font(.headline)
 
-                    Toggle("全局快捷键重映射", isOn: $viewModel.enableGlobalRemapping)
-                        .toggleStyle(.switch)
+                    HStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("全局快捷键重映射")
+                                .font(.body)
+                            Text("⚠️ 实验性功能，可能不稳定")
+                                .font(.caption)
+                                .foregroundColor(.orange)
+                        }
 
-                    Text("⚠️ 实验性功能，可能不稳定")
-                        .font(.caption)
-                        .foregroundColor(.orange)
+                        Spacer()
 
-                    Toggle("快捷键录制模式", isOn: $viewModel.enableRecordingMode)
-                        .toggleStyle(.switch)
+                        Toggle("", isOn: $viewModel.enableGlobalRemapping)
+                            .toggleStyle(.switch)
+                    }
 
-                    Text("⚠️ 允许录制自定义快捷键")
-                        .font(.caption)
-                        .foregroundColor(.orange)
+                    HStack(alignment: .center) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("快捷键录制模式")
+                                .font(.body)
+                            Text("⚠️ 允许录制自定义快捷键")
+                                .font(.caption)
+                                .foregroundColor(.orange)
+                        }
+
+                        Spacer()
+
+                        Toggle("", isOn: $viewModel.enableRecordingMode)
+                            .toggleStyle(.switch)
+                    }
                 }
 
                 Divider()
@@ -462,33 +535,77 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
+            }
+            .padding(.top, 16)
+            .padding(.horizontal)
+            .padding(.bottom)
+        }
+    }
+
+    // MARK: - About View
+
+    private var aboutView: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // Logo和名称
+                VStack(spacing: 12) {
+                    Image(systemName: "keyboard")
+                        .font(.system(size: 64))
+                        .foregroundColor(.accentColor)
+
+                    Text("Keymap")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+
+                    Text("一个适用于macOS平台的快捷键冲突检测与管理工具")
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                }
+                .padding(.top, 40)
 
                 Divider()
+                    .padding(.horizontal, 40)
 
-                // 关于
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("关于")
-                        .font(.headline)
-
+                // 版本信息
+                VStack(spacing: 8) {
                     HStack {
                         Text("版本:")
-                        Text("1.0.0 (Build 1)")
                             .foregroundColor(.secondary)
+                        Text("1.0.0 (Build 1)")
                     }
 
                     HStack {
                         Text("系统要求:")
-                        Text("macOS 14.0+")
                             .foregroundColor(.secondary)
+                        Text("macOS 14.0+")
                     }
+                }
 
+                Divider()
+                    .padding(.horizontal, 40)
+
+                // 开源许可
+                VStack(spacing: 8) {
                     Button("查看开源许可") {
                         viewModel.showLicenses()
                     }
                     .buttonStyle(.link)
+
+                    Text("Copyright 2025 David Lan")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Text("Licensed under Apache-2.0")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
+
+                Spacer()
             }
-            .padding()
+            .frame(maxWidth: .infinity)
+            .padding(.top, 16)
         }
     }
 
@@ -509,6 +626,7 @@ enum SettingsTab: CaseIterable {
     case shortcuts
     case data
     case advanced
+    case about
 
     var title: String {
         switch self {
@@ -516,6 +634,7 @@ enum SettingsTab: CaseIterable {
         case .shortcuts: return "快捷键"
         case .data: return "数据"
         case .advanced: return "高级"
+        case .about: return "关于"
         }
     }
 
@@ -525,6 +644,7 @@ enum SettingsTab: CaseIterable {
         case .shortcuts: return "keyboard"
         case .data: return "externaldrive"
         case .advanced: return "hammer"
+        case .about: return "info.circle"
         }
     }
 }
@@ -577,7 +697,7 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Public Methods
 
     func updateLaunchAtLogin(_ enabled: Bool) {
-        // TODO: 实现开机自动启动
+        // 实现开机自动启动
         // 需要使用 SMLoginItemSetEnabled 或 ServiceManagement framework
         print(enabled ? "✅ 启用开机自动启动" : "❌ 禁用开机自动启动")
     }
