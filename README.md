@@ -319,7 +319,7 @@ Keymap/
 
 本项目采用 Apache License 2.0 开源许可证。详见 [LICENSE](LICENSE) 文件。
 
-Copyright 2025 Keymap Contributors
+Copyright 2025 David Lan. Licensed under Apache-2.0.
 
 ## 联系方式
 
