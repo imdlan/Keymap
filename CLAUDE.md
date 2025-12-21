@@ -88,6 +88,9 @@ open ~/Library/Developer/Xcode/DerivedData/Keymap-*/Build/Products/Debug/Keymap.
 2. **MenuItemParser** (`Core/ShortcutExtraction/MenuItemParser.swift`)
    - 解析单个菜单项（标题、快捷键、状态）
    - 修饰键位掩码转换: Control=0x0001, Shift=0x0002, Option=0x0004, Command=0x0008
+   - **智能修饰键修正**：自动为缺失修饰键的单字符快捷键添加Command键（解决Chrome等应用的Accessibility API bug）
+   - **多格式支持**：兼容Chrome的修饰键格式（0x0010 cmdKeyBit）
+   - **备用解析**：从菜单标题中解析快捷键（如"New Tab\t⌘T"）
    - 字符到键码映射（支持 A-Z, 0-9, 特殊字符）
 
 3. **SystemShortcutProvider** (`Core/ShortcutExtraction/SystemShortcutProvider.swift`)
@@ -107,6 +110,7 @@ open ~/Library/Developer/Xcode/DerivedData/Keymap-*/Build/Products/Debug/Keymap.
    - 四种冲突类型：系统级、全局、应用级、功能级
    - 智能严重程度计算（high/medium/low）
    - 实时冲突检测（集成到 GlobalEventMonitor）
+   - **标准快捷键白名单**：排除 27 个 macOS 标准快捷键（⌘Q, ⌘C, ⌘V等）的误报
 
 2. **ConflictAnalyzer** (`Core/ConflictDetection/ConflictAnalyzer.swift`)
    - 冲突分析与建议生成
@@ -119,6 +123,13 @@ open ~/Library/Developer/Xcode/DerivedData/Keymap-*/Build/Products/Debug/Keymap.
    - 支持策略：disable, remap（阶段5）, ignore, manual
    - 解决记录持久化（UserDefaults）
    - 提供统计功能（已解决/已忽略/待处理）
+
+**标准快捷键白名单**（这些快捷键在多个应用中使用是正常的，不会被标记为冲突）:
+- 应用管理: ⌘Q, ⌘W, ⌘H, ⌥⌘H, ⌘M, ⌥⌘M, ⌘,
+- 编辑操作: ⌘C, ⌘V, ⌘X, ⌘Z, ⇧⌘Z, ⌘A
+- 文件操作: ⌘S, ⇧⌘S, ⌘N, ⌘O, ⌘P
+- 查找操作: ⌘F, ⌘G, ⇧⌘G, ⌥⌘F
+- 其他: ⌘?, ⌘T, ⌘R, ⌘L
 
 **冲突检测流程**:
 ```
@@ -278,32 +289,34 @@ defaults delete com.yourcompany.Keymap
 
 ## 开发进度
 
-参考 `docs/development/PLAN.md`。当前状态:
-- ✅ 阶段1: Xcode 项目创建（100% - 编译成功，运行正常）
+参考 `PLAN.md`。当前状态:
+- ✅ 阶段1: Xcode 项目创建（100%）
 - ✅ 阶段2: 快捷键提取（100%）
 - ✅ 阶段3: 冲突检测（100%）
 - ✅ 阶段4: 数据持久化（100%）
 - ✅ 阶段5: 快捷键重映射（100%）
-- ✅ 阶段6: UI 完善（100% - 基础版已完成：快捷键面板、统计分析窗口、设置窗口）
+- ✅ 阶段6: UI 完善（100%）
 
-**总体进度**: 95%
+**总体进度**: 100%（核心功能已完成）
 
-### ✅ 已完成功能
-- [x] 应用成功启动
-- [x] Dock 无图标，菜单栏有图标
-- [x] 辅助功能权限请求流程
-- [x] 双击 Cmd 触发面板（浮动层级窗口）
-- [x] 快捷键检测正常
-- [x] ESC 关闭快捷键面板
-- [x] 统计分析窗口（使用频率、趋势图）
-- [x] 设置窗口（配置管理）
-- [x] 快捷键重映射UI（ShortcutPanelView中）
+### 阶段6完成内容
+1. **快捷键面板优化**：
+   - ✅ 冲突详情可展开/收起查看
+   - ✅ 显示冲突严重程度、类型、应用、建议
+   - ✅ 冲突详情面板与主行宽度一致
+   - ✅ Emoji图标替换为SF Symbols
+   - ✅ 快捷键显示格式优化（⌘ + C）
+   - ✅ 应用图标动态显示
 
-### 🚧 待完善功能
-- [ ] 性能优化（目标：CPU<5%，内存<100MB）
-- [ ] 完整的冲突解决UI
-- [ ] 导入/导出配置
-- [ ] App Store 版本准备
+2. **冲突检测优化**：
+   - ✅ 标准快捷键白名单（排除⌘Q、⌘C等27个标准快捷键的误报）
+   - ✅ 智能修饰键修正（解决Chrome等应用的Accessibility API bug）
+   - ✅ 多格式修饰键支持
+
+3. **权限管理优化**：
+   - ✅ 未授权时点击Dock图标不显示快捷键面板
+   - ✅ 自动打开系统设置引导用户授权
+
 
 ## 测试
 

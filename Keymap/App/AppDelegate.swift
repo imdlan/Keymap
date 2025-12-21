@@ -84,9 +84,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        // 当用户点击 Dock 图标时，显示快捷键面板
+        // 当用户点击 Dock 图标时，检查权限后再显示快捷键面板
         print("📱 用户点击了 Dock 图标")
-        shortcutPanelController?.showPanel()
+
+        // 检查是否有辅助功能权限
+        if PermissionManager.shared.hasAccessibilityPermission() {
+            shortcutPanelController?.showPanel()
+        } else {
+            print("⚠️ 没有辅助功能权限，提示用户授权")
+            // 显示权限提示通知
+            NotificationHelper.shared.send(
+                title: "需要辅助功能权限",
+                message: "请在系统设置中授予Keymap辅助功能权限后使用"
+            )
+            // 打开系统设置
+            PermissionManager.shared.openSystemPreferences()
+        }
+
         return true
     }
 

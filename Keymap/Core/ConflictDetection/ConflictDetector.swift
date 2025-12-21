@@ -14,6 +14,47 @@ class ConflictDetector {
 
     private let systemProvider = SystemShortcutProvider.shared
 
+    /// 标准快捷键白名单 - 这些快捷键在多个应用中使用是正常的，不应被标记为冲突
+    private let standardShortcuts: Set<String> = [
+        // 应用管理
+        "⌘Q",      // 退出应用
+        "⌘W",      // 关闭窗口
+        "⌘H",      // 隐藏应用
+        "⌥⌘H",     // 隐藏其他应用
+        "⌘M",      // 最小化窗口
+        "⌥⌘M",     // 最小化所有窗口
+        "⌘,",      // 偏好设置
+
+        // 编辑操作
+        "⌘C",      // 复制
+        "⌘V",      // 粘贴
+        "⌘X",      // 剪切
+        "⌘Z",      // 撤销
+        "⇧⌘Z",     // 重做
+        "⌘A",      // 全选
+
+        // 文件操作
+        "⌘S",      // 保存
+        "⇧⌘S",     // 另存为
+        "⌘N",      // 新建
+        "⌘O",      // 打开
+        "⌘P",      // 打印
+
+        // 查找操作
+        "⌘F",      // 查找
+        "⌘G",      // 查找下一个
+        "⇧⌘G",     // 查找上一个
+        "⌥⌘F",     // 替换
+
+        // 帮助
+        "⌘?",      // 帮助菜单
+
+        // 标签页管理
+        "⌘T",      // 新建标签页（浏览器等）
+        "⌘R",      // 刷新（浏览器等）
+        "⌘L",      // 地址栏（浏览器等）
+    ]
+
     // MARK: - Public Methods
 
     /// 检测快捷键冲突
@@ -53,6 +94,11 @@ class ConflictDetector {
         in currentApp: String,
         allShortcuts: [ShortcutInfo]
     ) -> [ConflictInfo] {
+        // 跳过标准快捷键（这些快捷键在多个应用中使用是正常的）
+        if standardShortcuts.contains(keyCombination) {
+            return []
+        }
+
         // 过滤匹配的快捷键
         let matchingShortcuts = allShortcuts.filter { $0.keyCombination == keyCombination }
 
@@ -124,8 +170,13 @@ class ConflictDetector {
     private func detectDuplicates(_ index: [String: [ShortcutInfo]]) -> [ConflictInfo] {
         var conflicts: [ConflictInfo] = []
 
-        for (_, shortcuts) in index {
+        for (keyCombination, shortcuts) in index {
             guard shortcuts.count > 1 else { continue }
+
+            // 跳过标准快捷键（这些快捷键在多个应用中使用是正常的）
+            if standardShortcuts.contains(keyCombination) {
+                continue
+            }
 
             // 分析冲突的应用
             let apps = shortcuts.map { $0.application }
@@ -184,6 +235,11 @@ class ConflictDetector {
 
         // 检查每个快捷键是否与系统快捷键冲突
         for shortcut in shortcuts where shortcut.application != "System" {
+            // 跳过标准快捷键（这些快捷键与系统共享是正常的）
+            if standardShortcuts.contains(shortcut.keyCombination) {
+                continue
+            }
+
             if systemKeys.contains(shortcut.keyCombination) {
                 let conflict = ConflictInfo(
                     shortcutId: shortcut.id,

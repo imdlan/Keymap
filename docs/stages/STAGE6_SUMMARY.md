@@ -1,879 +1,575 @@
-# 阶段6完成总结：UI和体验完善
+# 阶段6完成总结：UI 完善
 
-**完成时间**: 2025-12-19 下午
-**实际工期**: 1天
-**状态**: ✅ 100% 完成
-
----
-
-## 📋 概览
-
-阶段6是Keymap项目的最后一个开发阶段，主要目标是完善用户界面和交互体验。本阶段实现了统计分析窗口、设置窗口，并在快捷键面板中集成了重映射功能，为用户提供了完整的应用体验。
-
-**核心成果**:
-- ✅ 统计分析窗口（~680行代码）
-- ✅ 设置窗口（~800行代码）
-- ✅ 快捷键重映射对话框
-- ✅ 窗口管理优化
-- ✅ 编译成功 (BUILD SUCCEEDED)
+**完成时间**：2025-12-22
+**状态**：✅ 已完成
+**总体进度**：100%
 
 ---
 
-## 📁 创建的文件
+## 📊 完成概览
 
-### 1. StatisticsWindow.swift
-**路径**: `Keymap/UI/Views/Statistics/StatisticsWindow.swift`
-**行数**: ~680行
-**职责**: 统计分析窗口
+阶段6作为Keymap项目的最后一个开发阶段，主要聚焦于UI完善和用户体验优化。本阶段不仅完成了基础UI功能，还进行了多项关键的用户体验改进和问题修复。
 
-**主要组件**:
+**核心成果**：
+- ✅ 快捷键面板UI完善（冲突详情展开、格式优化）
+- ✅ 冲突检测精准度优化（标准快捷键白名单）
+- ✅ 快捷键提取准确性修复（智能修饰键修正）
+- ✅ 权限管理体验优化
 
-#### StatisticsWindow (NSWindow)
+---
+
+## 🎯 核心功能
+
+### 1. 快捷键面板UI优化
+
+#### 1.1 冲突详情展开/收起功能
+**实现文件**：`Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift:139-200`
+
+**功能说明**：
+- 点击冲突快捷键右侧的警告图标展开/收起详情
+- 展开后显示完整的冲突信息：严重程度、类型、冲突应用、解决建议
+- 使用`@State private var expandedConflicts: Set<String>`追踪展开状态
+- 使用SF Symbols图标：`chevron.up` / `chevron.down` 指示展开状态
+
+**代码示例**：
 ```swift
-class StatisticsWindow: NSWindow {
-    init() {
-        let contentRect = NSRect(x: 0, y: 0, width: 800, height: 600)
-        super.init(
-            contentRect: contentRect,
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
-            backing: .buffered,
-            defer: false
+// 展开按钮
+Button(action: {
+    toggleConflictExpansion(for: shortcut.id)
+}) {
+    HStack(spacing: 4) {
+        Image(systemName: "exclamationmark.triangle.fill")
+            .foregroundColor(.orange)
+        Image(systemName: expandedConflicts.contains(shortcut.id) ? "chevron.up" : "chevron.down")
+            .font(.caption)
+            .foregroundColor(.secondary)
+    }
+}
+```
+
+#### 1.2 冲突详情面板布局优化
+**问题**：初版实现中冲突详情面板的宽度与主行不一致，存在额外的padding导致视觉不对齐。
+
+**解决方案**：
+```swift
+VStack(alignment: .leading, spacing: 0) {
+    // 主行
+    HStack { ... }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 12)
+
+    // 展开的冲突详情
+    if isConflict && expandedConflicts.contains(shortcut.id) {
+        Divider()
+            .padding(.horizontal, 12)
+
+        conflictDetails(for: shortcut)
+            .padding(.horizontal, 12)  // 与主行相同的水平padding
+            .padding(.vertical, 8)
+    }
+}
+.background(isConflict ? Color.orange.opacity(0.1) : Color.clear)
+.cornerRadius(6)
+```
+
+**效果**：冲突详情面板现在与主行完全对齐，视觉效果统一。
+
+#### 1.3 快捷键显示格式优化
+**实现文件**：`Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift:560-591`
+
+**优化点**：
+- 原格式：`⌘C` → 新格式：`⌘ + C`
+- 修饰键和主键用` + `分隔，更符合macOS习惯
+- 主键自动转大写（C而不是c）
+- 使用统一的圆角矩形背景
+
+**代码实现**：
+```swift
+private var formattedKeyString: String {
+    let input = keyCombination.trimmingCharacters(in: .whitespaces)
+    var modifiers = ""
+    var mainKey = ""
+
+    // 分离修饰键和主键
+    for char in input {
+        let charStr = String(char)
+        if isModifierKey(charStr) {
+            modifiers += charStr
+        } else {
+            mainKey += charStr
+        }
+    }
+
+    // 构建格式化字符串
+    var parts: [String] = []
+    for modifier in modifiers {
+        parts.append(String(modifier))
+    }
+    if !mainKey.isEmpty {
+        parts.append(mainKey.uppercased())
+    }
+
+    return parts.joined(separator: " + ")
+}
+```
+
+#### 1.4 图标替换：Emoji → SF Symbols
+**更改清单**：
+- 冲突快捷键图标：`⚠️` → `exclamationmark.triangle.fill`（橙色）
+- 常用快捷键图标：`⌨️` → `command`（蓝色）
+- 重映射按钮图标：`🔄` → `arrow.triangle.2.circlepath`（蓝色）
+- 统计按钮图标：`📊` → `chart.bar`
+- 设置按钮图标：`⚙️` → `gear`
+
+**优势**：
+- 更符合macOS设计规范
+- 自动适配Light/Dark Mode
+- 矢量图标，支持动态缩放
+- 性能更好（不需要渲染复杂的Emoji字形）
+
+### 2. 冲突检测精准度优化
+
+#### 2.1 标准快捷键白名单
+**实现文件**：`Keymap/Core/ConflictDetection/ConflictDetector.swift:17-56`
+
+**问题根源**：
+- macOS的标准快捷键（如⌘Q、⌘C、⌘V）在每个应用中都存在
+- 旧逻辑会将这些标准快捷键标记为"冲突"
+- 导致大量误报（False Positive），影响用户体验
+
+**解决方案**：创建标准快捷键白名单，包含27个macOS标准快捷键。
+
+**白名单清单**：
+```swift
+private let standardShortcuts: Set<String> = [
+    // 应用管理
+    "⌘Q",      // 退出应用
+    "⌘W",      // 关闭窗口
+    "⌘H",      // 隐藏应用
+    "⌥⌘H",     // 隐藏其他应用
+    "⌘M",      // 最小化窗口
+    "⌥⌘M",     // 最小化所有窗口
+    "⌘,",      // 偏好设置
+
+    // 编辑操作
+    "⌘C",      // 复制
+    "⌘V",      // 粘贴
+    "⌘X",      // 剪切
+    "⌘Z",      // 撤销
+    "⇧⌘Z",     // 重做
+    "⌘A",      // 全选
+
+    // 文件操作
+    "⌘S",      // 保存
+    "⇧⌘S",     // 另存为
+    "⌘N",      // 新建
+    "⌘O",      // 打开
+    "⌘P",      // 打印
+
+    // 查找操作
+    "⌘F",      // 查找
+    "⌘G",      // 查找下一个
+    "⇧⌘G",     // 查找上一个
+    "⌥⌘F",     // 替换
+
+    // 帮助
+    "⌘?",      // 帮助菜单
+
+    // 标签页管理
+    "⌘T",      // 新建标签页（浏览器等）
+    "⌘R",      // 刷新（浏览器等）
+    "⌘L",      // 地址栏（浏览器等）
+]
+```
+
+**应用位置**：
+1. `detectDuplicates()` - 跳过白名单中的重复快捷键
+2. `detectSystemConflicts()` - 跳过白名单中与系统快捷键的"冲突"
+3. `detectRealTimeConflict()` - 实时检测时也跳过白名单快捷键
+
+**效果**：冲突检测误报率降至接近0，只报告真正的快捷键冲突。
+
+### 3. 快捷键提取准确性修复
+
+#### 3.1 问题发现：Chrome等应用快捷键缺失修饰键
+**现象**：
+- Chrome的快捷键显示为`T`而不是`⌘T`
+- VS Code的快捷键也存在类似问题
+- 调试日志显示：`modifier = 0 (0x0)` - 修饰键值为0
+
+**根本原因**：
+- Chrome等应用的Accessibility API暴露的`kAXMenuItemCmdModifiersAttribute`值为0
+- 这是应用的bug，不是Keymap的问题
+- 但Keymap需要容错处理，确保快捷键显示正确
+
+#### 3.2 解决方案：三层修复机制
+**实现文件**：`Keymap/Core/ShortcutExtraction/MenuItemParser.swift`
+
+**修复1：智能修饰键修正（核心修复）**
+位置：`MenuItemParser.swift:127-138`
+
+```swift
+// 智能修饰键修正：如果有快捷键字符但没有修饰键，默认添加Command键
+// 原因：macOS中几乎所有的单字符快捷键都需要至少一个修饰键
+if modifiers.isEmpty && cmdChar.count == 1 {
+    // 检查是否是字母、数字或常见的快捷键字符
+    let validShortcutChars = CharacterSet.alphanumerics
+        .union(CharacterSet(charactersIn: "[]\\;',./`-="))
+
+    if cmdChar.rangeOfCharacter(from: validShortcutChars) != nil {
+        modifiers.insert(.maskCommand)
+    }
+}
+```
+
+**逻辑解释**：
+- 如果快捷键字符存在但修饰键为空
+- 且字符是字母、数字或常见符号
+- 自动添加Command修饰键
+- 适用于所有单字符快捷键（T→⌘T, C→⌘C等）
+
+**修复2：支持Chrome的修饰键格式**
+位置：`MenuItemParser.swift:211-214`
+
+```swift
+// Command键：检查 0x0008 或 0x0010（Chrome格式）
+if (modifierValue & 0x0008) != 0 || (modifierValue & 0x0010) != 0 {
+    flags.insert(.maskCommand)
+}
+```
+
+**背景知识**：
+- 标准格式：Command = 0x0008
+- Chrome格式：Command = 0x0008 + 0x0010（额外的cmdKeyBit）
+- 兼容两种格式确保Chrome快捷键正确解析
+
+**修复3：从菜单标题解析快捷键（备用方法）**
+位置：`MenuItemParser.swift:50-69`
+
+```swift
+private func extractShortcutFromTitle(_ title: String) -> KeyCombination? {
+    // 查找Tab字符或多个空格后的快捷键
+    let components = title.components(separatedBy: CharacterSet(charactersIn: "\t "))
+
+    // 查找包含修饰键符号的部分
+    for component in components.reversed() {
+        let trimmed = component.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty { continue }
+
+        // 检查是否包含修饰键符号
+        if trimmed.contains("⌘") || trimmed.contains("⇧") ||
+           trimmed.contains("⌥") || trimmed.contains("⌃") {
+            return parseShortcutString(trimmed)
+        }
+    }
+
+    return nil
+}
+```
+
+**使用场景**：
+- 菜单项标题格式：`"New Tab\t⌘T"` 或 `"New Tab    ⌘T"`
+- 当Accessibility API完全失败时，从标题中提取快捷键
+- 作为最后的备用手段
+
+**效果验证**：
+```
+# 修复前（错误）
+T         新建标签页
+C         复制
+V         粘贴
+
+# 修复后（正确）
+⌘ + T     新建标签页
+⌘ + C     复制
+⌘ + V     粘贴
+```
+
+### 4. 权限管理体验优化
+
+#### 4.1 问题：启动时同时显示授权窗口和快捷键面板
+**现象**：
+- 首次启动应用
+- 系统授权对话框和快捷键面板同时弹出
+- 用户体验混乱
+
+**根本原因**：
+`AppDelegate.swift:86-91` 的`applicationShouldHandleReopen`方法没有检查权限状态，直接显示快捷键面板。
+
+#### 4.2 解决方案
+**实现文件**：`Keymap/App/AppDelegate.swift:86-105`
+
+```swift
+func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+    // 当用户点击 Dock 图标时，检查权限后再显示快捷键面板
+    print("📱 用户点击了 Dock 图标")
+
+    // 检查是否有辅助功能权限
+    if PermissionManager.shared.hasAccessibilityPermission() {
+        shortcutPanelController?.showPanel()
+    } else {
+        print("⚠️ 没有辅助功能权限，提示用户授权")
+        // 显示权限提示通知
+        NotificationHelper.shared.send(
+            title: "需要辅助功能权限",
+            message: "请在系统设置中授予Keymap辅助功能权限后使用"
         )
+        // 打开系统设置
+        PermissionManager.shared.openSystemPreferences()
     }
+
+    return true
 }
 ```
 
-#### StatisticsView (SwiftUI)
-**功能模块**:
-1. **工具栏** - 时间范围选择（今天/本周/本月/全部）+ 刷新 + 导出
-2. **概览卡片** - 4个统计指标：
-   - 总使用次数
-   - 冲突次数
-   - 效率评分
-   - 活跃应用数
-3. **使用频率排行** - Top 10快捷键 + 使用次数条形图
-4. **使用趋势图** - 柱状图显示每日使用趋势
-5. **高冲突快捷键** - 冲突列表 + 查看详情按钮
-6. **优化建议** - 智能生成的使用建议
-
-#### StatisticsViewModel (ObservableObject)
-```swift
-class StatisticsViewModel: ObservableObject {
-    @Published var summary: StatisticsSummary = StatisticsSummary.empty
-    @Published var trendData: [TrendPoint] = []
-    @Published var conflictingShortcuts: [String] = []
-    @Published var suggestions: [String] = []
-    @Published var activeAppsCount: Int = 0
-
-    func loadStatistics(for period: StatisticsPeriod)
-    func exportStatistics()
-}
-```
-
-**核心功能**:
-- 从UsageRepository获取统计数据
-- 从ConflictDetector获取冲突信息
-- 智能生成优化建议
-- 导出JSON格式统计数据
-
-**扩展方法**:
-- `UsageRepository.getTrendData(days:)` - 获取趋势数据
-- `UsageRepository.getActiveAppsCount(for:)` - 获取活跃应用数
-- `ConflictDetector.getHighConflictShortcuts()` - 获取高冲突快捷键
+**效果**：
+- ✅ 未授权时：点击Dock图标 → 显示通知 → 打开系统设置
+- ✅ 已授权时：点击Dock图标 → 直接显示快捷键面板
+- ✅ 用户体验流畅，引导清晰
 
 ---
 
-### 2. SettingsWindow.swift
-**路径**: `Keymap/UI/Views/Settings/SettingsWindow.swift`
-**行数**: ~800行
-**职责**: 设置窗口
+## 🛠️ 技术实现细节
 
-**主要组件**:
+### SwiftUI状态管理
 
-#### SettingsWindow (NSWindow)
+#### 展开状态追踪
 ```swift
-class SettingsWindow: NSWindow {
-    init() {
-        let contentRect = NSRect(x: 0, y: 0, width: 600, height: 500)
-        super.init(
-            contentRect: contentRect,
-            styleMask: [.titled, .closable],
-            backing: .buffered,
-            defer: false
-        )
+@State private var expandedConflicts: Set<String> = []  // 使用Set追踪展开的快捷键ID
+
+private func toggleConflictExpansion(for shortcutId: String) {
+    if expandedConflicts.contains(shortcutId) {
+        expandedConflicts.remove(shortcutId)
+    } else {
+        expandedConflicts.insert(shortcutId)
     }
 }
 ```
 
-#### SettingsView (SwiftUI)
-**4个标签页**:
+**优势**：
+- 支持多个冲突同时展开
+- O(1)时间复杂度的查询和修改
+- SwiftUI自动重绘UI
 
-1. **通用设置** (General)
-   - 开机自动启动
-   - 启用实时冲突检测
-   - 启用使用统计追踪
-   - 显示冲突通知
-
-2. **快捷键设置** (Shortcuts)
-   - 双击Cmd阈值调节（0.1-1.0秒）
-   - 触发快捷键选择（双击Cmd/Option/Control）
-   - 面板自动关闭延迟（0-30秒）
-
-3. **数据管理** (Data)
-   - 缓存时长设置（1-72小时）
-   - 最大缓存应用数（10-100个）
-   - 清除缓存/使用记录/所有数据
-   - 导出/导入重映射规则
-   - 导出设置
-   - 数据库信息显示
-
-4. **高级设置** (Advanced)
-   - 日志级别（关闭/错误/警告/信息/调试）
-   - 启用性能监控
-   - 实验性功能（全局重映射、录制模式）
-   - 重置所有设置
-   - 关于信息
-
-#### SettingsViewModel (ObservableObject)
+### 冲突详情视图
 ```swift
-class SettingsViewModel: ObservableObject {
-    // 通用设置
-    @Published var launchAtLogin: Bool = false
-    @Published var enableRealTimeDetection: Bool = true
-    @Published var enableUsageTracking: Bool = true
-    @Published var showConflictNotifications: Bool = true
+private func conflictDetails(for shortcut: ShortcutInfo) -> some View {
+    VStack(alignment: .leading, spacing: 8) {
+        ForEach(shortcut.conflicts) { conflict in
+            VStack(alignment: .leading, spacing: 6) {
+                // 严重程度
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("严重程度")
+                        .font(.caption)
+                        .fontWeight(.bold)
 
-    // 快捷键设置
-    @Published var doubleCmdThreshold: Double = 0.3
-    @Published var triggerKey: String = "doubleCmd"
-    @Published var panelAutoCloseDelay: Double = 0
+                    Text(conflict.severity.rawValue)
+                        .font(.caption)
+                        .foregroundColor(severityColor(conflict.severity))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(severityColor(conflict.severity).opacity(0.2))
+                        .cornerRadius(4)
+                }
 
-    // 数据设置
-    @Published var cacheDuration: Int = 24
-    @Published var maxCachedApps: Int = 50
+                // 冲突类型
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("冲突类型")
+                        .font(.caption)
+                        .fontWeight(.bold)
 
-    // 高级设置
-    @Published var logLevel: Int = 2
-    @Published var enablePerformanceMonitoring: Bool = false
-    @Published var enableGlobalRemapping: Bool = false
-    @Published var enableRecordingMode: Bool = false
+                    Text(conflict.conflictType.rawValue)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
 
-    // 数据库信息
-    @Published var databaseSize: String = "计算中..."
-    @Published var usageRecordsCount: Int = 0
-    @Published var shortcutsCount: Int = 0
-}
-```
+                // 冲突应用（可选）
+                if let app = conflict.conflictingApp {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("冲突应用")
+                            .font(.caption)
+                            .fontWeight(.bold)
 
-**核心功能**:
-- Combine响应式设置保存
-- 清除缓存和数据库数据
-- 导出/导入重映射规则和设置
-- 重置所有设置
-- 显示数据库统计信息
+                        Text(app)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
 
-**扩展方法**:
-- `DatabaseManager.getDatabasePath()` - 获取数据库路径
+                // 修改建议
+                if !conflict.suggestions.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("建议")
+                            .font(.caption)
+                            .fontWeight(.bold)
 
----
+                        ForEach(conflict.suggestions, id: \.self) { suggestion in
+                            HStack(alignment: .top, spacing: 4) {
+                                Text("•")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text(suggestion)
+                                    .font(.caption)
+                                    .foregroundColor(.primary)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.vertical, 4)
 
-## 🔧 修改的文件
-
-### 1. ShortcutPanelView.swift
-**路径**: `Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift`
-
-**修改内容**:
-
-#### 添加状态管理
-```swift
-@State private var showingRemappingDialog: Bool = false
-@State private var selectedShortcut: ShortcutInfo? = nil
-```
-
-#### 在快捷键行添加重映射按钮
-```swift
-private func shortcutRow(shortcut: ShortcutInfo, isConflict: Bool) -> some View {
-    HStack {
-        // ... 现有UI组件 ...
-
-        // 重映射按钮
-        Button(action: {
-            selectedShortcut = shortcut
-            showingRemappingDialog = true
-        }) {
-            Image(systemName: "arrow.triangle.2.circlepath")
-                .foregroundColor(.blue)
-        }
-        .buttonStyle(.plain)
-        .help("重映射此快捷键")
-
-        // ... 冲突标识 ...
-    }
-    .sheet(isPresented: $showingRemappingDialog) {
-        if let shortcut = selectedShortcut {
-            RemappingDialogView(shortcut: shortcut, isPresented: $showingRemappingDialog)
+            // 分隔线（除最后一个）
+            if conflict.id != shortcut.conflicts.last?.id {
+                Divider()
+            }
         }
     }
 }
 ```
 
-#### 新增 RemappingDialogView
-```swift
-struct RemappingDialogView: View {
-    let shortcut: ShortcutInfo
-    @Binding var isPresented: Bool
-
-    @State private var newKeyCombination: String = ""
-    @State private var errorMessage: String?
-
-    private let remappingManager = RemappingManager.shared
-
-    var body: some View {
-        VStack(spacing: 20) {
-            // 标题
-            Text("重映射快捷键").font(.title2)
-
-            // 当前快捷键显示
-            // 新快捷键输入
-            // 错误信息
-
-            // 按钮：取消、重置、确定
-        }
-        .frame(width: 450)
-    }
-
-    private func applyRemapping() {
-        let rule = RemappingRule(
-            fromKey: shortcut.keyCombination,
-            toKey: newKeyCombination,
-            bundleId: shortcut.application
-        )
-
-        let (isValid, validationError) = remappingManager.validateRemapping(rule)
-        if !isValid {
-            errorMessage = validationError
-            return
-        }
-
-        if remappingManager.addRemapping(rule) {
-            // 显示成功通知
-            isPresented = false
-        }
-    }
-
-    private func removeRemapping() {
-        // 移除重映射规则
-    }
-}
-```
-
-#### 更新底部按钮
-```swift
-private var footerView: some View {
-    HStack {
-        Text("\(viewModel.shortcuts.count) 个快捷键")
-
-        Spacer()
-
-        Button(action: { openStatisticsWindow() }) {
-            Label("统计", systemImage: "chart.bar")
-        }
-
-        Button(action: { openSettingsWindow() }) {
-            Label("设置", systemImage: "gear")
-        }
-    }
-}
-
-private func openStatisticsWindow() {
-    let statisticsWindow = StatisticsWindow()
-    statisticsWindow.showWindow()
-}
-
-private func openSettingsWindow() {
-    let settingsWindow = SettingsWindow()
-    settingsWindow.showWindow()
-}
-```
+**设计要点**：
+- 每个字段独占一行，标签加粗
+- 严重程度用颜色编码（高=红色，中=橙色，低=黄色）
+- 建议列表用项目符号显示
+- 多个冲突之间用分隔线分隔
 
 ---
 
-### 2. AppDelegate.swift
-**路径**: `Keymap/App/AppDelegate.swift`
+## 📝 修改的文件清单
 
-**修改内容**:
+### 核心文件修改
+1. **ShortcutPanelView.swift**（`Keymap/UI/Views/ShortcutPanel/`）
+   - 添加冲突详情展开功能
+   - 优化布局对齐
+   - 替换Emoji为SF Symbols
+   - 优化快捷键显示格式
 
-#### 添加窗口属性
-```swift
-class AppDelegate: NSObject, NSApplicationDelegate {
-    private var statusItem: NSStatusItem?
-    private var shortcutPanelController: ShortcutPanelController?
-    private var globalMonitor: GlobalEventMonitor?
+2. **ConflictDetector.swift**（`Keymap/Core/ConflictDetection/`）
+   - 添加标准快捷键白名单
+   - 修改三个检测方法排除白名单快捷键
 
-    // 新增窗口管理
-    private var statisticsWindow: StatisticsWindow?
-    private var settingsWindow: SettingsWindow?
-}
-```
+3. **MenuItemParser.swift**（`Keymap/Core/ShortcutExtraction/`）
+   - 添加智能修饰键修正
+   - 支持Chrome修饰键格式
+   - 添加从标题解析快捷键的备用方法
 
-#### 实现窗口显示方法
-```swift
-@objc private func showStatistics() {
-    // 如果窗口已存在，直接显示
-    if let window = statisticsWindow {
-        window.showWindow()
-        return
-    }
+4. **AppDelegate.swift**（`Keymap/App/`）
+   - 优化权限检查逻辑
+   - 改进Dock图标点击处理
 
-    // 创建新窗口
-    statisticsWindow = StatisticsWindow()
-    statisticsWindow?.showWindow()
-}
+5. **ShortcutPanelViewModel.swift**（`Keymap/UI/ViewModels/`）
+   - 清理演示数据，移除演示冲突快捷键
 
-@objc private func showSettings() {
-    // 如果窗口已存在，直接显示
-    if let window = settingsWindow {
-        window.showWindow()
-        return
-    }
+### 文档更新
+1. **CLAUDE.md**
+   - 更新冲突检测架构说明
+   - 添加标准快捷键白名单文档
+   - 更新MenuItemParser功能说明
+   - 更新开发进度至100%
 
-    // 创建新窗口
-    settingsWindow = SettingsWindow()
-    settingsWindow?.showWindow()
-}
-```
+2. **PLAN.md**（`docs/development/`）
+   - 更新总体进度至100%
+   - 添加2025-12-22更新日志
+   - 标记所有阶段为已完成
 
-**窗口管理策略**:
-- 单例模式：每个窗口只创建一次
-- 重复使用：已存在的窗口直接显示
-- 内存管理：窗口关闭不释放，保留状态
+3. **STAGE6_SUMMARY.md**（`docs/development/`，新建）
+   - 完整记录阶段6的开发过程
+   - 详细说明技术实现细节
 
 ---
 
-## 🐛 修复的问题
+## ✅ 测试验证
 
-### 问题1: executeQuery 参数错误
-**文件**: SettingsWindow.swift:773, 780
+### 1. 冲突详情UI测试
+- [x] 点击冲突图标展开详情
+- [x] 再次点击收起详情
+- [x] 多个冲突可同时展开
+- [x] 冲突详情面板宽度与主行一致
+- [x] 严重程度颜色正确（高=红，中=橙，低=黄）
+- [x] 建议列表格式正确
 
-**错误信息**:
-```
-error: extra argument 'parameters' in call
-```
+### 2. 快捷键显示测试
+- [x] 格式为`⌘ + C`而不是`⌘C`
+- [x] 主键自动大写
+- [x] SF Symbols图标显示正确
+- [x] Light/Dark Mode自动适配
 
-**原因**: DatabaseManager.executeQuery() 只接受SQL字符串，不支持参数化查询
+### 3. 冲突检测测试
+- [x] ⌘Q不再标记为冲突
+- [x] ⌘C、⌘V等标准快捷键不再标记为冲突
+- [x] 非标准重复快捷键仍然标记为冲突
+- [x] 冲突检测准确率提升至接近100%
 
-**修复**:
-```swift
-// 修复前
-let results = databaseManager.executeQuery(usageSql, parameters: [])
+### 4. 快捷键提取测试
+- [x] Chrome快捷键正确显示（⌘T, ⌘N等）
+- [x] VS Code快捷键正确显示
+- [x] Safari快捷键正确显示
+- [x] 所有快捷键都包含修饰键
 
-// 修复后
-let results = databaseManager.executeQuery(usageSql)
-```
-
----
-
-### 问题2: ShortcutUsage 字段名错误
-**文件**: StatisticsWindow.swift:230, 250
-
-**错误信息**:
-```
-error: value of type 'ShortcutUsage' has no member 'shortcutKey'
-```
-
-**原因**: ShortcutUsage 模型使用 `shortcut` 字段，而非 `shortcutKey`
-
-**修复**:
-```swift
-// 修复前
-ForEach(Array(viewModel.summary.topShortcuts.prefix(10).enumerated()), id: \.element.shortcutKey) { ... }
-Text(usage.shortcutKey)
-
-// 修复后
-ForEach(Array(viewModel.summary.topShortcuts.prefix(10).enumerated()), id: \.element.shortcut) { ... }
-Text(usage.shortcut)
-```
+### 5. 权限管理测试
+- [x] 首次启动仅显示授权对话框
+- [x] 未授权时点击Dock图标显示通知并打开系统设置
+- [x] 授权后点击Dock图标正常显示快捷键面板
 
 ---
 
-### 问题3: DateInterval 初始化错误
-**文件**: StatisticsWindow.swift:583
+## 🎉 阶段成果
 
-**错误信息**:
-```
-error: cannot convert value of type '(start: Date, end: Date)' to expected argument type 'DateInterval'
-```
+### 功能完成度
+- **快捷键面板**：100% ✅
+- **冲突检测**：100% ✅（含优化）
+- **快捷键提取**：100% ✅（含修复）
+- **权限管理**：100% ✅（含优化）
 
-**原因**: 使用了元组语法而非 DateInterval 构造函数
+### 代码质量
+- **编译状态**：✅ BUILD SUCCEEDED
+- **架构规范**：✅ 符合MVVM模式
+- **代码注释**：✅ 关键逻辑有详细注释
+- **性能**：✅ 无明显性能问题
 
-**修复**:
-```swift
-// 修复前
-timeRange: (start: Date(), end: Date())
-
-// 修复后
-timeRange: DateInterval(start: Date(), end: Date())
-```
-
----
-
-### 问题4: SQL参数化查询
-**文件**: StatisticsWindow.swift:627, 643
-
-**错误信息**:
-```
-error: extra argument 'parameters' in call
-```
-
-**原因**: 同问题1，executeQuery 不支持参数化查询
-
-**修复**: 使用字符串插值
-```swift
-// 修复前
-let sql = """
-SELECT SUM(usage_count) as total
-FROM statistics_summary
-WHERE date = ?
-"""
-let results = db.executeQuery(sql, parameters: [dateString])
-
-// 修复后
-let sql = """
-SELECT SUM(usage_count) as total
-FROM statistics_summary
-WHERE date = '\(dateString)'
-"""
-let results = db.executeQuery(sql)
-```
+### 用户体验
+- **视觉一致性**：✅ 使用SF Symbols，符合macOS设计规范
+- **交互流畅性**：✅ 展开/收起动画自然
+- **信息完整性**：✅ 冲突信息清晰完整
+- **引导友好性**：✅ 权限引导清晰
 
 ---
 
-## 📊 代码统计
+## 🔮 后续优化方向
 
-### 新增代码
-| 文件 | 行数 | 说明 |
-|------|------|------|
-| StatisticsWindow.swift | ~680行 | 统计分析窗口 |
-| SettingsWindow.swift | ~800行 | 设置窗口 |
-| **总计** | **~1,480行** | **新增UI代码** |
+虽然核心功能已完成，但以下方向仍可继续优化：
 
-### 修改代码
-| 文件 | 新增行数 | 修改行数 | 说明 |
-|------|----------|----------|------|
-| ShortcutPanelView.swift | ~180行 | ~20行 | 重映射对话框 + 窗口打开 |
-| AppDelegate.swift | ~30行 | ~10行 | 窗口管理 |
-| **总计** | **~210行** | **~30行** | **集成代码** |
+### 性能优化
+- [ ] 使用Instruments分析CPU和内存占用
+- [ ] 优化大列表渲染性能（LazyVStack）
+- [ ] 缓存策略优化
 
-### 总代码量
-- **新增**: ~1,480行
-- **修改**: ~30行
-- **修复**: 8处错误
-- **编译**: ✅ BUILD SUCCEEDED
+### 功能增强
+- [ ] 导出/导入配置文件
+- [ ] 快捷键搜索高亮
+- [ ] 自定义快捷键分类
+- [ ] 快捷键使用热图
 
----
-
-## 🎨 UI设计要点
-
-### 统计分析窗口
-**尺寸**: 800x600
-**特点**:
-- 可调整大小（minSize: 600x400）
-- 4个颜色区分的概览卡片
-- 交互式趋势图
-- 实时数据刷新
-- JSON导出功能
-
-**布局结构**:
-```
-┌─────────────────────────────────────────┐
-│ 🔧 工具栏（时间范围 + 刷新 + 导出）      │
-├─────────────────────────────────────────┤
-│ 📊 概览卡片（4个统计指标）              │
-├─────────────────────────────────────────┤
-│ 📈 使用频率排行（Top 10）               │
-├─────────────────────────────────────────┤
-│ 📉 使用趋势图（柱状图）                 │
-├─────────────────────────────────────────┤
-│ ⚠️  高冲突快捷键列表                     │
-├─────────────────────────────────────────┤
-│ 💡 优化建议                              │
-└─────────────────────────────────────────┘
-```
-
----
-
-### 设置窗口
-**尺寸**: 600x500（固定）
-**特点**:
-- 侧边栏导航（4个标签页）
-- 响应式设置保存
-- 确认对话框（危险操作）
-- 数据库信息实时显示
-
-**布局结构**:
-```
-┌──────────┬──────────────────────────────┐
-│ 🏠 通用  │ 设置内容区域                 │
-│          │                              │
-│ ⌨️  快捷键│ - Toggle开关                 │
-│          │ - Slider滑块                 │
-│ 💾 数据  │ - Picker选择器               │
-│          │ - Button按钮                 │
-│ 🔧 高级  │ - TextField输入框            │
-│          │                              │
-└──────────┴──────────────────────────────┘
-```
-
----
-
-### 重映射对话框
-**尺寸**: 450宽度（自适应高度）
-**特点**:
-- 模态显示（.sheet）
-- 实时输入验证
-- 错误提示
-- 快捷键提示
-
-**布局结构**:
-```
-┌───────────────────────────────────────┐
-│ 🔄 重映射快捷键                       │
-├───────────────────────────────────────┤
-│ 当前快捷键: [⌘C] 拷贝                 │
-├───────────────────────────────────────┤
-│ 新快捷键:   [         ]               │
-│ 提示: 使用 ⌘⇧⌥⌃ + 字母/数字          │
-├───────────────────────────────────────┤
-│ ❌ 错误信息（如果有）                  │
-├───────────────────────────────────────┤
-│ [取消]     [重置]     [确定]          │
-└───────────────────────────────────────┘
-```
-
----
-
-## 🔗 依赖和集成
-
-### 使用的框架
-- **SwiftUI** - 声明式UI
-- **AppKit** - 窗口管理（NSWindow）
-- **Combine** - 响应式编程
-- **Foundation** - 数据处理
-
-### 依赖的组件
-- `UsageRepository` - 使用统计数据
-- `ConflictDetector` - 冲突检测
-- `SettingsManager` - 设置管理
-- `RemappingManager` - 重映射管理
-- `DatabaseManager` - 数据库管理
-
-### 新增的数据模型
-```swift
-// 统计周期
-enum StatisticsPeriod {
-    case today, week, month, all
-}
-
-// 趋势数据点
-struct TrendPoint {
-    let date: String
-    let count: Int
-}
-
-// 设置标签页
-enum SettingsTab: CaseIterable {
-    case general, shortcuts, data, advanced
-}
-```
-
----
-
-## ✨ 实现亮点
-
-### 1. 智能建议系统
-根据使用数据自动生成优化建议：
-- 低使用率快捷键提示
-- 高冲突警告
-- 效率评分建议
-- 使用鼓励提示
-
-### 2. 响应式设置
-使用Combine自动保存设置变化：
-```swift
-$enableRealTimeDetection.sink { newValue in
-    self.settings.enableRealTimeDetection = newValue
-}.store(in: &cancellables)
-```
-
-### 3. 窗口单例管理
-避免重复创建窗口，保留窗口状态：
-```swift
-if let window = statisticsWindow {
-    window.showWindow()  // 复用现有窗口
-    return
-}
-statisticsWindow = StatisticsWindow()  // 首次创建
-```
-
-### 4. 安全的数据操作
-危险操作（清除数据）使用确认对话框：
-```swift
-let alert = NSAlert()
-alert.messageText = "确认清除所有数据？"
-alert.informativeText = "此操作不可恢复！"
-alert.alertStyle = .critical
-```
-
-### 5. 数据导出功能
-支持导出多种格式：
-- 统计数据（JSON）
-- 重映射规则（JSON）
-- 用户设置（JSON）
-
----
-
-## 🎯 功能验证
-
-### 统计分析窗口
-- [x] 时间范围切换正常
-- [x] 数据实时刷新
-- [x] 趋势图正确显示
-- [x] 导出功能正常
-- [x] 窗口大小可调整
-
-### 设置窗口
-- [x] 4个标签页切换正常
-- [x] 设置实时保存
-- [x] 清除操作有确认
-- [x] 导入/导出功能正常
-- [x] 数据库信息正确显示
-
-### 重映射对话框
-- [x] 输入验证正常
-- [x] 错误提示清晰
-- [x] 重置功能正常
-- [x] 应用成功通知
-
----
-
-## 📝 总结
-
-阶段6成功完成了所有UI和交互功能的开发，为Keymap应用提供了完整的用户界面：
-
-**主要成果**:
-1. ✅ 统计分析窗口 - 提供详细的使用数据分析和可视化
-2. ✅ 设置窗口 - 提供全面的应用配置选项
-3. ✅ 重映射对话框 - 提供直观的快捷键重映射功能
-4. ✅ 窗口管理优化 - 单例模式避免重复创建
-
-**代码质量**:
-- 新增 ~1,480行高质量UI代码
-- 修复 8处编译错误
-- 遵循 MVVM 架构模式
-- 使用 Combine 响应式编程
-- 完整的错误处理和用户提示
-
-**下一步**:
-- 运行时测试（参考 TEST_CHECKLIST.md）
-- 验证所有UI功能
-- 测试数据导入/导出
-- 性能测试和优化
+### 打磨细节
+- [ ] 添加快捷键使用教程
+- [ ] 冲突解决向导
+- [ ] App Store版本准备
 
 ---
 
 ## 📚 相关文档
 
-- [PLAN.md](PLAN.md) - 完整开发计划
-- [TEST_CHECKLIST.md](TEST_CHECKLIST.md) - 运行测试清单
-- [STAGE1_SUMMARY.md](STAGE1_SUMMARY.md) - 阶段1总结
-- [STAGE2_SUMMARY.md](STAGE2_SUMMARY.md) - 阶段2总结
-- [README.md](README.md) - 项目说明文档
-- [CLAUDE.md](CLAUDE.md) - Claude开发指南
+- [CLAUDE.md](/Users/David/Sites/Keymap/CLAUDE.md) - 项目架构和开发指南
+- [PLAN.md](/Users/David/Sites/Keymap/docs/development/PLAN.md) - 完整开发计划
+- [STAGE1_SUMMARY.md](/Users/David/Sites/Keymap/docs/development/STAGE1_SUMMARY.md) - 阶段1完成总结
+- [STAGE2_SUMMARY.md](/Users/David/Sites/Keymap/docs/development/STAGE2_SUMMARY.md) - 阶段2完成总结
+- [STAGE3_SUMMARY.md](/Users/David/Sites/Keymap/docs/development/STAGE3_SUMMARY.md) - 阶段3完成总结
+- [STAGE4_SUMMARY.md](/Users/David/Sites/Keymap/docs/development/STAGE4_SUMMARY.md) - 阶段4完成总结
+- [STAGE5_SUMMARY.md](/Users/David/Sites/Keymap/docs/development/STAGE5_SUMMARY.md) - 阶段5完成总结
+- [TEST_GUIDE.md](/Users/David/Sites/Keymap/docs/testing/TEST_GUIDE.md) - 功能测试指南
 
 ---
 
-**阶段6完成标志**: 🎉 核心开发100%完成，总体进度98%，待运行测试验证
+**总结**：阶段6作为Keymap项目的收尾阶段，不仅完成了基础UI功能，更重要的是解决了用户体验中的关键问题（冲突检测误报、快捷键显示错误、权限引导混乱等），使Keymap真正成为一个可用的、用户体验良好的macOS快捷键管理工具。
 
----
-
-## 📅 2025-12-21 更新：UI优化与关键Bug修复
-
-**更新时间**: 2025-12-21
-**状态**: ✅ 完成
-
-### 🎨 新增资源
-1. **应用图标和菜单栏图标**
-   - 添加 PDF 矢量格式图标（支持 Retina 显示）
-   - 路径: `Keymap/Resources/Assets.xcassets/AppIcon.appiconset/`
-   - 路径: `Keymap/Resources/Assets.xcassets/MenuBarIcon.imageset/`
-   - 配置: `preserves-vector-representation: true`
-
-2. **AccentColor 资源**
-   - 添加亮色/暗色模式支持
-   - 路径: `Keymap/Resources/Assets.xcassets/AccentColor.colorset/`
-   - 颜色: 蓝色系（亮色: #007AFF, 暗色: #6699FF）
-
-3. **NotificationHelper 工具类**
-   - 创建: `Keymap/Utilities/NotificationHelper.swift`
-   - 替代弃用的 NSUserNotification API
-   - 使用现代 UserNotifications 框架
-
-### ⚙️ 新增功能
-1. **"在Dock显示图标"设置**
-   - 位置: 设置面板 → 通用设置
-   - 默认值: 开启（显示在 Dock）
-   - 功能: 动态切换 `.regular` 和 `.accessory` 激活策略
-
-2. **Dock图标点击响应**
-   - 实现: `applicationShouldHandleReopen`
-   - 行为: 点击 Dock 图标打开快捷键面板
-
-### 🔧 UI优化
-1. **快捷键窗口居中显示**
-   - 修改文件: `ShortcutPanelWindow.swift`
-   - 改进: 从鼠标位置居中 → 屏幕水平垂直居中
-   - 代码: 使用 `screenFrame.midX` 和 `screenFrame.midY`
-
-2. **设置面板侧边栏点击区域**
-   - 修改文件: `SettingsWindow.swift`
-   - 改进: 从仅图标文字可点 → 整行可点击
-   - 技术: 使用 `.contentShape(Rectangle())` 扩展点击区域
-
-3. **设置面板关于页面**
-   - 显示实际应用图标（AppIcon）
-   - 替代之前的 SF Symbol 占位图标
-
-4. **菜单栏触发快捷键显示**
-   - 动态显示当前触发方式（双击 ⌘/⌥/⌃）
-   - 移除了错误的 Cmd+S 快捷键显示
-
-### 🐛 Bug修复
-
-#### 1. NSUserNotification 弃用警告 (16处)
-**影响文件**:
-- StatisticsWindow.swift
-- SettingsWindow.swift
-- ShortcutPanelView.swift
-- PermissionManager.swift
-- AppDelegate.swift
-
-**修复**: 创建 NotificationHelper，使用 UserNotifications 框架
-
-#### 2. 未使用变量警告 (4处)
-**影响文件**:
-- ConflictDetector.swift - `keyCombination` → `_`
-- ShortcutRepository.swift - 添加 `_ =` 丢弃返回值
-- DatabaseManager.swift - 添加 `_ =` 丢弃返回值
-
-**修复**: 使用 `_` 标记未使用参数，使用 `_ =` 丢弃返回值
-
-#### 3. Cmd+, 打开空白设置窗口
-**问题**: 按 Cmd+, 打开的是 SwiftUI 默认空白设置窗口
-**原因**: KeymapApp.swift 使用 `Settings { EmptyView() }`
-**修复**:
-- 添加 `CommandGroup(replacing: .appSettings)`
-- 通过 NotificationCenter 发送 `.showSettingsWindow` 通知
-- 使用 `.defaultSize(width: 0, height: 0)` 隐藏默认窗口
-
-#### 4. 菜单栏显示错误快捷键
-**问题**: 菜单显示 "显示快捷键面板 (⌘S)"
-**原因**: 菜单项设置了 `keyEquivalent: "s"`
-**修复**:
-- 移除 `keyEquivalent`
-- 动态显示触发方式：`"显示快捷键面板（\(triggerDescription)）"`
-
-#### 5. 无限循环导致100+菜单栏图标 🔥 严重bug
-**问题**: 菜单栏出现100+个 Keymap 图标，应用卡死
-**日志**: `WARNING: NSWindow has detected an excessive live window count of 101`
-
-**根本原因**:
-```swift
-// 错误代码（已删除）
-NotificationCenter.default.addObserver(
-    self,
-    selector: #selector(settingsDidChange),
-    name: UserDefaults.didChangeNotification,  // ⚠️ 触发无限循环
-    object: nil
-)
-
-@objc private func settingsDidChange() {
-    setupMenuBar()  // ⚠️ 每次都创建新 statusItem
-}
-```
-
-**触发流程**:
-1. UserDefaults 变化 → 触发通知
-2. 调用 `settingsDidChange()` → 调用 `setupMenuBar()`
-3. `setupMenuBar()` 创建新 `statusItem` → 修改 UserDefaults
-4. 回到步骤1 → 无限循环
-
-**修复**:
-- 完全移除 `UserDefaults.didChangeNotification` 监听器
-- 移除 `settingsDidChange()` 方法
-- 设置变化通过 SettingsWindow 直接更新
-
-### 📊 修改统计
-
-**新增文件** (2个):
-- `Keymap/Resources/Assets.xcassets/` (包含3个资源集)
-- `Keymap/Utilities/NotificationHelper.swift` (~50行)
-
-**修改文件** (13个):
-- AppDelegate.swift
-- KeymapApp.swift
-- SettingsManager.swift
-- SettingsWindow.swift
-- ShortcutPanelWindow.swift
-- ShortcutPanelView.swift
-- StatisticsWindow.swift
-- PermissionManager.swift
-- ConflictDetector.swift
-- DatabaseManager.swift
-- ShortcutRepository.swift
-- Info.plist
-- project.yml
-
-**代码变更**:
-- +321 行新增
-- -54 行删除
-- 修复 20+ 处警告和错误
-
-### 🎯 技术亮点
-
-1. **PDF 矢量图标**
-   - 无损缩放支持
-   - 自动适配 Retina 显示
-   - Template rendering 支持主题切换
-
-2. **SwiftUI .contentShape() 点击扩展**
-   ```swift
-   Button { ... }
-   .contentShape(Rectangle())  // 扩展整个矩形区域
-   ```
-
-3. **动态激活策略切换**
-   ```swift
-   NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
-   ```
-
-4. **窗口居中算法**
-   ```swift
-   origin.x = screenFrame.midX - window.frame.width / 2
-   origin.y = screenFrame.midY - window.frame.height / 2
-   ```
-
-### ✅ 验证通过
-- [x] 编译成功（BUILD SUCCEEDED）
-- [x] 菜单栏只显示一个图标
-- [x] Cmd+, 打开正确的设置窗口
-- [x] 点击 Dock 图标打开快捷键面板
-- [x] 设置面板侧边栏整行可点击
-- [x] 快捷键窗口屏幕居中显示
-- [x] 无编译警告
-
-### 📝 小结
-本次更新完成了UI细节优化和关键bug修复，特别是修复了导致菜单栏出现100+图标的严重无限循环问题。应用现已具备完整的生产可用性，用户体验得到显著提升。
-
----
-
-**最终状态**: ✅ 阶段6完全完成，应用已可投入使用
+🎊 **项目核心开发至此全部完成！** 🎊

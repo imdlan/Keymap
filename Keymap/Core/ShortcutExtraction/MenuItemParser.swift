@@ -27,16 +27,73 @@ class MenuItemParser {
         // 提取快捷键
         let shortcut = extractShortcut(element)
 
+        // 如果通过Accessibility API未能获取快捷键，尝试从标题中解析
+        let finalShortcut: KeyCombination?
+        if shortcut == nil {
+            finalShortcut = extractShortcutFromTitle(title)
+        } else {
+            finalShortcut = shortcut
+        }
+
         // 提取状态
         let isEnabled = extractEnabled(element)
         let hasSubmenu = extractHasSubmenu(element)
 
         return MenuItem(
             title: title,
-            shortcut: shortcut,
+            shortcut: finalShortcut,
             isEnabled: isEnabled,
             hasSubmenu: hasSubmenu
         )
+    }
+
+    /// 从菜单项标题中提取快捷键（备用方法）
+    /// 格式示例："New Tab\t⌘T" 或 "New Tab    ⌘T"
+    private func extractShortcutFromTitle(_ title: String) -> KeyCombination? {
+        // 查找Tab字符或多个空格后的快捷键
+        let components = title.components(separatedBy: CharacterSet(charactersIn: "\t "))
+
+        // 查找包含修饰键符号的部分
+        for component in components.reversed() {
+            let trimmed = component.trimmingCharacters(in: .whitespaces)
+            if trimmed.isEmpty { continue }
+
+            // 检查是否包含修饰键符号
+            if trimmed.contains("⌘") || trimmed.contains("⇧") ||
+               trimmed.contains("⌥") || trimmed.contains("⌃") {
+                return parseShortcutString(trimmed)
+            }
+        }
+
+        return nil
+    }
+
+    /// 解析快捷键字符串（如"⌘T"或"⇧⌘N"）
+    private func parseShortcutString(_ shortcutStr: String) -> KeyCombination? {
+        var modifiers: CGEventFlags = []
+        var mainKey = ""
+
+        for char in shortcutStr {
+            let charStr = String(char)
+            switch charStr {
+            case "⌘":
+                modifiers.insert(.maskCommand)
+            case "⇧":
+                modifiers.insert(.maskShift)
+            case "⌥":
+                modifiers.insert(.maskAlternate)
+            case "⌃":
+                modifiers.insert(.maskControl)
+            default:
+                mainKey += charStr
+            }
+        }
+
+        guard !mainKey.isEmpty, let keyCode = charToKeyCode(mainKey) else {
+            return nil
+        }
+
+        return KeyCombination(keyCode: keyCode, modifiers: modifiers)
     }
 
     // MARK: - Private Methods
@@ -65,7 +122,20 @@ class MenuItemParser {
         }
 
         // 提取修饰键
-        let modifiers = extractCmdModifiers(element)
+        var modifiers = extractCmdModifiers(element)
+
+        // 智能修饰键修正：如果有快捷键字符但没有修饰键，默认添加Command键
+        // 原因：macOS中几乎所有的单字符快捷键都需要至少一个修饰键
+        // Chrome、VS Code等应用在Accessibility API中暴露的修饰键值可能为0
+        if modifiers.isEmpty && cmdChar.count == 1 {
+            // 检查是否是字母、数字或常见的快捷键字符
+            let validShortcutChars = CharacterSet.alphanumerics
+                .union(CharacterSet(charactersIn: "[]\\;',./`-="))
+
+            if cmdChar.rangeOfCharacter(from: validShortcutChars) != nil {
+                modifiers.insert(.maskCommand)
+            }
+        }
 
         // 将字符转换为键码
         guard let keyCode = charToKeyCode(cmdChar) else {
@@ -114,11 +184,20 @@ class MenuItemParser {
     func parseModifiers(_ modifierValue: Int) -> CGEventFlags {
         var flags: CGEventFlags = []
 
-        // macOS菜单项修饰键位掩码定义：
+        // macOS菜单项修饰键位掩码定义（有两种格式）：
+        //
+        // 标准格式（大多数应用）：
         // Control: 0x0001
         // Shift:   0x0002
         // Option:  0x0004
         // Command: 0x0008
+        //
+        // Chrome等应用使用的格式（带有额外的cmdKey标志位）：
+        // Control: 0x0001 (controlKey)
+        // Shift:   0x0002 (shiftKey)
+        // Option:  0x0004 (optionKey)
+        // Command: 0x0008 (cmdKey)
+        // 额外的：0x0010 (cmdKeyBit) - Chrome在有Command键时会同时设置这一位
 
         if modifierValue & 0x0001 != 0 {
             flags.insert(.maskControl)
@@ -129,7 +208,8 @@ class MenuItemParser {
         if modifierValue & 0x0004 != 0 {
             flags.insert(.maskAlternate)  // Option键
         }
-        if modifierValue & 0x0008 != 0 {
+        // Command键：检查 0x0008 或 0x0010（Chrome格式）
+        if (modifierValue & 0x0008) != 0 || (modifierValue & 0x0010) != 0 {
             flags.insert(.maskCommand)
         }
 

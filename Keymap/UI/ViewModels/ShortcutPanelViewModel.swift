@@ -13,6 +13,7 @@ class ShortcutPanelViewModel: ObservableObject {
     @Published var shortcuts: [ShortcutInfo] = []
     @Published var searchText: String = ""
     @Published var currentApp: String = ""
+    @Published var currentAppIcon: NSImage? = nil
     @Published var isLoading: Bool = false
 
     // MARK: - Dependencies
@@ -47,9 +48,11 @@ class ShortcutPanelViewModel: ObservableObject {
         // 获取当前前端应用
         if let frontApp = NSWorkspace.shared.frontmostApplication {
             currentApp = frontApp.localizedName ?? "Unknown"
+            currentAppIcon = frontApp.icon
             loadShortcuts(for: frontApp)
         } else {
             currentApp = "未知应用"
+            currentAppIcon = nil
             loadDemoShortcuts()
         }
     }
@@ -100,7 +103,7 @@ class ShortcutPanelViewModel: ObservableObject {
     }
 
     private func loadDemoShortcuts() {
-        // 演示数据
+        // 演示数据 - 仅包含标准快捷键
         shortcuts = [
             ShortcutInfo(
                 keyCombination: "⌘C",
@@ -142,16 +145,7 @@ class ShortcutPanelViewModel: ObservableObject {
                 keyCombination: "⌘Q",
                 description: "退出应用",
                 application: currentApp,
-                category: .system,
-                conflicts: [
-                    ConflictInfo(
-                        shortcutId: UUID().uuidString,
-                        conflictType: .system,
-                        conflictingApp: "系统",
-                        severity: .high,
-                        suggestions: ["避免使用系统级快捷键", "选择其他组合"]
-                    )
-                ]
+                category: .system
             ),
         ]
 

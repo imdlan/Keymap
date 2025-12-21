@@ -12,6 +12,7 @@ struct ShortcutPanelView: View {
     @ObservedObject var viewModel: ShortcutPanelViewModel
     @State private var showingRemappingDialog: Bool = false
     @State private var selectedShortcut: ShortcutInfo? = nil
+    @State private var expandedConflicts: Set<String> = []  // 展开的冲突快捷键ID集合
 
     var body: some View {
         VStack(spacing: 0) {
@@ -46,9 +47,18 @@ struct ShortcutPanelView: View {
 
     private var headerView: some View {
         HStack {
-            Image(systemName: "keyboard")
-                .font(.title2)
-                .foregroundColor(.accentColor)
+            // 显示当前app的图标，如果没有则显示键盘图标
+            if let appIcon = viewModel.currentAppIcon {
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32, height: 32)
+                    .cornerRadius(6)
+            } else {
+                Image(systemName: "keyboard")
+                    .font(.title2)
+                    .foregroundColor(.accentColor)
+            }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("快捷键面板")
@@ -83,7 +93,9 @@ struct ShortcutPanelView: View {
                 // 冲突快捷键
                 if !viewModel.conflictShortcuts.isEmpty {
                     shortcutSection(
-                        title: "⚠️ 冲突快捷键",
+                        icon: "exclamationmark.triangle.fill",
+                        iconColor: .orange,
+                        title: "冲突快捷键",
                         count: viewModel.conflictShortcuts.count,
                         shortcuts: viewModel.conflictShortcuts,
                         isConflict: true
@@ -93,7 +105,9 @@ struct ShortcutPanelView: View {
                 // 常用快捷键
                 if !viewModel.normalShortcuts.isEmpty {
                     shortcutSection(
-                        title: "📝 常用快捷键",
+                        icon: "command",
+                        iconColor: .blue,
+                        title: "常用快捷键",
                         count: viewModel.normalShortcuts.count,
                         shortcuts: viewModel.normalShortcuts,
                         isConflict: false
@@ -104,11 +118,15 @@ struct ShortcutPanelView: View {
         }
     }
 
-    private func shortcutSection(title: String, count: Int, shortcuts: [ShortcutInfo], isConflict: Bool) -> some View {
+    private func shortcutSection(icon: String, iconColor: Color, title: String, count: Int, shortcuts: [ShortcutInfo], isConflict: Bool) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(title) (\(count))")
-                .font(.subheadline)
-                .fontWeight(.semibold)
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .foregroundColor(iconColor)
+                Text("\(title) (\(count))")
+            }
+            .font(.subheadline)
+            .fontWeight(.semibold)
 
             VStack(spacing: 4) {
                 ForEach(shortcuts) { shortcut in
@@ -119,41 +137,159 @@ struct ShortcutPanelView: View {
     }
 
     private func shortcutRow(shortcut: ShortcutInfo, isConflict: Bool) -> some View {
-        HStack {
-            Text(shortcut.keyCombination)
-                .font(.system(.body, design: .monospaced))
-                .fontWeight(.semibold)
-                .frame(width: 80, alignment: .leading)
+        VStack(alignment: .leading, spacing: 0) {
+            // 主行
+            HStack {
+                // 使用 KeyBadgeView 显示快捷键
+                KeyBadgeView(keyCombination: shortcut.keyCombination)
+                    .frame(width: 100, alignment: .leading)
 
-            Text(shortcut.description)
-                .font(.body)
+                Text(shortcut.description)
+                    .font(.body)
 
-            Spacer()
+                Spacer()
 
-            // 重映射按钮
-            Button(action: {
-                selectedShortcut = shortcut
-                showingRemappingDialog = true
-            }) {
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .foregroundColor(.blue)
+                // 重映射按钮
+                Button(action: {
+                    selectedShortcut = shortcut
+                    showingRemappingDialog = true
+                }) {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .foregroundColor(.blue)
+                }
+                .buttonStyle(.plain)
+                .help("重映射此快捷键")
+
+                // 冲突图标和展开按钮
+                if isConflict {
+                    Button(action: {
+                        toggleConflictExpansion(for: shortcut.id)
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.orange)
+                            Image(systemName: expandedConflicts.contains(shortcut.id) ? "chevron.up" : "chevron.down")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .help("查看冲突详情")
+                }
             }
-            .buttonStyle(.plain)
-            .help("重映射此快捷键")
+            .padding(.vertical, 6)
+            .padding(.horizontal, 12)
 
-            if isConflict {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundColor(.orange)
+            // 展开的冲突详情
+            if isConflict && expandedConflicts.contains(shortcut.id) {
+                Divider()
+                    .padding(.horizontal, 12)
+
+                conflictDetails(for: shortcut)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
             }
         }
-        .padding(.vertical, 6)
-        .padding(.horizontal, 12)
         .background(isConflict ? Color.orange.opacity(0.1) : Color.clear)
         .cornerRadius(6)
         .sheet(isPresented: $showingRemappingDialog) {
             if let shortcut = selectedShortcut {
                 RemappingDialogView(shortcut: shortcut, isPresented: $showingRemappingDialog)
             }
+        }
+    }
+
+    /// 冲突详情视图
+    private func conflictDetails(for shortcut: ShortcutInfo) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(shortcut.conflicts) { conflict in
+                VStack(alignment: .leading, spacing: 6) {
+                    // 严重程度
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("严重程度")
+                            .font(.caption)
+                            .fontWeight(.bold)
+
+                        Text(conflict.severity.rawValue)
+                            .font(.caption)
+                            .foregroundColor(severityColor(conflict.severity))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(severityColor(conflict.severity).opacity(0.2))
+                            .cornerRadius(4)
+                    }
+
+                    // 冲突类型
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("冲突类型")
+                            .font(.caption)
+                            .fontWeight(.bold)
+
+                        Text(conflict.conflictType.rawValue)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    // 冲突应用
+                    if let app = conflict.conflictingApp {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("冲突应用")
+                                .font(.caption)
+                                .fontWeight(.bold)
+
+                            Text(app)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
+                    // 修改建议
+                    if !conflict.suggestions.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("建议")
+                                .font(.caption)
+                                .fontWeight(.bold)
+
+                            ForEach(conflict.suggestions, id: \.self) { suggestion in
+                                HStack(alignment: .top, spacing: 4) {
+                                    Text("•")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text(suggestion)
+                                        .font(.caption)
+                                        .foregroundColor(.primary)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical, 4)
+
+                if conflict.id != shortcut.conflicts.last?.id {
+                    Divider()
+                }
+            }
+        }
+    }
+
+    /// 切换冲突展开状态
+    private func toggleConflictExpansion(for shortcutId: String) {
+        if expandedConflicts.contains(shortcutId) {
+            expandedConflicts.remove(shortcutId)
+        } else {
+            expandedConflicts.insert(shortcutId)
+        }
+    }
+
+    /// 根据严重程度返回颜色
+    private func severityColor(_ severity: ConflictSeverity) -> Color {
+        switch severity {
+        case .high:
+            return .red
+        case .medium:
+            return .orange
+        case .low:
+            return .yellow
         }
     }
 
@@ -390,5 +526,73 @@ struct RemappingDialogView: View {
 
     private func showNotification(title: String, message: String) {
         NotificationHelper.shared.send(title: title, message: message)
+    }
+}
+
+// MARK: - KeyBadgeView 快捷键徽章视图
+
+struct KeyBadgeView: View {
+    let keyCombination: String
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        Text(formattedKeyString)
+            .font(.body)  // 使用系统默认字体，确保符号和字母大小一致
+            .fontWeight(.medium)
+            .foregroundColor(colorScheme == .dark ? .primary : .white)
+            .padding(.horizontal, 4)  // 水平间距增加到4px
+            .padding(.vertical, 1)
+            .background(backgroundColor)
+            .cornerRadius(4)
+    }
+
+    /// 根据色彩模式返回合适的背景色
+    private var backgroundColor: Color {
+        if colorScheme == .dark {
+            // 深色模式：浅灰色
+            return Color(white: 0.3)
+        } else {
+            // 浅色模式：浅灰色（与半透明面板协调）
+            return Color(white: 0.25)
+        }
+    }
+
+    /// 将快捷键转换为格式化的字符串，如 "⌘C" → "⌘ + C"
+    private var formattedKeyString: String {
+        let input = keyCombination.trimmingCharacters(in: .whitespaces)
+        var modifiers = ""
+        var mainKey = ""
+
+        // 分离修饰键和主键
+        for char in input {
+            let charStr = String(char)
+            if isModifierKey(charStr) {
+                modifiers += charStr
+            } else {
+                mainKey += charStr
+            }
+        }
+
+        // 构建格式化字符串
+        var parts: [String] = []
+
+        // 添加修饰键（每个修饰键单独显示）
+        for modifier in modifiers {
+            parts.append(String(modifier))
+        }
+
+        // 添加主键（转为大写）
+        if !mainKey.isEmpty {
+            parts.append(mainKey.uppercased())
+        }
+
+        // 用 " + " 连接所有部分
+        return parts.joined(separator: " + ")
+    }
+
+    /// 判断是否是修饰键
+    private func isModifierKey(_ key: String) -> Bool {
+        let modifierKeys = ["⌘", "⇧", "⌥", "⌃", "^", "⎋"]
+        return modifierKeys.contains(key)
     }
 }
