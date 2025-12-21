@@ -693,3 +693,187 @@ alert.alertStyle = .critical
 ---
 
 **阶段6完成标志**: 🎉 核心开发100%完成，总体进度98%，待运行测试验证
+
+---
+
+## 📅 2025-12-21 更新：UI优化与关键Bug修复
+
+**更新时间**: 2025-12-21
+**状态**: ✅ 完成
+
+### 🎨 新增资源
+1. **应用图标和菜单栏图标**
+   - 添加 PDF 矢量格式图标（支持 Retina 显示）
+   - 路径: `Keymap/Resources/Assets.xcassets/AppIcon.appiconset/`
+   - 路径: `Keymap/Resources/Assets.xcassets/MenuBarIcon.imageset/`
+   - 配置: `preserves-vector-representation: true`
+
+2. **AccentColor 资源**
+   - 添加亮色/暗色模式支持
+   - 路径: `Keymap/Resources/Assets.xcassets/AccentColor.colorset/`
+   - 颜色: 蓝色系（亮色: #007AFF, 暗色: #6699FF）
+
+3. **NotificationHelper 工具类**
+   - 创建: `Keymap/Utilities/NotificationHelper.swift`
+   - 替代弃用的 NSUserNotification API
+   - 使用现代 UserNotifications 框架
+
+### ⚙️ 新增功能
+1. **"在Dock显示图标"设置**
+   - 位置: 设置面板 → 通用设置
+   - 默认值: 开启（显示在 Dock）
+   - 功能: 动态切换 `.regular` 和 `.accessory` 激活策略
+
+2. **Dock图标点击响应**
+   - 实现: `applicationShouldHandleReopen`
+   - 行为: 点击 Dock 图标打开快捷键面板
+
+### 🔧 UI优化
+1. **快捷键窗口居中显示**
+   - 修改文件: `ShortcutPanelWindow.swift`
+   - 改进: 从鼠标位置居中 → 屏幕水平垂直居中
+   - 代码: 使用 `screenFrame.midX` 和 `screenFrame.midY`
+
+2. **设置面板侧边栏点击区域**
+   - 修改文件: `SettingsWindow.swift`
+   - 改进: 从仅图标文字可点 → 整行可点击
+   - 技术: 使用 `.contentShape(Rectangle())` 扩展点击区域
+
+3. **设置面板关于页面**
+   - 显示实际应用图标（AppIcon）
+   - 替代之前的 SF Symbol 占位图标
+
+4. **菜单栏触发快捷键显示**
+   - 动态显示当前触发方式（双击 ⌘/⌥/⌃）
+   - 移除了错误的 Cmd+S 快捷键显示
+
+### 🐛 Bug修复
+
+#### 1. NSUserNotification 弃用警告 (16处)
+**影响文件**:
+- StatisticsWindow.swift
+- SettingsWindow.swift
+- ShortcutPanelView.swift
+- PermissionManager.swift
+- AppDelegate.swift
+
+**修复**: 创建 NotificationHelper，使用 UserNotifications 框架
+
+#### 2. 未使用变量警告 (4处)
+**影响文件**:
+- ConflictDetector.swift - `keyCombination` → `_`
+- ShortcutRepository.swift - 添加 `_ =` 丢弃返回值
+- DatabaseManager.swift - 添加 `_ =` 丢弃返回值
+
+**修复**: 使用 `_` 标记未使用参数，使用 `_ =` 丢弃返回值
+
+#### 3. Cmd+, 打开空白设置窗口
+**问题**: 按 Cmd+, 打开的是 SwiftUI 默认空白设置窗口
+**原因**: KeymapApp.swift 使用 `Settings { EmptyView() }`
+**修复**:
+- 添加 `CommandGroup(replacing: .appSettings)`
+- 通过 NotificationCenter 发送 `.showSettingsWindow` 通知
+- 使用 `.defaultSize(width: 0, height: 0)` 隐藏默认窗口
+
+#### 4. 菜单栏显示错误快捷键
+**问题**: 菜单显示 "显示快捷键面板 (⌘S)"
+**原因**: 菜单项设置了 `keyEquivalent: "s"`
+**修复**:
+- 移除 `keyEquivalent`
+- 动态显示触发方式：`"显示快捷键面板（\(triggerDescription)）"`
+
+#### 5. 无限循环导致100+菜单栏图标 🔥 严重bug
+**问题**: 菜单栏出现100+个 Keymap 图标，应用卡死
+**日志**: `WARNING: NSWindow has detected an excessive live window count of 101`
+
+**根本原因**:
+```swift
+// 错误代码（已删除）
+NotificationCenter.default.addObserver(
+    self,
+    selector: #selector(settingsDidChange),
+    name: UserDefaults.didChangeNotification,  // ⚠️ 触发无限循环
+    object: nil
+)
+
+@objc private func settingsDidChange() {
+    setupMenuBar()  // ⚠️ 每次都创建新 statusItem
+}
+```
+
+**触发流程**:
+1. UserDefaults 变化 → 触发通知
+2. 调用 `settingsDidChange()` → 调用 `setupMenuBar()`
+3. `setupMenuBar()` 创建新 `statusItem` → 修改 UserDefaults
+4. 回到步骤1 → 无限循环
+
+**修复**:
+- 完全移除 `UserDefaults.didChangeNotification` 监听器
+- 移除 `settingsDidChange()` 方法
+- 设置变化通过 SettingsWindow 直接更新
+
+### 📊 修改统计
+
+**新增文件** (2个):
+- `Keymap/Resources/Assets.xcassets/` (包含3个资源集)
+- `Keymap/Utilities/NotificationHelper.swift` (~50行)
+
+**修改文件** (13个):
+- AppDelegate.swift
+- KeymapApp.swift
+- SettingsManager.swift
+- SettingsWindow.swift
+- ShortcutPanelWindow.swift
+- ShortcutPanelView.swift
+- StatisticsWindow.swift
+- PermissionManager.swift
+- ConflictDetector.swift
+- DatabaseManager.swift
+- ShortcutRepository.swift
+- Info.plist
+- project.yml
+
+**代码变更**:
+- +321 行新增
+- -54 行删除
+- 修复 20+ 处警告和错误
+
+### 🎯 技术亮点
+
+1. **PDF 矢量图标**
+   - 无损缩放支持
+   - 自动适配 Retina 显示
+   - Template rendering 支持主题切换
+
+2. **SwiftUI .contentShape() 点击扩展**
+   ```swift
+   Button { ... }
+   .contentShape(Rectangle())  // 扩展整个矩形区域
+   ```
+
+3. **动态激活策略切换**
+   ```swift
+   NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
+   ```
+
+4. **窗口居中算法**
+   ```swift
+   origin.x = screenFrame.midX - window.frame.width / 2
+   origin.y = screenFrame.midY - window.frame.height / 2
+   ```
+
+### ✅ 验证通过
+- [x] 编译成功（BUILD SUCCEEDED）
+- [x] 菜单栏只显示一个图标
+- [x] Cmd+, 打开正确的设置窗口
+- [x] 点击 Dock 图标打开快捷键面板
+- [x] 设置面板侧边栏整行可点击
+- [x] 快捷键窗口屏幕居中显示
+- [x] 无编译警告
+
+### 📝 小结
+本次更新完成了UI细节优化和关键bug修复，特别是修复了导致菜单栏出现100+图标的严重无限循环问题。应用现已具备完整的生产可用性，用户体验得到显著提升。
+
+---
+
+**最终状态**: ✅ 阶段6完全完成，应用已可投入使用
