@@ -120,12 +120,10 @@ class PermissionManager {
     }
 
     private func showPermissionGrantedNotification() {
-        let notification = NSUserNotification()
-        notification.title = "权限已授予"
-        notification.informativeText = "Keymap现在可以正常工作了"
-        notification.soundName = NSUserNotificationDefaultSoundName
-
-        NSUserNotificationCenter.default.deliver(notification)
+        NotificationHelper.shared.send(
+            title: "权限已授予",
+            message: "Keymap现在可以正常工作了"
+        )
     }
 
     func openSystemPreferences() {

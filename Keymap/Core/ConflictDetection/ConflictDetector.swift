@@ -124,7 +124,7 @@ class ConflictDetector {
     private func detectDuplicates(_ index: [String: [ShortcutInfo]]) -> [ConflictInfo] {
         var conflicts: [ConflictInfo] = []
 
-        for (keyCombination, shortcuts) in index {
+        for (_, shortcuts) in index {
             guard shortcuts.count > 1 else { continue }
 
             // 分析冲突的应用

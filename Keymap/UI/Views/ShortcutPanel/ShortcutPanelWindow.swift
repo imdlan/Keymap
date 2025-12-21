@@ -74,21 +74,16 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
             return
         }
 
-        // 获取鼠标位置
-        let mouseLocation = NSEvent.mouseLocation
+        // 获取屏幕可见区域
         let screenFrame = NSScreen.main?.visibleFrame ?? .zero
 
-        // 计算窗口位置
-        var origin = mouseLocation
-        origin.x -= window.frame.width / 2
-        origin.y -= window.frame.height / 2
-
-        // 确保窗口在屏幕范围内
-        origin.x = max(screenFrame.minX + 10, min(origin.x, screenFrame.maxX - window.frame.width - 10))
-        origin.y = max(screenFrame.minY + 10, min(origin.y, screenFrame.maxY - window.frame.height - 10))
+        // 计算窗口在屏幕中心的位置
+        var origin = NSPoint.zero
+        origin.x = screenFrame.midX - window.frame.width / 2
+        origin.y = screenFrame.midY - window.frame.height / 2
 
         window.setFrameOrigin(origin)
-        print("📍 窗口位置已设置: \(origin)")
+        print("📍 窗口位置已设置（屏幕居中）: \(origin)")
         print("🪟 窗口大小: \(window.frame.size)")
         print("🎚️ 窗口层级: \(window.level.rawValue)")
 

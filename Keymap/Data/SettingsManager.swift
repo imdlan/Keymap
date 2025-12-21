@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AppKit
 
 /// 应用设置管理器（使用UserDefaults持久化）
 class SettingsManager {
@@ -28,6 +29,7 @@ class SettingsManager {
         static let cacheDuration = "cacheDuration"
         static let maxCachedApps = "maxCachedApps"
         static let launchAtLogin = "launchAtLogin"
+        static let showInDock = "showInDock"
         static let showNotifications = "showNotifications"
         static let conflictNotificationLevel = "conflictNotificationLevel"
         static let cleanupInterval = "cleanupInterval"
@@ -62,6 +64,23 @@ class SettingsManager {
         set {
             defaults.set(newValue, forKey: Keys.launchAtLogin)
             print("⚙️ 开机自动启动: \(newValue ? "开启" : "关闭")")
+        }
+    }
+
+    /// 在Dock显示图标
+    var showInDock: Bool {
+        get {
+            // 默认值为 true（显示在 Dock）
+            return defaults.object(forKey: Keys.showInDock) as? Bool ?? true
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.showInDock)
+            print("⚙️ Dock图标显示: \(newValue ? "开启" : "关闭")")
+
+            // 立即应用更改
+            DispatchQueue.main.async {
+                NSApp.setActivationPolicy(newValue ? .regular : .accessory)
+            }
         }
     }
 

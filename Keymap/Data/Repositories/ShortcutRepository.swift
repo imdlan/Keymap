@@ -41,7 +41,7 @@ class ShortcutRepository {
     func saveBatch(_ shortcuts: [ShortcutInfo]) -> Int {
         var successCount = 0
 
-        db.beginTransaction()
+        _ = db.beginTransaction()
 
         for shortcut in shortcuts {
             if save(shortcut) {
@@ -50,9 +50,9 @@ class ShortcutRepository {
         }
 
         if successCount == shortcuts.count {
-            db.commitTransaction()
+            _ = db.commitTransaction()
         } else {
-            db.rollbackTransaction()
+            _ = db.rollbackTransaction()
             print("⚠️ 批量保存失败，已回滚")
             return 0
         }

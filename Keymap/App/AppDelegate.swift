@@ -18,8 +18,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: SettingsWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // 隐藏Dock图标，使应用成为菜单栏应用
-        NSApp.setActivationPolicy(.accessory)
+        // 根据设置决定是否在Dock显示图标
+        let showInDock = SettingsManager.shared.showInDock
+        NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
 
         print("🚀 应用启动中...")
 
@@ -44,11 +45,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             // 显示提示通知
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                let notification = NSUserNotification()
-                notification.title = "需要辅助功能权限"
-                notification.informativeText = "请在系统设置中授予Keymap辅助功能权限"
-                notification.soundName = NSUserNotificationDefaultSoundName
-                NSUserNotificationCenter.default.deliver(notification)
+                NotificationHelper.shared.send(
+                    title: "需要辅助功能权限",
+                    message: "请在系统设置中授予Keymap辅助功能权限"
+                )
             }
         }
 
@@ -83,13 +83,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         globalMonitor?.stopMonitoring()
     }
 
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        // 当用户点击 Dock 图标时，显示快捷键面板
+        print("📱 用户点击了 Dock 图标")
+        shortcutPanelController?.showPanel()
+        return true
+    }
+
     // MARK: - 菜单栏设置
 
     private func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem?.button {
-            button.image = NSImage(systemSymbolName: "keyboard", accessibilityDescription: "Keymap")
+            button.image = NSImage(named: "MenuBarIcon")
             button.image?.isTemplate = true
         }
 
@@ -111,10 +118,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             menu.addItem(NSMenuItem.separator())
         }
 
+        // 根据设置显示触发快捷键
+        let triggerKey = SettingsManager.shared.triggerKey
+        let triggerDescription: String
+        switch triggerKey {
+        case "doubleOption":
+            triggerDescription = "双击 ⌥"
+        case "doubleControl":
+            triggerDescription = "双击 ⌃"
+        default: // doubleCmd
+            triggerDescription = "双击 ⌘"
+        }
+
         menu.addItem(NSMenuItem(
-            title: "显示快捷键面板",
+            title: "显示快捷键面板（\(triggerDescription)）",
             action: #selector(showShortcutPanel),
-            keyEquivalent: "s"
+            keyEquivalent: ""
         ))
 
         menu.addItem(NSMenuItem(
@@ -197,6 +216,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupMenuBar()
     }
 
+    @objc private func settingsDidChange() {
+        // 设置变化时重新构建菜单
+        setupMenuBar()
+    }
+
     // MARK: - 菜单操作
 
     @objc private func showShortcutPanel() {
@@ -218,7 +242,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statisticsWindow?.showWindow()
     }
 
-    @objc private func showSettings() {
+    @objc func showSettings() {
         // 隐藏快捷键面板
         shortcutPanelController?.hidePanel()
 

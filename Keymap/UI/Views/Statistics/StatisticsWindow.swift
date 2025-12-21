@@ -130,7 +130,7 @@ struct StatisticsView: View {
             .pickerStyle(.segmented)
             .frame(minWidth: 280)
             .fixedSize()
-            .onChange(of: selectedPeriod) { newValue in
+            .onChange(of: selectedPeriod) { _, newValue in
                 viewModel.loadStatistics(for: newValue)
             }
 
@@ -582,10 +582,7 @@ class StatisticsViewModel: ObservableObject {
     }
 
     private func showNotification(title: String, message: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = message
-        NSUserNotificationCenter.default.deliver(notification)
+        NotificationHelper.shared.send(title: title, message: message)
     }
 }
 

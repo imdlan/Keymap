@@ -112,10 +112,11 @@ struct SettingsView: View {
                     }
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(selectedTab == tab ? Color.accentColor.opacity(0.2) : Color.clear)
-                    .cornerRadius(6)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .background(selectedTab == tab ? Color.accentColor.opacity(0.2) : Color.clear)
+                .cornerRadius(6)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 2)
             }
@@ -169,8 +170,29 @@ struct SettingsView: View {
 
                     Toggle("", isOn: $viewModel.launchAtLogin)
                         .toggleStyle(.switch)
-                        .onChange(of: viewModel.launchAtLogin) { newValue in
+                        .onChange(of: viewModel.launchAtLogin) { _, newValue in
                             viewModel.updateLaunchAtLogin(newValue)
+                        }
+                }
+
+                Divider()
+
+                // 在Dock显示图标
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("在Dock显示图标")
+                            .font(.body)
+                        Text("关闭后应用仅在菜单栏显示")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.showInDock)
+                        .toggleStyle(.switch)
+                        .onChange(of: viewModel.showInDock) { _, newValue in
+                            viewModel.settings.showInDock = newValue
                         }
                 }
 
@@ -566,9 +588,17 @@ struct SettingsView: View {
             VStack(spacing: 24) {
                 // Logo和名称
                 VStack(spacing: 12) {
-                    Image(systemName: "keyboard")
-                        .font(.system(size: 64))
-                        .foregroundColor(.accentColor)
+                    if let appIcon = NSImage(named: "AppIcon") {
+                        Image(nsImage: appIcon)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 128, height: 128)
+                            .cornerRadius(16)
+                    } else {
+                        Image(systemName: "keyboard")
+                            .font(.system(size: 64))
+                            .foregroundColor(.accentColor)
+                    }
 
                     Text("Keymap")
                         .font(.largeTitle)
@@ -665,6 +695,7 @@ class SettingsViewModel: ObservableObject {
 
     // 通用设置
     @Published var launchAtLogin: Bool = false
+    @Published var showInDock: Bool = true
     @Published var enableRealTimeDetection: Bool = true
     @Published var enableUsageTracking: Bool = true
     @Published var showConflictNotifications: Bool = true
@@ -691,7 +722,7 @@ class SettingsViewModel: ObservableObject {
 
     // MARK: - Dependencies
 
-    private let settings = SettingsManager.shared
+    let settings = SettingsManager.shared
     private let remappingManager = RemappingManager.shared
     private let databaseManager = DatabaseManager.shared
 
@@ -874,6 +905,7 @@ class SettingsViewModel: ObservableObject {
         // 从 SettingsManager 加载设置
         doubleCmdThreshold = settings.doubleCmdThreshold
         triggerKey = settings.triggerKey
+        showInDock = settings.showInDock
         enableRealTimeDetection = settings.enableRealTimeDetection
         enableUsageTracking = settings.enableUsageTracking
         cacheDuration = settings.cacheDuration
@@ -941,10 +973,7 @@ class SettingsViewModel: ObservableObject {
     }
 
     private func showNotification(title: String, message: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = message
-        NSUserNotificationCenter.default.deliver(notification)
+        NotificationHelper.shared.send(title: title, message: message)
     }
 
     private func showAlert(title: String, message: String) {

@@ -368,3 +368,46 @@ swift scripts/verify/verify_shortcuts.swift  # 验证系统快捷键数量
 - **README.md**: 项目说明
 - **scripts/README.md**: 工具脚本说明
 
+## 更新日志
+
+### 2025-12-21 - UI优化与Bug修复
+**新增功能**:
+- ✅ 添加应用图标和菜单栏图标（PDF矢量格式，支持Retina显示）
+- ✅ 添加 AccentColor 资源（支持亮色/暗色模式）
+- ✅ 添加 "在Dock显示图标" 设置项（默认开启）
+- ✅ 创建 NotificationHelper 工具类（使用现代 UserNotifications API）
+
+**优化改进**:
+- ✅ 快捷键窗口默认在屏幕水平、垂直方向居中显示
+- ✅ 设置面板侧边栏整行可点击（不仅限于图标和文字）
+- ✅ 菜单栏图标使用 PDF 矢量格式，支持任意分辨率
+- ✅ 设置面板"关于"页面显示实际应用图标
+
+**Bug修复**:
+- 🐛 修复 NSUserNotification 弃用警告（16处）
+- 🐛 修复未使用变量警告（4处）
+- 🐛 修复 Cmd+, 打开空白设置窗口问题
+- 🐛 修复菜单栏显示错误快捷键（Cmd+S → 双击⌘）
+- 🐛 修复无限循环导致菜单栏出现100+应用图标的严重bug
+
+**技术细节**:
+- 移除了 UserDefaults.didChangeNotification 监听器（避免无限循环）
+- 使用 .contentShape(Rectangle()) 扩展按钮点击区域
+- 菜单栏图标设置：preserves-vector-representation: true
+- Dock 图标可点击打开快捷键面板（applicationShouldHandleReopen）
+
+**修改文件**:
+- Keymap/Resources/Assets.xcassets/ (新增)
+- Keymap/Utilities/NotificationHelper.swift (新增)
+- Keymap/App/AppDelegate.swift
+- Keymap/App/KeymapApp.swift
+- Keymap/Data/SettingsManager.swift
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+- Keymap/UI/Views/ShortcutPanel/ShortcutPanelWindow.swift
+- Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift
+- Keymap/UI/Views/Statistics/StatisticsWindow.swift
+- Keymap/Utilities/PermissionManager.swift
+- Keymap/Core/ConflictDetection/ConflictDetector.swift
+- Keymap/Data/DatabaseManager.swift
+- Keymap/Data/Repositories/ShortcutRepository.swift
+

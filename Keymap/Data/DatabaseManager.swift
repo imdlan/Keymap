@@ -314,7 +314,7 @@ class DatabaseManager {
                 } else if let number = parameter as? Double {
                     sqlite3_bind_double(statement, bindIndex, number)
                 } else if let data = parameter as? Data {
-                    data.withUnsafeBytes { bytes in
+                    _ = data.withUnsafeBytes { bytes in
                         sqlite3_bind_blob(statement, bindIndex, bytes.baseAddress, Int32(data.count), nil)
                     }
                 } else if parameter is NSNull {

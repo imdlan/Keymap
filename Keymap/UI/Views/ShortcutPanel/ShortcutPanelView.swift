@@ -389,9 +389,6 @@ struct RemappingDialogView: View {
     }
 
     private func showNotification(title: String, message: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = message
-        NSUserNotificationCenter.default.deliver(notification)
+        NotificationHelper.shared.send(title: title, message: message)
     }
 }

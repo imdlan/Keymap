@@ -20,11 +20,13 @@
 		532F9312B2D44A7CE3CEFD8B /* UsageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284249152616D37340F21A07 /* UsageRepository.swift */; };
 		55CAA715936CC3DC70A85E15 /* StatisticsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21492ADCACC77E9600326CD5 /* StatisticsWindow.swift */; };
 		568FECE7AF9863A1A8B7F35F /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEEE5E26145427DC1D7C66A /* DatabaseManager.swift */; };
+		5B64255B866DE12943B4DBE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A80E3ACC039141DD6C351E91 /* Assets.xcassets */; };
 		5E09EF2DE3BB1AD32F4DC60A /* ShortcutPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F866384FF64C5C2D69F37BE /* ShortcutPanelView.swift */; };
 		6B72401D704D5939AB6E697A /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 069A69E272820DEAF8507D33 /* Carbon.framework */; };
 		74B665E7AD4DEB28B09DC153 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5425031DB11FE2D95092AD9F /* PermissionManager.swift */; };
 		7CE052DADFE8351148B6423F /* ShortcutPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0D9F72658BF0113717CB8 /* ShortcutPanelViewModel.swift */; };
 		7DA1C1B28B1C1311A233FA9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9F13652A67284DCD200870 /* AppDelegate.swift */; };
+		9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F863A83B5D13465BA0574102 /* NotificationHelper.swift */; };
 		9BED982641EF22EB33583AA1 /* ShortcutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4383254773AAF50DC9BD1 /* ShortcutRepository.swift */; };
 		A0E69794EE6B5D7C509FCBDC /* SystemShortcutProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCF0BC5F5D32C4F48E225D2 /* SystemShortcutProvider.swift */; };
 		A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA45D8D5074D6D89604CEC5 /* MenuItemParser.swift */; };
@@ -61,6 +63,7 @@
 		9ED2DA014763BDC9EEA91840 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		A042633785116605C03A13F3 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		A404E9693ADD2B96661EEFA7 /* ShortcutInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutInfo.swift; sourceTree = "<group>"; };
+		A80E3ACC039141DD6C351E91 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9F55E83F1C09D876B573418 /* ShortcutCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutCache.swift; sourceTree = "<group>"; };
 		AD0E07A6963C2A316E9A9D94 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B2F4383254773AAF50DC9BD1 /* ShortcutRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutRepository.swift; sourceTree = "<group>"; };
@@ -74,6 +77,7 @@
 		E721C069A36C304572F9B13A /* GlobalEventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEventMonitor.swift; sourceTree = "<group>"; };
 		F62EFEA777612EF103110FE1 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F86044362846C26C386274D1 /* StatisticsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsSummary.swift; sourceTree = "<group>"; };
+		F863A83B5D13465BA0574102 /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,6 +267,7 @@
 		B7478431A78FABA40B886ABF /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				F863A83B5D13465BA0574102 /* NotificationHelper.swift */,
 				5425031DB11FE2D95092AD9F /* PermissionManager.swift */,
 			);
 			name = Utilities;
@@ -284,6 +289,7 @@
 		C926185B223162951424F5C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A80E3ACC039141DD6C351E91 /* Assets.xcassets */,
 			);
 			name = Resources;
 			path = Keymap/Resources;
@@ -352,6 +358,7 @@
 			buildConfigurationList = 40DC0ABF60C397D5C9C41A4F /* Build configuration list for PBXNativeTarget "Keymap" */;
 			buildPhases = (
 				418BE2FCB47208F25801AA3A /* Sources */,
+				6D590245D74DB5E176824CAE /* Resources */,
 				8E6DEBBBA0A64B3BA25A3549 /* Frameworks */,
 			);
 			buildRules = (
@@ -400,6 +407,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		6D590245D74DB5E176824CAE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5B64255B866DE12943B4DBE6 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		418BE2FCB47208F25801AA3A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -417,6 +435,7 @@
 				4E2B4FD15DF0E61FC399204A /* KeyCombinationDetector.swift in Sources */,
 				C46F74C997BFBE0A5A857FF1 /* KeymapApp.swift in Sources */,
 				A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */,
+				9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */,
 				74B665E7AD4DEB28B09DC153 /* PermissionManager.swift in Sources */,
 				0030BE9B51B6A9C80FB7CD6D /* RemappingEngine.swift in Sources */,
 				FA1EE9C60FE9B04E3F3FCB4E /* RemappingManager.swift in Sources */,
@@ -566,6 +585,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ASSET_CATALOG_PATH = Keymap/Resources/Assets.xcassets;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Keymap/Resources/Entitlements.plist;
 				CODE_SIGN_STYLE = Automatic;
@@ -590,6 +610,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ASSET_CATALOG_PATH = Keymap/Resources/Assets.xcassets;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Keymap/Resources/Entitlements.plist;
 				CODE_SIGN_STYLE = Automatic;
