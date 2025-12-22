@@ -96,10 +96,26 @@ class ShortcutPanelViewModel: ObservableObject {
         }
     }
 
-    /// 合并应用快捷键和系统快捷键
+    /// 合并应用快捷键和系统快捷键（带去重）
     private func mergeWithSystemShortcuts(_ appShortcuts: [ShortcutInfo]) -> [ShortcutInfo] {
         let systemShortcuts = systemProvider.getSystemShortcuts()
-        return appShortcuts + systemShortcuts
+
+        // ✅ 去重：按 keyCombination 分组，应用快捷键优先
+        var uniqueShortcuts: [String: ShortcutInfo] = [:]
+
+        // 先添加应用快捷键（优先级更高）
+        for shortcut in appShortcuts {
+            uniqueShortcuts[shortcut.keyCombination] = shortcut
+        }
+
+        // 再添加系统快捷键（只添加不重复的）
+        for shortcut in systemShortcuts {
+            if uniqueShortcuts[shortcut.keyCombination] == nil {
+                uniqueShortcuts[shortcut.keyCombination] = shortcut
+            }
+        }
+
+        return Array(uniqueShortcuts.values)
     }
 
     private func loadDemoShortcuts() {

@@ -99,8 +99,13 @@ class AppShortcutExtractor {
             }
         }
 
-        print("✅ 成功解析 \(shortcuts.count) 个快捷键")
-        return shortcuts
+        // ✅ 新增：去重步骤
+        let deduplicatedShortcuts = deduplicateShortcuts(shortcuts)
+
+        print("📊 去重统计: \(shortcuts.count) → \(deduplicatedShortcuts.count) (移除 \(shortcuts.count - deduplicatedShortcuts.count) 个重复项)")
+        print("✅ 成功解析 \(deduplicatedShortcuts.count) 个快捷键")
+
+        return deduplicatedShortcuts
     }
 
     /// 获取应用的菜单栏
@@ -117,6 +122,20 @@ class AppShortcutExtractor {
         }
 
         return (menuBar as! AXUIElement)
+    }
+
+    /// 判断是否为叶子菜单项（实际包含快捷键的项）
+    private func isLeafMenuItem(_ element: AXUIElement) -> Bool {
+        // 检查是否有快捷键字符（叶子节点的特征）
+        var cmdChar: AnyObject?
+        let result = AXUIElementCopyAttributeValue(
+            element,
+            kAXMenuItemCmdCharAttribute as CFString,
+            &cmdChar
+        )
+
+        // 有快捷键字符 = 叶子节点
+        return result == .success && (cmdChar as? String)?.isEmpty == false
     }
 
     /// 递归提取菜单项
@@ -138,17 +157,79 @@ class AppShortcutExtractor {
 
         // 遍历子元素
         for child in childrenArray {
-            // 尝试解析当前元素
-            if let menuItem = parser.parseMenuItem(child) {
-                items.append(menuItem)
+            // ✅ 只解析叶子节点
+            if isLeafMenuItem(child) {
+                if let menuItem = parser.parseMenuItem(child) {
+                    items.append(menuItem)
+                }
             }
 
-            // 递归提取子菜单
+            // ✅ 无论如何都递归（遍历整棵树）
             let subItems = extractMenuItems(from: child)
             items.append(contentsOf: subItems)
         }
 
         return items
+    }
+
+    /// 去重快捷键（同一应用的相同快捷键组合只保留一个）
+    private func deduplicateShortcuts(_ shortcuts: [ShortcutInfo]) -> [ShortcutInfo] {
+        // 按 keyCombination 分组
+        var groupedByKey: [String: [ShortcutInfo]] = [:]
+
+        for shortcut in shortcuts {
+            if groupedByKey[shortcut.keyCombination] == nil {
+                groupedByKey[shortcut.keyCombination] = []
+            }
+            groupedByKey[shortcut.keyCombination]?.append(shortcut)
+        }
+
+        // 对每组选择最佳的一个
+        var result: [ShortcutInfo] = []
+
+        for (key, group) in groupedByKey {
+            if group.count == 1 {
+                result.append(group[0])
+            } else {
+                let best = selectBestShortcut(from: group)
+                result.append(best)
+
+                // 调试日志
+                let titles = group.map { $0.description }.joined(separator: ", ")
+                print("🔄 去重: \(key) 有 \(group.count) 个: [\(titles)] → 保留: \(best.description)")
+            }
+        }
+
+        return result
+    }
+
+    /// 从重复的快捷键中选择最佳的一个（英文优先）
+    private func selectBestShortcut(from shortcuts: [ShortcutInfo]) -> ShortcutInfo {
+        let sorted = shortcuts.sorted { shortcut1, shortcut2 in
+            let desc1 = shortcut1.description
+            let desc2 = shortcut2.description
+
+            // 策略：英文优先（ASCII 字符占比高）
+            let ascii1 = desc1.filter { $0.isASCII }.count
+            let ascii2 = desc2.filter { $0.isASCII }.count
+            let ratio1 = Double(ascii1) / Double(max(desc1.count, 1))
+            let ratio2 = Double(ascii2) / Double(max(desc2.count, 1))
+
+            // ASCII 占比差异明显时，优先选择英文
+            if abs(ratio1 - ratio2) > 0.5 {
+                return ratio1 > ratio2
+            }
+
+            // 否则选择较短的标题
+            if desc1.count != desc2.count {
+                return desc1.count < desc2.count
+            }
+
+            // 最后按字母顺序（稳定性）
+            return desc1 < desc2
+        }
+
+        return sorted.first ?? shortcuts[0]
     }
 
     /// 将MenuItem解析为ShortcutInfo
