@@ -303,8 +303,8 @@ struct SettingsView: View {
                         Text("双击Option").tag("doubleOption")
                         Text("双击Control").tag("doubleControl")
                     }
-                    .pickerStyle(.segmented)
-                    .frame(width: 280)
+                    .pickerStyle(.menu)
+                    .frame(width: 150)
                 }
 
                 Divider()
@@ -633,18 +633,9 @@ struct SettingsView: View {
                 Divider()
                     .padding(.horizontal, 40)
 
-                // 开源许可
+                // 版权信息
                 VStack(spacing: 8) {
-                    Button("查看开源许可") {
-                        viewModel.showLicenses()
-                    }
-                    .buttonStyle(.link)
-
                     Text("Copyright 2025 David Lan")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-
-                    Text("Licensed under Apache-2.0")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

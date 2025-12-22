@@ -31,6 +31,7 @@
 		A0E69794EE6B5D7C509FCBDC /* SystemShortcutProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCF0BC5F5D32C4F48E225D2 /* SystemShortcutProvider.swift */; };
 		A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA45D8D5074D6D89604CEC5 /* MenuItemParser.swift */; };
 		A5A47221FB0A9DFC8EBBB776 /* DoubleCmdDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0731FDDE7308AA86150A47 /* DoubleCmdDetector.swift */; };
+		A9D5D8D1C0F960F085ED515D /* KeymapShortcutProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4EF917EDD295CFAFDC9225 /* KeymapShortcutProvider.swift */; };
 		AF22E01196B0D4A58367CFE0 /* ConflictInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E667EC41E0B8F826888749F /* ConflictInfo.swift */; };
 		B7DAF65B397099B26B2EDF3C /* ShortcutPanelWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 657CB2D1A9158023964CFE3A /* ShortcutPanelWindow.swift */; };
 		BFBB04055BB805D9D05254B3 /* AppShortcutExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B896C3F7DECBDB921CCD48BF /* AppShortcutExtractor.swift */; };
@@ -60,6 +61,7 @@
 		6FF0D9F72658BF0113717CB8 /* ShortcutPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutPanelViewModel.swift; sourceTree = "<group>"; };
 		7F08742A2C063EBACAFF10A6 /* UsageRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRecord.swift; sourceTree = "<group>"; };
 		834CC46EF8AD0EC649D0E56D /* RemappingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemappingManager.swift; sourceTree = "<group>"; };
+		8E4EF917EDD295CFAFDC9225 /* KeymapShortcutProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeymapShortcutProvider.swift; sourceTree = "<group>"; };
 		9ED2DA014763BDC9EEA91840 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		A042633785116605C03A13F3 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
 		A404E9693ADD2B96661EEFA7 /* ShortcutInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutInfo.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				B896C3F7DECBDB921CCD48BF /* AppShortcutExtractor.swift */,
+				8E4EF917EDD295CFAFDC9225 /* KeymapShortcutProvider.swift */,
 				DEA45D8D5074D6D89604CEC5 /* MenuItemParser.swift */,
 				A9F55E83F1C09D876B573418 /* ShortcutCache.swift */,
 				5FCF0BC5F5D32C4F48E225D2 /* SystemShortcutProvider.swift */,
@@ -434,6 +437,7 @@
 				CEFB75F34C2641EB5744120A /* GlobalEventMonitor.swift in Sources */,
 				4E2B4FD15DF0E61FC399204A /* KeyCombinationDetector.swift in Sources */,
 				C46F74C997BFBE0A5A857FF1 /* KeymapApp.swift in Sources */,
+				A9D5D8D1C0F960F085ED515D /* KeymapShortcutProvider.swift in Sources */,
 				A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */,
 				9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */,
 				74B665E7AD4DEB28B09DC153 /* PermissionManager.swift in Sources */,

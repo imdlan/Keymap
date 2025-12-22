@@ -18,6 +18,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var settingsWindow: SettingsWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // ✅ 完全移除主菜单栏（只保留苹果菜单）
+        setupEmptyMenuBar()
+        
         // 根据设置决定是否在Dock显示图标
         let showInDock = SettingsManager.shared.showInDock
         NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
@@ -105,6 +108,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // MARK: - 菜单栏设置
+    
+    /// 设置空的主菜单栏（移除所有菜单项）
+    private func setupEmptyMenuBar() {
+        // 创建一个空的主菜单
+        let mainMenu = NSMenu()
+        
+        // 添加苹果菜单（系统要求）
+        let appleMenuItem = NSMenuItem()
+        let appleMenu = NSMenu()
+        appleMenuItem.submenu = appleMenu
+        mainMenu.addItem(appleMenuItem)
+        
+        // 只添加"关于"和"退出"
+        appleMenu.addItem(NSMenuItem(title: "关于 Keymap", action: #selector(showAbout), keyEquivalent: ""))
+        appleMenu.addItem(NSMenuItem.separator())
+        appleMenu.addItem(NSMenuItem(title: "退出 Keymap", action: #selector(quitApp), keyEquivalent: "q"))
+        
+        NSApp.mainMenu = mainMenu
+        print("✅ 主菜单栏已移除")
+    }
 
     private func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -132,20 +155,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             menu.addItem(NSMenuItem.separator())
         }
 
-        // 根据设置显示触发快捷键
-        let triggerKey = SettingsManager.shared.triggerKey
-        let triggerDescription: String
-        switch triggerKey {
-        case "doubleOption":
-            triggerDescription = "双击 ⌥"
-        case "doubleControl":
-            triggerDescription = "双击 ⌃"
-        default: // doubleCmd
-            triggerDescription = "双击 ⌘"
-        }
-
         menu.addItem(NSMenuItem(
-            title: "显示快捷键面板（\(triggerDescription)）",
+            title: "显示快捷键面板",
             action: #selector(showShortcutPanel),
             keyEquivalent: ""
         ))
@@ -153,7 +164,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(
             title: "统计分析",
             action: #selector(showStatistics),
-            keyEquivalent: ""
+            keyEquivalent: "d"
         ))
 
         menu.addItem(NSMenuItem.separator())

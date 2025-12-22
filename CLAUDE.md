@@ -424,3 +424,31 @@ swift scripts/verify/verify_shortcuts.swift  # 验证系统快捷键数量
 - Keymap/Data/DatabaseManager.swift
 - Keymap/Data/Repositories/ShortcutRepository.swift
 
+### 2025-12-22 - Keymap 自身快捷键与 UI 优化
+
+**新增功能**:
+- ✅ 创建 KeymapShortcutProvider 类，提供 Keymap 自身的 4 个快捷键
+- ✅ 为"统计分析"功能添加快捷键 ⌘D
+- ✅ Keymap 应用快捷键面板正确显示实际快捷键（不再显示演示数据）
+
+**Keymap 快捷键列表**:
+- ⌘⌘ - 显示快捷键面板
+- ⌘D - 统计分析
+- ⌘, - 设置
+- ⌘Q - 退出 Keymap
+
+**UI 优化**:
+- ✅ 完全移除应用菜单栏（文件、编辑、显示等），只保留苹果菜单
+- ✅ 简化菜单栏图标弹出菜单（移除"显示快捷键面板"的快捷键显示）
+- ✅ 设置面板：触发快捷键从分段控制改为下拉选择
+- ✅ 快捷键面板：双击⌘ 显示为 ⌘⌘
+- ✅ 简化关于页面和系统关于面板的版权信息（只保留 Copyright 2025 David Lan）
+
+**修改文件**:
+- Keymap/Core/ShortcutExtraction/KeymapShortcutProvider.swift (新增)
+- Keymap/UI/ViewModels/ShortcutPanelViewModel.swift
+- Keymap/App/AppDelegate.swift
+- Keymap/App/KeymapApp.swift
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+- Keymap/App/Info.plist
+

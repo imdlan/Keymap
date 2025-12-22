@@ -21,13 +21,59 @@ class ShortcutPanelViewModel: ObservableObject {
     private let extractor = AppShortcutExtractor()
     private let cache = ShortcutCache()
     private let systemProvider = SystemShortcutProvider.shared
+    private let keymapProvider = KeymapShortcutProvider.shared
+
+    // MARK: - 修饰键名称映射
+
+    /// 修饰键英文名称到符号的映射表
+    private let modifierKeyMap: [String: String] = [
+        "command": "⌘",
+        "cmd": "⌘",
+        "shift": "⇧",
+        "option": "⌥",
+        "opt": "⌥",
+        "alt": "⌥",
+        "control": "⌃",
+        "ctrl": "⌃",
+        "fn": "fn",
+        "return": "↩",
+        "enter": "↩",
+        "tab": "⇥",
+        "space": "Space",
+        "delete": "⌫",
+        "backspace": "⌫",
+        "escape": "⎋",
+        "esc": "⎋",
+        "up": "↑",
+        "down": "↓",
+        "left": "←",
+        "right": "→"
+    ]
+
+    /// 标准化搜索文本（将英文修饰键名转换为符号）
+    private func normalizeSearchText(_ text: String) -> String {
+        var normalized = text.lowercased()
+
+        // 替换所有修饰键名称为符号
+        for (englishName, symbol) in modifierKeyMap {
+            normalized = normalized.replacingOccurrences(of: englishName, with: symbol, options: .caseInsensitive)
+        }
+
+        return normalized
+    }
 
     var filteredShortcuts: [ShortcutInfo] {
         if searchText.isEmpty {
             return shortcuts
         }
+
+        // ✅ 标准化搜索文本（支持英文修饰键名）
+        let normalizedSearchText = normalizeSearchText(searchText)
+
         return shortcuts.filter { shortcut in
+            // 支持原始搜索文本和标准化后的文本
             shortcut.keyCombination.localizedCaseInsensitiveContains(searchText) ||
+            shortcut.keyCombination.localizedCaseInsensitiveContains(normalizedSearchText) ||
             shortcut.description.localizedCaseInsensitiveContains(searchText)
         }
     }
@@ -66,6 +112,14 @@ class ShortcutPanelViewModel: ObservableObject {
 
         Task { @MainActor in
             isLoading = true
+
+            // ✅ 检查是否是Keymap自身
+            if bundleId.contains("Keymap") || bundleId.contains("com.yourcompany") {
+                print("ℹ️ 检测到Keymap应用，使用硬编码快捷键")
+                self.shortcuts = keymapProvider.getKeymapShortcuts()
+                isLoading = false
+                return
+            }
 
             // 1. 尝试从缓存获取
             if let cached = cache.getCachedShortcuts(for: bundleId) {

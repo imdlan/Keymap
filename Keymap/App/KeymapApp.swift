@@ -12,19 +12,31 @@ struct KeymapApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        // 使用 Settings 但配置为由 AppDelegate 处理
-        Settings {
+        // ✅ 使用空场景，不显示任何菜单栏
+        WindowGroup {
             EmptyView()
         }
-        .commands {
-            // 替换默认的 Settings 命令，使用 AppDelegate 的实现
-            CommandGroup(replacing: .appSettings) {
-                Button("设置...") {
-                    NotificationCenter.default.post(name: .showSettingsWindow, object: nil)
-                }
-                .keyboardShortcut(",", modifiers: .command)
-            }
-        }
         .defaultSize(width: 0, height: 0)
+        .commands {
+            // 完全移除所有菜单组（第一组）
+            CommandGroup(replacing: .appInfo) { }
+            CommandGroup(replacing: .appSettings) { }
+            CommandGroup(replacing: .appTermination) { }
+            CommandGroup(replacing: .newItem) { }
+            CommandGroup(replacing: .pasteboard) { }
+            CommandGroup(replacing: .undoRedo) { }
+            CommandGroup(replacing: .windowSize) { }
+            CommandGroup(replacing: .windowList) { }
+            CommandGroup(replacing: .windowArrangement) { }
+            CommandGroup(replacing: .help) { }
+        }
+        .commands {
+            // 完全移除所有菜单组（第二组）
+            CommandGroup(replacing: .textEditing) { }
+            CommandGroup(replacing: .textFormatting) { }
+            CommandGroup(replacing: .toolbar) { }
+            CommandGroup(replacing: .sidebar) { }
+            CommandGroup(replacing: .systemServices) { }
+        }
     }
 }
