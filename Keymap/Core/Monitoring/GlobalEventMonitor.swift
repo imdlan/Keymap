@@ -118,10 +118,10 @@ class GlobalEventMonitor {
         if type == .flagsChanged {
             print("🎯 收到flagsChanged事件")
             if doubleCmdDetector.detectDoubleCmdPress(event: event) {
-                print("⌘ 检测到双击Cmd，发送通知...")
+                print("⌘ 检测到双击修饰键，发送通知...")
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: .doubleCmdPressed, object: nil)
-                    print("✅ 双击Cmd通知已发送")
+                    print("✅ 双击修饰键通知已发送")
                 }
             }
         }
@@ -129,11 +129,14 @@ class GlobalEventMonitor {
         // 2. 检测快捷键组合并处理重映射
         if type == .keyDown {
             if let keyCombination = keyCombinationDetector.detectKeyCombination(event: event) {
-                // 2.1 检查是否有重映射规则
-                if let remappedEvent = checkAndApplyRemapping(keyCombination: keyCombination, originalEvent: event) {
-                    // 已重映射，返回新事件
-                    print("🔀 快捷键已重映射: \(keyCombination.displayString)")
-                    return Unmanaged.passRetained(remappedEvent)
+                // 2.1 检查是否启用了重映射功能
+                if settings.enableGlobalRemapping {
+                    // 检查是否有重映射规则
+                    if let remappedEvent = checkAndApplyRemapping(keyCombination: keyCombination, originalEvent: event) {
+                        // 已重映射，返回新事件
+                        print("🔀 快捷键已重映射: \(keyCombination.displayString)")
+                        return Unmanaged.passRetained(remappedEvent)
+                    }
                 }
 
                 // 2.2 正常处理快捷键（记录、冲突检测等）
@@ -172,19 +175,24 @@ class GlobalEventMonitor {
             )
 
             if !conflicts.isEmpty {
-                // 发送冲突通知
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: .conflictFound,
-                        object: nil,
-                        userInfo: [
-                            "conflicts": conflicts,
-                            "keyCombination": keyCombination.displayString
-                        ]
-                    )
+                // 检查是否启用冲突通知
+                if settings.showConflictNotifications {
+                    // 发送冲突通知
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(
+                            name: .conflictFound,
+                            object: nil,
+                            userInfo: [
+                                "conflicts": conflicts,
+                                "keyCombination": keyCombination.displayString
+                            ]
+                        )
+                    }
+                    
+                    print("⚠️ 检测到 \(conflicts.count) 个冲突，已发送通知")
+                } else {
+                    print("ℹ️ 检测到 \(conflicts.count) 个冲突，但通知已禁用")
                 }
-
-                print("⚠️ 检测到 \(conflicts.count) 个冲突")
             }
         }
 

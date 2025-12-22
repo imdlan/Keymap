@@ -19,11 +19,18 @@ class ShortcutCache {
     private let cacheKeyPrefix = "shortcut_cache_"
     private let timestampKeyPrefix = "shortcut_timestamp_"
 
-    /// 缓存过期时间（24小时）
-    private let cacheDuration: TimeInterval = 24 * 60 * 60
+    /// 设置管理器
+    private let settings = SettingsManager.shared
 
-    /// 最大缓存应用数
-    private let maxCachedApps = 50
+    /// 缓存过期时间（从设置读取，小时转秒）
+    private var cacheDuration: TimeInterval {
+        return TimeInterval(settings.cacheDuration) * 60 * 60
+    }
+
+    /// 最大缓存应用数（从设置读取）
+    private var maxCachedApps: Int {
+        return settings.maxCachedApps
+    }
 
     // MARK: - Initialization
 

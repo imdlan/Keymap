@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppKit
+import ServiceManagement
 
 /// 设置窗口
 class SettingsWindow: NSWindow {
@@ -504,24 +505,6 @@ struct SettingsView: View {
 
                 Divider()
 
-                // 性能监控
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("启用性能监控")
-                            .font(.body)
-                        Text("监控CPU和内存使用情况（可能影响性能）")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: $viewModel.enablePerformanceMonitoring)
-                        .toggleStyle(.switch)
-                }
-
-                Divider()
-
                 // 实验性功能
                 VStack(alignment: .leading, spacing: 12) {
                     Text("实验性功能")
@@ -702,7 +685,6 @@ class SettingsViewModel: ObservableObject {
 
     // 高级设置
     @Published var logLevel: Int = 2
-    @Published var enablePerformanceMonitoring: Bool = false
     @Published var enableGlobalRemapping: Bool = false
     @Published var enableRecordingMode: Bool = false
 
@@ -727,8 +709,32 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Public Methods
 
     func updateLaunchAtLogin(_ enabled: Bool) {
-        // 实现开机自动启动
-        // 需要使用 SMLoginItemSetEnabled 或 ServiceManagement framework
+        // 保存设置
+        settings.launchAtLogin = enabled
+        
+        // macOS 13+ 使用 SMAppService
+        if #available(macOS 13.0, *) {
+            do {
+                if enabled {
+                    // 注册登录项
+                    try SMAppService.mainApp.register()
+                    showNotification(title: "开机自动启动已启用", message: "Keymap将在系统启动时自动运行")
+                } else {
+                    // 取消注册登录项
+                    try SMAppService.mainApp.unregister()
+                    showNotification(title: "开机自动启动已禁用", message: "Keymap不会在系统启动时自动运行")
+                }
+            } catch {
+                showAlert(title: "设置失败", message: "无法更改开机自动启动设置：\(error.localizedDescription)")
+            }
+        } else {
+            // macOS 13 以下版本，提示用户手动设置
+            showAlert(
+                title: "需要手动设置",
+                message: "请前往「系统设置 → 用户与群组 → 登录项」手动添加或移除Keymap"
+            )
+        }
+        
         print(enabled ? "✅ 启用开机自动启动" : "❌ 禁用开机自动启动")
     }
 
@@ -899,8 +905,13 @@ class SettingsViewModel: ObservableObject {
         showInDock = settings.showInDock
         enableRealTimeDetection = settings.enableRealTimeDetection
         enableUsageTracking = settings.enableUsageTracking
+        showConflictNotifications = settings.showConflictNotifications
         cacheDuration = settings.cacheDuration
         maxCachedApps = settings.maxCachedApps
+        panelAutoCloseDelay = settings.panelAutoCloseDelay
+        logLevel = settings.logLevel
+        enableGlobalRemapping = settings.enableGlobalRemapping
+        enableRecordingMode = settings.enableRecordingMode
 
         // 监听设置变化
         observeSettings()
@@ -916,6 +927,10 @@ class SettingsViewModel: ObservableObject {
             self.settings.enableUsageTracking = newValue
         }.store(in: &cancellables)
 
+        $showConflictNotifications.sink { newValue in
+            self.settings.showConflictNotifications = newValue
+        }.store(in: &cancellables)
+
         // 快捷键设置
         $doubleCmdThreshold.sink { newValue in
             self.settings.doubleCmdThreshold = newValue
@@ -925,6 +940,10 @@ class SettingsViewModel: ObservableObject {
             self.settings.triggerKey = newValue
         }.store(in: &cancellables)
 
+        $panelAutoCloseDelay.sink { newValue in
+            self.settings.panelAutoCloseDelay = newValue
+        }.store(in: &cancellables)
+
         // 数据设置
         $cacheDuration.sink { newValue in
             self.settings.cacheDuration = newValue
@@ -932,6 +951,19 @@ class SettingsViewModel: ObservableObject {
 
         $maxCachedApps.sink { newValue in
             self.settings.maxCachedApps = newValue
+        }.store(in: &cancellables)
+
+        // 高级设置
+        $logLevel.sink { newValue in
+            self.settings.logLevel = newValue
+        }.store(in: &cancellables)
+
+        $enableGlobalRemapping.sink { newValue in
+            self.settings.enableGlobalRemapping = newValue
+        }.store(in: &cancellables)
+
+        $enableRecordingMode.sink { newValue in
+            self.settings.enableRecordingMode = newValue
         }.store(in: &cancellables)
     }
 

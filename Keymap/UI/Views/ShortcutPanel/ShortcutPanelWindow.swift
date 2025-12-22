@@ -23,6 +23,10 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
     private var panelWindow: KeyboardPanel?
     private var hostingView: NSHostingView<ShortcutPanelView>?
     private var escapeMonitor: Any?
+    private var autoCloseTimer: Timer?
+    
+    // 设置管理器
+    private let settings = SettingsManager.shared
 
     init() {
         super.init(window: nil)
@@ -104,11 +108,15 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
 
         // 设置ESC监听器
         setupEscapeMonitor()
+        
+        // 设置自动关闭定时器
+        setupAutoCloseTimer()
     }
 
     func hidePanel() {
         panelWindow?.orderOut(nil)
         removeEscapeMonitor()
+        stopAutoCloseTimer()
     }
 
     // MARK: - NSWindowDelegate
@@ -145,8 +153,42 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
             escapeMonitor = nil
         }
     }
+    
+    // MARK: - 自动关闭定时器
+    
+    private func setupAutoCloseTimer() {
+        // 先停止已有的定时器
+        stopAutoCloseTimer()
+        
+        // 获取延迟时间
+        let delay = settings.panelAutoCloseDelay
+        
+        // 如果延迟为0，不启动定时器
+        guard delay > 0 else {
+            print("ℹ️ 面板自动关闭功能已禁用")
+            return
+        }
+        
+        print("⏰ 面板将在 \(Int(delay)) 秒后自动关闭")
+        
+        // 创建定时器
+        autoCloseTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            self?.autoClose()
+        }
+    }
+    
+    private func stopAutoCloseTimer() {
+        autoCloseTimer?.invalidate()
+        autoCloseTimer = nil
+    }
+    
+    private func autoClose() {
+        print("⏰ 面板自动关闭")
+        hidePanel()
+    }
 
     deinit {
         removeEscapeMonitor()
+        stopAutoCloseTimer()
     }
 }

@@ -17,6 +17,7 @@
 		4E2B4FD15DF0E61FC399204A /* KeyCombinationDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC82A5503F016D044A16A2EC /* KeyCombinationDetector.swift */; };
 		4FBC2EC04F9CD5F492866BF2 /* StatisticsSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86044362846C26C386274D1 /* StatisticsSummary.swift */; };
 		502F01B8040053A2E2BF12DE /* ConflictResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = D54A1487EA078968FD8D2F0C /* ConflictResolver.swift */; };
+		531CE9943B523443AB89E589 /* KeyRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A326152B839B037EDC577F48 /* KeyRecorder.swift */; };
 		532F9312B2D44A7CE3CEFD8B /* UsageRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284249152616D37340F21A07 /* UsageRepository.swift */; };
 		55CAA715936CC3DC70A85E15 /* StatisticsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21492ADCACC77E9600326CD5 /* StatisticsWindow.swift */; };
 		568FECE7AF9863A1A8B7F35F /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEEE5E26145427DC1D7C66A /* DatabaseManager.swift */; };
@@ -27,6 +28,7 @@
 		7CE052DADFE8351148B6423F /* ShortcutPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0D9F72658BF0113717CB8 /* ShortcutPanelViewModel.swift */; };
 		7DA1C1B28B1C1311A233FA9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9F13652A67284DCD200870 /* AppDelegate.swift */; };
 		9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F863A83B5D13465BA0574102 /* NotificationHelper.swift */; };
+		969ACDF3A5EDEBF32EAE41F8 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8D9465654515E712FDA2BD /* Logger.swift */; };
 		9BED982641EF22EB33583AA1 /* ShortcutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4383254773AAF50DC9BD1 /* ShortcutRepository.swift */; };
 		A0E69794EE6B5D7C509FCBDC /* SystemShortcutProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCF0BC5F5D32C4F48E225D2 /* SystemShortcutProvider.swift */; };
 		A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA45D8D5074D6D89604CEC5 /* MenuItemParser.swift */; };
@@ -56,6 +58,7 @@
 		5A13AD1CBC65511353D19F6B /* KeymapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeymapApp.swift; sourceTree = "<group>"; };
 		5FCF0BC5F5D32C4F48E225D2 /* SystemShortcutProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemShortcutProvider.swift; sourceTree = "<group>"; };
 		657CB2D1A9158023964CFE3A /* ShortcutPanelWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutPanelWindow.swift; sourceTree = "<group>"; };
+		6B8D9465654515E712FDA2BD /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6E667EC41E0B8F826888749F /* ConflictInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictInfo.swift; sourceTree = "<group>"; };
 		6FA275DF2A7BE04DB0D55BEF /* ConflictDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConflictDetector.swift; sourceTree = "<group>"; };
 		6FF0D9F72658BF0113717CB8 /* ShortcutPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutPanelViewModel.swift; sourceTree = "<group>"; };
@@ -64,6 +67,7 @@
 		8E4EF917EDD295CFAFDC9225 /* KeymapShortcutProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeymapShortcutProvider.swift; sourceTree = "<group>"; };
 		9ED2DA014763BDC9EEA91840 /* SettingsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWindow.swift; sourceTree = "<group>"; };
 		A042633785116605C03A13F3 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
+		A326152B839B037EDC577F48 /* KeyRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyRecorder.swift; sourceTree = "<group>"; };
 		A404E9693ADD2B96661EEFA7 /* ShortcutInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutInfo.swift; sourceTree = "<group>"; };
 		A80E3ACC039141DD6C351E91 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A9F55E83F1C09D876B573418 /* ShortcutCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutCache.swift; sourceTree = "<group>"; };
@@ -201,6 +205,7 @@
 			children = (
 				144E98012D880245DF194B2B /* ConflictDetection */,
 				1686E7F668BD65DF8E6B9C8D /* Monitoring */,
+				8D556014F874E7EB0F8B8CA9 /* Recording */,
 				9C68E4F2DE3185DB38CA8030 /* Remapping */,
 				6E81A29E0F3BC0C6B3826FDD /* ShortcutExtraction */,
 			);
@@ -222,6 +227,14 @@
 				10ED3E2A9B284500510F4035 /* Keymap.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8D556014F874E7EB0F8B8CA9 /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				A326152B839B037EDC577F48 /* KeyRecorder.swift */,
+			);
+			path = Recording;
 			sourceTree = "<group>";
 		};
 		9C68E4F2DE3185DB38CA8030 /* Remapping */ = {
@@ -270,6 +283,7 @@
 		B7478431A78FABA40B886ABF /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				6B8D9465654515E712FDA2BD /* Logger.swift */,
 				F863A83B5D13465BA0574102 /* NotificationHelper.swift */,
 				5425031DB11FE2D95092AD9F /* PermissionManager.swift */,
 			);
@@ -436,8 +450,10 @@
 				A5A47221FB0A9DFC8EBBB776 /* DoubleCmdDetector.swift in Sources */,
 				CEFB75F34C2641EB5744120A /* GlobalEventMonitor.swift in Sources */,
 				4E2B4FD15DF0E61FC399204A /* KeyCombinationDetector.swift in Sources */,
+				531CE9943B523443AB89E589 /* KeyRecorder.swift in Sources */,
 				C46F74C997BFBE0A5A857FF1 /* KeymapApp.swift in Sources */,
 				A9D5D8D1C0F960F085ED515D /* KeymapShortcutProvider.swift in Sources */,
+				969ACDF3A5EDEBF32EAE41F8 /* Logger.swift in Sources */,
 				A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */,
 				9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */,
 				74B665E7AD4DEB28B09DC153 /* PermissionManager.swift in Sources */,

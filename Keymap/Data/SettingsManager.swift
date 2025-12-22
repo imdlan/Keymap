@@ -31,8 +31,13 @@ class SettingsManager {
         static let launchAtLogin = "launchAtLogin"
         static let showInDock = "showInDock"
         static let showNotifications = "showNotifications"
+        static let showConflictNotifications = "showConflictNotifications"
         static let conflictNotificationLevel = "conflictNotificationLevel"
         static let cleanupInterval = "cleanupInterval"
+        static let panelAutoCloseDelay = "panelAutoCloseDelay"
+        static let logLevel = "logLevel"
+        static let enableGlobalRemapping = "enableGlobalRemapping"
+        static let enableRecordingMode = "enableRecordingMode"
     }
 
     // MARK: - Initialization
@@ -138,6 +143,29 @@ class SettingsManager {
         }
     }
 
+    /// 显示冲突通知
+    var showConflictNotifications: Bool {
+        get {
+            // 默认值为 true（显示冲突通知）
+            return defaults.object(forKey: Keys.showConflictNotifications) as? Bool ?? true
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.showConflictNotifications)
+            print("⚙️ 显示冲突通知: \(newValue ? "开启" : "关闭")")
+        }
+    }
+
+    /// 面板自动关闭延迟（秒，0表示不自动关闭）
+    var panelAutoCloseDelay: TimeInterval {
+        get {
+            return defaults.double(forKey: Keys.panelAutoCloseDelay)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.panelAutoCloseDelay)
+            print("⚙️ 面板自动关闭延迟已设置为: \(newValue)秒")
+        }
+    }
+
     // MARK: - Usage Tracking Settings
 
     /// 使用统计追踪开关
@@ -195,6 +223,43 @@ class SettingsManager {
         }
     }
 
+    // MARK: - Advanced Settings
+
+    /// 日志级别（0=关闭, 1=错误, 2=警告, 3=信息, 4=调试）
+    var logLevel: Int {
+        get {
+            let value = defaults.integer(forKey: Keys.logLevel)
+            // 如果没有设置过，默认返回 2（警告）
+            return defaults.object(forKey: Keys.logLevel) != nil ? value : 2
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.logLevel)
+            print("⚙️ 日志级别已设置为: \(newValue)")
+        }
+    }
+
+    /// 启用全局快捷键重映射
+    var enableGlobalRemapping: Bool {
+        get {
+            return defaults.bool(forKey: Keys.enableGlobalRemapping)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.enableGlobalRemapping)
+            print("⚙️ 全局快捷键重映射: \(newValue ? "开启" : "关闭")")
+        }
+    }
+
+    /// 启用快捷键录制模式
+    var enableRecordingMode: Bool {
+        get {
+            return defaults.bool(forKey: Keys.enableRecordingMode)
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.enableRecordingMode)
+            print("⚙️ 快捷键录制模式: \(newValue ? "开启" : "关闭")")
+        }
+    }
+
     // MARK: - Methods
 
     /// 注册默认值
@@ -208,8 +273,13 @@ class SettingsManager {
             Keys.maxCachedApps: 50,
             Keys.launchAtLogin: false,
             Keys.showNotifications: true,
+            Keys.showConflictNotifications: true,
             Keys.conflictNotificationLevel: "medium",
-            Keys.cleanupInterval: 90
+            Keys.cleanupInterval: 90,
+            Keys.panelAutoCloseDelay: 0,
+            Keys.logLevel: 2,
+            Keys.enableGlobalRemapping: false,
+            Keys.enableRecordingMode: false
         ]
 
         self.defaults.register(defaults: defaults)
@@ -226,8 +296,13 @@ class SettingsManager {
         maxCachedApps = 50
         launchAtLogin = false
         showNotifications = true
+        showConflictNotifications = true
         conflictNotificationLevel = .medium
         cleanupInterval = 90
+        panelAutoCloseDelay = 0
+        logLevel = 2
+        enableGlobalRemapping = false
+        enableRecordingMode = false
 
         print("🔄 所有设置已重置为默认值")
     }
@@ -243,8 +318,13 @@ class SettingsManager {
             Keys.maxCachedApps: maxCachedApps,
             Keys.launchAtLogin: launchAtLogin,
             Keys.showNotifications: showNotifications,
+            Keys.showConflictNotifications: showConflictNotifications,
             Keys.conflictNotificationLevel: conflictNotificationLevel.rawValue,
-            Keys.cleanupInterval: cleanupInterval
+            Keys.cleanupInterval: cleanupInterval,
+            Keys.panelAutoCloseDelay: panelAutoCloseDelay,
+            Keys.logLevel: logLevel,
+            Keys.enableGlobalRemapping: enableGlobalRemapping,
+            Keys.enableRecordingMode: enableRecordingMode
         ]
     }
 
@@ -274,12 +354,27 @@ class SettingsManager {
         if let notifications = settings[Keys.showNotifications] as? Bool {
             showNotifications = notifications
         }
+        if let conflictNotifications = settings[Keys.showConflictNotifications] as? Bool {
+            showConflictNotifications = conflictNotifications
+        }
         if let levelString = settings[Keys.conflictNotificationLevel] as? String,
            let level = ConflictSeverity(rawValue: levelString) {
             conflictNotificationLevel = level
         }
         if let interval = settings[Keys.cleanupInterval] as? Int {
             cleanupInterval = interval
+        }
+        if let delay = settings[Keys.panelAutoCloseDelay] as? Double {
+            panelAutoCloseDelay = delay
+        }
+        if let level = settings[Keys.logLevel] as? Int {
+            logLevel = level
+        }
+        if let remapping = settings[Keys.enableGlobalRemapping] as? Bool {
+            enableGlobalRemapping = remapping
+        }
+        if let recording = settings[Keys.enableRecordingMode] as? Bool {
+            enableRecordingMode = recording
         }
 
         print("✅ 设置已导入")
