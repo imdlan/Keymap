@@ -505,18 +505,18 @@ struct SettingsView: View {
 
                 Divider()
 
-                // 实验性功能
+                // 高级功能
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("实验性功能")
+                    Text("高级功能")
                         .font(.headline)
 
                     HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("全局快捷键重映射")
+                            Text("启用全局快捷键重映射")
                                 .font(.body)
-                            Text("⚠️ 实验性功能，可能不稳定")
+                            Text("开启后，已配置的重映射规则将立即生效")
                                 .font(.caption)
-                                .foregroundColor(.orange)
+                                .foregroundColor(.secondary)
                         }
 
                         Spacer()
@@ -527,11 +527,11 @@ struct SettingsView: View {
 
                     HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("快捷键录制模式")
+                            Text("启用快捷键录制模式")
                                 .font(.body)
-                            Text("⚠️ 允许录制自定义快捷键")
+                            Text("允许在配置重映射时通过按键录制快捷键")
                                 .font(.caption)
-                                .foregroundColor(.orange)
+                                .foregroundColor(.secondary)
                         }
 
                         Spacer()

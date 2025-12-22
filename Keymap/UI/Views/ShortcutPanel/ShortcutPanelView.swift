@@ -377,15 +377,25 @@ struct RemappingDialogView: View {
 
     @State private var newKeyCombination: String = ""
     @State private var errorMessage: String?
+    @State private var isRecording: Bool = false
+    @State private var conflictWarning: String?
 
     private let remappingManager = RemappingManager.shared
+    private let settings = SettingsManager.shared
+    private let conflictDetector = ConflictDetector()
 
     var body: some View {
         VStack(spacing: 20) {
             // 标题
-            Text("重映射快捷键")
-                .font(.title2)
-                .fontWeight(.semibold)
+            VStack(spacing: 4) {
+                Text("重映射快捷键")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+
+                Text("将快捷键映射到其他组合，仅在当前应用中生效")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
 
             Divider()
 
@@ -417,14 +427,56 @@ struct RemappingDialogView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                TextField("例如: ⇧⌘T", text: $newKeyCombination)
-                    .font(.system(.title3, design: .monospaced))
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.vertical, 4)
+                HStack(spacing: 8) {
+                    TextField(isRecording ? "请按下快捷键..." : "例如: ⇧⌘T", text: $newKeyCombination)
+                        .font(.system(.title3, design: .monospaced))
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.vertical, 4)
+                        .disabled(isRecording)
+
+                    // 录制按钮（仅当启用录制模式时显示）
+                    if settings.enableRecordingMode {
+                        Button(action: {
+                            if isRecording {
+                                stopRecording()
+                            } else {
+                                startRecording()
+                            }
+                        }) {
+                            HStack(spacing: 4) {
+                                Image(systemName: isRecording ? "stop.circle.fill" : "keyboard")
+                                    .imageScale(.medium)
+                                Text(isRecording ? "停止" : "录制")
+                                    .font(.caption)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(isRecording ? Color.red : Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(6)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
 
                 Text("提示: 使用 ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + 字母/数字")
                     .font(.caption2)
                     .foregroundColor(.secondary)
+            }
+
+            // 冲突警告
+            if let warning = conflictWarning {
+                HStack(spacing: 8) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundColor(.orange)
+                    Text(warning)
+                        .font(.caption)
+                        .foregroundColor(.orange)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color.orange.opacity(0.1))
+                .cornerRadius(6)
             }
 
             // 错误信息
@@ -443,6 +495,7 @@ struct RemappingDialogView: View {
             // 按钮
             HStack {
                 Button("取消") {
+                    stopRecording()
                     isPresented = false
                 }
                 .keyboardShortcut(.cancelAction)
@@ -462,10 +515,13 @@ struct RemappingDialogView: View {
             }
         }
         .padding(24)
-        .frame(width: 450)
+        .frame(width: 500)
     }
 
     private func applyRemapping() {
+        // 停止录制（如果正在录制）
+        stopRecording()
+
         // 验证新快捷键
         guard !newKeyCombination.isEmpty else {
             errorMessage = "请输入新的快捷键"
@@ -486,9 +542,12 @@ struct RemappingDialogView: View {
             return
         }
 
+        // 冲突检测
+        checkConflicts(for: newKeyCombination)
+
         // 添加重映射
         if remappingManager.addRemapping(rule) {
-            print("✅ 重映射成功: \(rule.fromKey) → \(rule.toKey)")
+            Logger.info("✅ 重映射成功: \(rule.fromKey) → \(rule.toKey)")
             isPresented = false
 
             // 显示通知
@@ -502,6 +561,9 @@ struct RemappingDialogView: View {
     }
 
     private func removeRemapping() {
+        // 停止录制
+        stopRecording()
+
         // 移除现有的重映射
         if remappingManager.isRemapped(shortcut.keyCombination, in: shortcut.application) {
             let rule = RemappingRule(
@@ -511,7 +573,7 @@ struct RemappingDialogView: View {
             )
             remappingManager.removeRemapping(rule)
 
-            print("🗑 已移除重映射: \(shortcut.keyCombination)")
+            Logger.info("🗑 已移除重映射: \(shortcut.keyCombination)")
             isPresented = false
 
             showNotification(
@@ -526,6 +588,89 @@ struct RemappingDialogView: View {
 
     private func showNotification(title: String, message: String) {
         NotificationHelper.shared.send(title: title, message: message)
+    }
+
+    // MARK: - 录制功能
+
+    private func startRecording() {
+        guard settings.enableRecordingMode else {
+            errorMessage = "录制功能未启用，请在设置中开启"
+            return
+        }
+
+        Logger.info("🎙️ 开始录制快捷键...")
+        isRecording = true
+        errorMessage = nil
+        conflictWarning = nil
+
+        KeyRecorder.shared.startRecording { [self] keyCombination in
+            DispatchQueue.main.async {
+                self.newKeyCombination = keyCombination.displayString
+                self.isRecording = false
+                Logger.info("📝 录制完成: \(keyCombination.displayString)")
+
+                // 自动检测冲突
+                self.checkConflicts(for: keyCombination.displayString)
+            }
+        }
+    }
+
+    private func stopRecording() {
+        if isRecording {
+            KeyRecorder.shared.stopRecording()
+            isRecording = false
+            Logger.info("🛑 停止录制")
+        }
+    }
+
+    // MARK: - 冲突检测
+
+    private func checkConflicts(for newKey: String) {
+        // 清除之前的警告
+        conflictWarning = nil
+
+        // 创建临时快捷键信息用于冲突检测
+        let tempShortcut = ShortcutInfo(
+            id: UUID().uuidString,
+            keyCombination: newKey,
+            description: "临时快捷键",
+            application: shortcut.application,
+            category: .other,
+            isCustom: true
+        )
+
+        // 检测冲突（传入数组）
+        let conflicts = conflictDetector.detectConflicts(shortcuts: [tempShortcut])
+
+        if !conflicts.isEmpty {
+            // 构建冲突警告消息
+            let conflictCount = conflicts.count
+            let firstConflict = conflicts[0]
+
+            var warningMessage = "检测到 \(conflictCount) 个冲突"
+
+            // 显示第一个冲突的详细信息
+            switch firstConflict.conflictType {
+            case .system:
+                warningMessage += "：与系统快捷键冲突"
+            case .global:
+                warningMessage += "：与全局快捷键冲突"
+            case .application:
+                if let conflictApp = firstConflict.conflictingApp {
+                    warningMessage += "：与 \(conflictApp) 的快捷键冲突"
+                }
+            case .functional:
+                warningMessage += "：功能性冲突"
+            }
+
+            // 如果有多个冲突，提示用户
+            if conflictCount > 1 {
+                warningMessage += "等"
+            }
+
+            conflictWarning = warningMessage
+            Logger.warning("⚠️ \(warningMessage)")
+        }
     }
 }
 
