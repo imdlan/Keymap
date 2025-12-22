@@ -68,12 +68,28 @@ class AppShortcutExtractor {
         // 获取菜单栏
         guard let menuBar = getMenuBar(from: appElement) else {
             print("⚠️ 无法获取应用菜单栏: \(bundleId)")
+            print("   请确保已授予辅助功能权限")
             return []
         }
+
+        print("✅ 成功获取菜单栏: \(bundleId)")
 
         // 提取菜单项
         let menuItems = extractMenuItems(from: menuBar)
         print("✅ 提取到 \(menuItems.count) 个菜单项")
+
+        // 调试：显示前5个菜单项
+        if menuItems.isEmpty {
+            print("⚠️ 未提取到任何菜单项,可能原因:")
+            print("   1. 应用没有快捷键")
+            print("   2. 菜单结构不标准")
+            print("   3. 辅助功能权限问题")
+        } else {
+            print("📋 前5个菜单项:")
+            for (i, item) in menuItems.prefix(5).enumerated() {
+                print("   \(i+1). \(item.title) -> \(item.shortcut?.displayString ?? "无快捷键")")
+            }
+        }
 
         // 解析为ShortcutInfo
         var shortcuts: [ShortcutInfo] = []
