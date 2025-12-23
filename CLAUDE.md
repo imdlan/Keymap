@@ -663,3 +663,36 @@ enableRecordingMode: Bool = false
 - Keymap/Core/Monitoring/GlobalShortcutDatabase.swift
 - Keymap/UI/Views/Settings/SettingsWindow.swift
 
+### 2025-12-23 - 添加/编辑映射弹窗优化（第二轮）
+
+**布局优化**:
+- ✅ 标题水平居中（移除 VStack alignment: .leading）
+- ✅ 添加副标题说明
+  - 添加映射："自定义快捷键重映射，将源键映射到目标键"
+  - 编辑映射："修改快捷键映射规则，调整源键或目标键"
+- ✅ 添加 Divider 分隔标题和内容区域
+- ✅ 表单内容保持左对齐（嵌套 VStack）
+- ✅ 减小弹窗高度32px（表单间距从 20px 减小到 12px）
+
+**视觉改进**:
+- 标题区域居中显示更专业
+- 副标题提供清晰的功能说明
+- Divider 明确分隔标题和表单
+- 更紧凑的表单布局，减少不必要的空白
+
+**技术实现**:
+- 主 VStack 改为 `VStack(spacing: 20)` 以支持居中标题
+- 标题使用独立的 `VStack(spacing: 4)` 包含标题和副标题
+- 表单内容包裹在 `VStack(alignment: .leading, spacing: 12)` 中
+- 完全参考了 ShortcutPanelView 中 RemappingDialogView 的布局模式
+
+**间距优化详情**:
+- 表单内容 VStack 间距：20px → 12px
+- 节省高度计算：(源快捷键 + 目标快捷键 + 应用范围 + 按钮) × (20-12)px = 32px
+- 底部按钮上方空白显著减少
+
+**修改文件**:
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+  - AddRemappingSheet: 标题居中、副标题、Divider、间距优化
+  - EditRemappingSheet: 标题居中、副标题、Divider、间距优化
+

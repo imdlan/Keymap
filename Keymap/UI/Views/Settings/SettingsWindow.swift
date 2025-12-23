@@ -1738,14 +1738,23 @@ struct AddRemappingSheet: View {
     private let settings = SettingsManager.shared
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // Header
-            Text("添加映射规则")
-                .font(.title2)
-                .fontWeight(.semibold)
-
-            // 源快捷键
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 20) {
+            // 标题
+            VStack(spacing: 4) {
+                Text("添加映射规则")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text("自定义快捷键重映射，将源键映射到目标键")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Divider()
+            
+            VStack(alignment: .leading, spacing: 12) {
+                // 源快捷键
+                VStack(alignment: .leading, spacing: 8) {
                 Text("源快捷键")
                     .font(.body)
 
@@ -1956,6 +1965,7 @@ struct AddRemappingSheet: View {
                 .cornerRadius(6)
                 .disabled(fromKey.isEmpty || toKey.isEmpty)
             }
+            }
         }
         .padding(24)
         .frame(width: 300)
@@ -2053,14 +2063,23 @@ struct EditRemappingSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // Header
-            Text("编辑映射规则")
-                .font(.title2)
-                .fontWeight(.semibold)
-
-            // 源快捷键
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 20) {
+            // 标题
+            VStack(spacing: 4) {
+                Text("编辑映射规则")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Text("修改快捷键映射规则，调整源键或目标键")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Divider()
+            
+            VStack(alignment: .leading, spacing: 12) {
+                // 源快捷键
+                VStack(alignment: .leading, spacing: 8) {
                 Text("源快捷键")
                     .font(.body)
 
@@ -2243,11 +2262,12 @@ struct EditRemappingSheet: View {
                 .cornerRadius(6)
                 .disabled(fromKey.isEmpty || toKey.isEmpty)
             }
+            }
         }
         .padding(24)
         .frame(width: 300)
     }
-
+    
     private func saveChanges() {
         // 先删除旧规则
         viewModel.deleteRemappingRule(rule)
