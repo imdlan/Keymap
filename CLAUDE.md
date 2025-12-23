@@ -696,3 +696,32 @@ enableRecordingMode: Bool = false
   - AddRemappingSheet: 标题居中、副标题、Divider、间距优化
   - EditRemappingSheet: 标题居中、副标题、Divider、间距优化
 
+### 2025-12-23 - 快捷键面板失去焦点自动关闭
+
+**功能优化**:
+- ✅ 点击面板外部区域自动关闭面板
+- ✅ 窗口失去焦点时自动隐藏
+- ✅ 失去焦点时自动清理资源（ESC监听器、自动关闭定时器）
+- ✅ 保留原有的 ESC 键关闭功能
+- ✅ 保留原有的自动关闭定时器功能
+
+**技术实现**:
+- 设置 `hidesOnDeactivate = true` - NSPanel 在失去主窗口状态时自动隐藏
+- 添加 `NSWindow.didResignMainNotification` 通知监听
+- 在 `handleWindowResignMain()` 中清理资源（移除ESC监听器、停止定时器）
+- 在 `deinit` 中移除通知观察者，避免内存泄漏
+
+**用户体验提升**:
+- 更符合 macOS 浮动面板的标准行为
+- 用户现在有三种方式关闭面板：
+  1. 点击面板外部任意区域（新增）
+  2. 按 ESC 键（保留）
+  3. 等待自动关闭定时器（保留，可在设置中配置）
+
+**修改文件**:
+- Keymap/UI/Views/ShortcutPanel/ShortcutPanelWindow.swift
+  - `hidesOnDeactivate` 从 false 改为 true
+  - 添加窗口失去焦点的通知监听
+  - 添加 `handleWindowResignMain()` 方法清理资源
+  - 在 `deinit` 中移除通知观察者
+

@@ -62,7 +62,7 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
         
         // ✅ 关键：确保窗口可以成为主窗口并接收事件
         panelWindow?.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        panelWindow?.hidesOnDeactivate = false
+        panelWindow?.hidesOnDeactivate = true  // ✅ 失去焦点时自动隐藏
         panelWindow?.becomesKeyOnlyIfNeeded = false  // 强制成为 key window
 
         // 启用窗口拖动
@@ -72,6 +72,23 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
         panelWindow?.delegate = self
 
         self.window = panelWindow
+        
+        // ✅ 监听窗口失去主窗口状态（点击外部区域时）
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleWindowResignMain),
+            name: NSWindow.didResignMainNotification,
+            object: panelWindow
+        )
+    }
+    
+    // MARK: - 窗口状态监听
+    
+    @objc private func handleWindowResignMain(_ notification: Notification) {
+        // 窗口失去主窗口状态时，清理资源
+        print("📤 快捷键面板失去焦点，清理资源")
+        removeEscapeMonitor()
+        stopAutoCloseTimer()
     }
 
     // MARK: - 面板显示
@@ -245,5 +262,6 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
     deinit {
         removeEscapeMonitor()
         stopAutoCloseTimer()
+        NotificationCenter.default.removeObserver(self)
     }
 }
