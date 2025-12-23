@@ -341,14 +341,56 @@ struct StatisticsView: View {
 
     private var trendChartSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("使用趋势")
-                .font(.headline)
+            HStack {
+                Text("使用趋势")
+                    .font(.headline)
+
+                Spacer()
+
+                // 数据收集状态提示
+                if viewModel.trendData.isEmpty {
+                    HStack(spacing: 4) {
+                        Image(systemName: "info.circle")
+                            .font(.caption)
+                        Text("需要开启使用统计追踪")
+                            .font(.caption)
+                    }
+                    .foregroundColor(.secondary)
+                }
+            }
 
             if viewModel.trendData.isEmpty {
-                Text("暂无数据")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                VStack(spacing: 12) {
+                    Text("暂无数据")
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    // 详细说明
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("确保在设置中开启了\"使用统计追踪\"功能")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("使用快捷键后，系统会自动记录使用数据")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("数据将在次日开始显示趋势图")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                     .padding()
+                    .background(Color(NSColor.windowBackgroundColor))
+                    .cornerRadius(4)
+                }
+                .padding()
             } else {
                 // 简单的折线图（使用条形图模拟）
                 ScrollView(.horizontal, showsIndicators: true) {
@@ -580,24 +622,46 @@ class StatisticsViewModel: ObservableObject {
         suggestions = []
 
         // 建议1: 低使用率快捷键
-        if let lowUsage = summary.topShortcuts.last, lowUsage.count < 5 {
-            suggestions.append("快捷键 \(lowUsage.shortcut) 使用频率较低，考虑重新映射到更常用的功能")
+        if !summary.topShortcuts.isEmpty {
+            let totalUsage = summary.topShortcuts.reduce(0) { $0 + $1.count }
+            let avgUsage = totalUsage / summary.topShortcuts.count
+
+            if let lowUsage = summary.topShortcuts.last, lowUsage.count < avgUsage / 2 {
+                suggestions.append("💡 快捷键 \(lowUsage.shortcut) 使用频率较低，考虑重新映射到更常用的功能")
+            }
         }
 
         // 建议2: 高冲突
         if summary.conflictCount > 10 {
-            suggestions.append("检测到 \(summary.conflictCount) 个冲突，建议解决高优先级冲突以提升效率")
+            suggestions.append("⚠️ 检测到 \(summary.conflictCount) 个冲突，建议解决高优先级冲突以提升效率")
+        } else if summary.conflictCount > 0 {
+            suggestions.append("✓ 发现 \(summary.conflictCount) 个冲突，建议及时处理避免误操作")
         }
 
         // 建议3: 效率评分
         if summary.efficiencyScore < 70 {
-            suggestions.append("当前效率评分为 \(String(format: "%.1f%%", summary.efficiencyScore))，建议优化快捷键配置")
+            suggestions.append("📊 当前效率评分为 \(String(format: "%.1f%%", summary.efficiencyScore))，建议优化快捷键配置以提升效率")
+        } else if summary.efficiencyScore >= 90 {
+            suggestions.append("🎉 您的快捷键使用效率很高（\(String(format: "%.1f%%", summary.efficiencyScore))），保持良好习惯！")
         }
 
         // 建议4: 使用统计
-        if summary.totalUsage < 100 {
-            suggestions.append("快捷键使用较少，尝试更多使用快捷键来提升工作效率")
+        if summary.totalUsage == 0 {
+            suggestions.append("🚀 开始使用快捷键来提升工作效率吧！Keymap 会自动记录和分析您的使用习惯")
+        } else if summary.totalUsage < 50 {
+            suggestions.append("💪 尝试更多使用快捷键来提升工作效率，目前已使用 \(summary.totalUsage) 次")
+        } else if summary.totalUsage >= 1000 {
+            suggestions.append("🏆 您已经使用快捷键 \(summary.totalUsage) 次，是一位快捷键高手！")
         }
+
+        // 建议5: 应用多样性
+        if activeAppsCount >= 5 {
+            suggestions.append("✨ 您在 \(activeAppsCount) 个应用中使用了快捷键，善于利用工具提升效率")
+        } else if activeAppsCount > 0 && activeAppsCount < 3 {
+            suggestions.append("💡 尝试在更多应用中使用快捷键，让工作效率更上一层楼")
+        }
+
+        print("📊 生成了 \(suggestions.count) 条建议")
     }
 
     private func calculateActiveAppsCount(for period: StatisticsPeriod) {
@@ -744,8 +808,26 @@ extension ConflictDetector {
 
     func getHighConflictShortcuts() -> [String] {
         // 获取高冲突快捷键列表
-        // TODO: 实现从数据库获取冲突数据
-        // 这里返回演示数据
-        return []
+        let db = DatabaseManager.shared
+
+        // 查询严重程度为 high 或 medium 的冲突，按出现次数排序
+        let sql = """
+        SELECT c.shortcut_id, s.key_combination, COUNT(*) as conflict_count
+        FROM conflicts c
+        JOIN shortcuts s ON c.shortcut_id = s.id
+        WHERE c.severity IN ('high', 'medium')
+        GROUP BY c.shortcut_id, s.key_combination
+        HAVING conflict_count >= 2
+        ORDER BY conflict_count DESC
+        LIMIT 10;
+        """
+
+        let rows = db.executeQuery(sql)
+        let shortcuts = rows.compactMap { row -> String? in
+            return row["key_combination"] as? String
+        }
+
+        print("📊 高冲突快捷键数量: \(shortcuts.count)")
+        return shortcuts
     }
 }
