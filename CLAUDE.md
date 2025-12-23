@@ -436,6 +436,41 @@ swift scripts/verify/verify_shortcuts.swift  # 验证系统快捷键数量
 
 ## 更新日志
 
+### 2025-12-23 - UI美化与菜单栏优化
+
+**UI美化**:
+- ✅ 统一所有按钮高度为28px，垂直内边距2px
+- ✅ 按钮背景色：浅色模式使用白色，深色模式使用灰色
+- ✅ 下拉选择框优雅重构：使用Picker + overlay实现，移除遮罩层方案
+- ✅ 修复双重边框问题（触发快捷键和日志级别选择器）
+- ✅ 扩展按钮点击区域到整个按钮范围（.contentShape(Rectangle())）
+- ✅ 统计面板时间范围选择器改为自定义分段控制样式
+
+**菜单栏优化**:
+- ✅ 菜单栏"显示快捷键面板"显示动态快捷键 (⌘⌘)
+- ✅ 快捷键根据设置自动更新（双击Cmd/Option/Control）
+- ✅ 添加自定义通知 `.triggerKeyChanged` 避免无限循环
+- ✅ 只更新菜单项文本，不重新创建statusItem，避免资源泄漏
+
+**Bug修复**:
+- 🐛 修复无限循环导致创建100+个菜单栏窗口的严重bug
+- 🐛 修复错误的⌘Q → ⌘T重映射规则（清除UserDefaults中的历史规则）
+- 🐛 修复按钮只能点击文字区域的问题
+- 🐛 修复下拉选择框显示两个箭头的问题
+
+**技术细节**:
+- 移除了 `UserDefaults.didChangeNotification` 全局监听（导致无限循环）
+- 使用自定义 `.triggerKeyChanged` 通知实现精确更新
+- 下拉选择框使用 ZStack + Picker（opacity: 0.01）+ 自定义overlay
+- 保存 `showPanelMenuItem` 引用，只更新 title 不重建菜单
+
+**修改文件**:
+- Keymap/UI/Views/Settings/SettingsWindow.swift（下拉选择框重构）
+- Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift（按钮美化）
+- Keymap/UI/Views/Statistics/StatisticsWindow.swift（时间选择器和按钮美化）
+- Keymap/App/AppDelegate.swift（菜单栏动态快捷键）
+- Keymap/Data/SettingsManager.swift（添加 .triggerKeyChanged 通知）
+
 ### 2025-12-21 - UI优化与Bug修复
 **新增功能**:
 - ✅ 添加应用图标和菜单栏图标（PDF矢量格式，支持Retina显示）

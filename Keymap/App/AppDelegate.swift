@@ -16,6 +16,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // 窗口管理
     private var statisticsWindow: StatisticsWindow?
     private var settingsWindow: SettingsWindow?
+    
+    // 菜单项引用（用于动态更新）
+    private var showPanelMenuItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // ✅ 完全移除主菜单栏（只保留苹果菜单）
@@ -80,6 +83,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             name: .showSettingsWindow,
             object: nil
         )
+        
+        // 7. 添加全局快捷键监听器
+        setupGlobalShortcuts()
+        
+        // 8. 监听触发快捷键设置变化以更新菜单
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateMenuBarShortcut),
+            name: .triggerKeyChanged,
+            object: nil
+        )
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -92,7 +106,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 检查是否有辅助功能权限
         if PermissionManager.shared.hasAccessibilityPermission() {
-            shortcutPanelController?.showPanel()
+            // ✅ 强制激活应用到前台
+            NSApp.activate(ignoringOtherApps: true)
+            
+            // ✅ 稍微延迟后显示面板，确保应用已激活
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                self.shortcutPanelController?.showPanel()
+            }
         } else {
             print("⚠️ 没有辅助功能权限，提示用户授权")
             // 显示权限提示通知
@@ -139,7 +159,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // 创建菜单
         let menu = NSMenu()
-
+        menu.autoenablesItems = true
+        
         // 权限状态提示（如果没有权限）
         let hasPermission = PermissionManager.shared.hasAccessibilityPermission()
         print("📊 setupMenuBar - 权限状态: \(hasPermission ? "✅ 已授予" : "❌ 未授予")")
@@ -155,11 +176,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             menu.addItem(NSMenuItem.separator())
         }
 
-        menu.addItem(NSMenuItem(
+        // 创建"显示快捷键面板"菜单项，添加动态快捷键显示
+        showPanelMenuItem = NSMenuItem(
             title: "显示快捷键面板",
             action: #selector(showShortcutPanel),
             keyEquivalent: ""
-        ))
+        )
+        updateMenuItemShortcutDisplay(showPanelMenuItem!)
+        menu.addItem(showPanelMenuItem!)
 
         menu.addItem(NSMenuItem(
             title: "统计分析",
@@ -195,6 +219,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem?.menu = menu
     }
 
+    // MARK: - 全局快捷键设置
+    
+    private func setupGlobalShortcuts() {
+        // 监听本地按键事件（在应用内有效）
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            // Cmd+, 打开设置
+            if event.modifierFlags.contains(.command) && event.charactersIgnoringModifiers == "," {
+                self?.showSettings()
+                return nil  // 阻止事件继续传播
+            }
+            
+            // Cmd+D 打开统计
+            if event.modifierFlags.contains(.command) && event.charactersIgnoringModifiers == "d" {
+                self?.showStatistics()
+                return nil  // 阻止事件继续传播
+            }
+            
+            return event  // 其他按键正常传播
+        }
+    }
+    
     // MARK: - 全局监控设置
 
     private func setupGlobalMonitoring() {
@@ -241,9 +286,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setupMenuBar()
     }
 
-    @objc private func settingsDidChange() {
-        // 设置变化时重新构建菜单
-        setupMenuBar()
+    /// 更新菜单栏快捷键显示
+    @objc private func updateMenuBarShortcut() {
+        guard let menuItem = showPanelMenuItem else { return }
+        updateMenuItemShortcutDisplay(menuItem)
+    }
+    
+    /// 更新菜单项的快捷键显示
+    private func updateMenuItemShortcutDisplay(_ menuItem: NSMenuItem) {
+        let shortcutText = getTriggerKeyDisplay()
+        menuItem.title = "显示快捷键面板 (\(shortcutText))"
+    }
+    
+    /// 获取触发快捷键的显示文字
+    private func getTriggerKeyDisplay() -> String {
+        let triggerKey = SettingsManager.shared.triggerKey
+        switch triggerKey {
+        case "doubleCmd":
+            return "⌘⌘"
+        case "doubleOption":
+            return "⌥⌥"
+        case "doubleControl":
+            return "⌃⌃"
+        default:
+            return "⌘⌘"
+        }
     }
 
     // MARK: - 菜单操作

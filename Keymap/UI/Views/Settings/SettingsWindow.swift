@@ -76,6 +76,7 @@ struct SettingsView: View {
 
     // MARK: - State
 
+    @Environment(\.colorScheme) var colorScheme  // 检测深色/浅色模式
     @StateObject private var viewModel = SettingsViewModel()
     @State private var selectedTab: SettingsTab = .general
 
@@ -299,13 +300,42 @@ struct SettingsView: View {
 
                     Spacer()
 
-                    Picker("", selection: $viewModel.triggerKey) {
-                        Text("双击Cmd").tag("doubleCmd")
-                        Text("双击Option").tag("doubleOption")
-                        Text("双击Control").tag("doubleControl")
+                    ZStack {
+                        // 背景和边框
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                            )
+                        
+                        // Picker（无可见样式）
+                        Picker("", selection: $viewModel.triggerKey) {
+                            Text("双击Cmd").tag("doubleCmd")
+                            Text("双击Option").tag("doubleOption")
+                            Text("双击Control").tag("doubleControl")
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                        .buttonStyle(.plain)
+                        .opacity(0.01)  // 几乎透明，但仍可点击
+                        
+                        // 显示内容
+                        HStack {
+                            Text(viewModel.triggerKey == "doubleCmd" ? "双击Cmd" : 
+                                 viewModel.triggerKey == "doubleOption" ? "双击Option" : "双击Control")
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .padding(.leading, 8)
+                            Spacer()
+                            Image(systemName: "chevron.down")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.trailing, 8)
+                        }
+                        .allowsHitTesting(false)
                     }
-                    .pickerStyle(.menu)
-                    .frame(width: 150)
+                    .frame(width: 150, height: 28)
                 }
 
                 Divider()
@@ -393,17 +423,67 @@ struct SettingsView: View {
                     Text("清理旧数据")
 
                     HStack(spacing: 12) {
-                        Button("清除缓存") {
+                        Button(action: {
                             viewModel.clearCache()
+                        }) {
+                            Text("清除缓存")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                        )
+                        .foregroundColor(.primary)
 
-                        Button("清除使用记录") {
+                        Button(action: {
                             viewModel.clearUsageRecords()
+                        }) {
+                            Text("清除使用记录")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                        )
+                        .foregroundColor(.primary)
 
-                        Button("清除所有数据") {
+                        Button(action: {
                             viewModel.clearAllData()
+                        }) {
+                            Text("清除所有数据")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.red.opacity(0.15))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.red.opacity(0.5), lineWidth: 1)
+                        )
                         .foregroundColor(.red)
                     }
 
@@ -419,17 +499,64 @@ struct SettingsView: View {
                     Text("导出/导入")
 
                     HStack(spacing: 12) {
-                        Button("导出重映射规则") {
+                        Button(action: {
                             viewModel.exportRemappings()
+                        }) {
+                            Text("导出重映射规则")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                        )
+                        .foregroundColor(.primary)
 
-                        Button("导入重映射规则") {
+                        Button(action: {
                             viewModel.importRemappings()
+                        }) {
+                            Text("导入重映射规则")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                        )
+                        .foregroundColor(.primary)
 
-                        Button("导出设置") {
+                        Button(action: {
                             viewModel.exportSettings()
+                        }) {
+                            Text("导出设置")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.blue)
+                        )
+                        .foregroundColor(.white)
                     }
 
                     Text("可以备份并在其他设备上使用")
@@ -492,15 +619,43 @@ struct SettingsView: View {
 
                     Spacer()
 
-                    Picker("", selection: $viewModel.logLevel) {
-                        Text("关闭").tag(0)
-                        Text("错误").tag(1)
-                        Text("警告").tag(2)
-                        Text("信息").tag(3)
-                        Text("调试").tag(4)
+                    ZStack {
+                        // 背景和边框
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                            )
+                        
+                        // Picker（无可见样式）
+                        Picker("", selection: $viewModel.logLevel) {
+                            Text("关闭").tag(0)
+                            Text("错误").tag(1)
+                            Text("警告").tag(2)
+                            Text("信息").tag(3)
+                            Text("调试").tag(4)
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                        .buttonStyle(.plain)
+                        .opacity(0.01)  // 几乎透明，但仍可点击
+                        
+                        // 显示内容
+                        HStack {
+                            Text(["关闭", "错误", "警告", "信息", "调试"][viewModel.logLevel])
+                                .font(.body)
+                                .foregroundColor(.primary)
+                                .padding(.leading, 8)
+                            Spacer()
+                            Image(systemName: "chevron.down")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.trailing, 8)
+                        }
+                        .allowsHitTesting(false)
                     }
-                    .pickerStyle(.menu)
-                    .frame(width: 100)
+                    .frame(width: 100, height: 28)
                 }
 
                 Divider()
@@ -548,9 +703,25 @@ struct SettingsView: View {
                     Text("重置")
                         .font(.headline)
 
-                    Button("重置所有设置") {
+                    Button(action: {
                         viewModel.resetAllSettings()
+                    }) {
+                        Text("重置所有设置")
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 16)
+                            .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .frame(height: 28)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color.red.opacity(0.15))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.red.opacity(0.5), lineWidth: 1)
+                    )
                     .foregroundColor(.red)
 
                     Text("将所有设置恢复为默认值")

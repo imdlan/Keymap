@@ -97,6 +97,13 @@ class SettingsManager {
         set {
             defaults.set(newValue, forKey: Keys.triggerKey)
             print("⚙️ 触发快捷键已设置为: \(newValue)")
+            
+            // 发送通知以更新菜单栏显示
+            NotificationCenter.default.post(
+                name: .triggerKeyChanged,
+                object: nil,
+                userInfo: ["triggerKey": newValue]
+            )
         }
     }
 
@@ -402,4 +409,7 @@ class SettingsManager {
 extension Notification.Name {
     /// 设置已更改通知
     static let settingsChanged = Notification.Name("com.keymap.settingsChanged")
+    
+    /// 触发快捷键已更改通知
+    static let triggerKeyChanged = Notification.Name("com.keymap.triggerKeyChanged")
 }

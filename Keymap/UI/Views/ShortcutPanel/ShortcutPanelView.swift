@@ -15,32 +15,54 @@ struct ShortcutPanelView: View {
     @State private var expandedConflicts: Set<String> = []  // 展开的冲突快捷键ID集合
 
     var body: some View {
-        VStack(spacing: 0) {
-            // 头部
-            headerView
+        ZStack {
+            // 主面板
+            VStack(spacing: 0) {
+                // 头部
+                headerView
 
-            Divider()
+                Divider()
 
-            // 搜索栏
-            searchBar
+                // 搜索栏
+                searchBar
 
-            Divider()
+                Divider()
 
-            // 快捷键列表
-            if viewModel.isLoading {
-                loadingView
-            } else {
-                shortcutListView
+                // 快捷键列表
+                if viewModel.isLoading {
+                    loadingView
+                } else {
+                    shortcutListView
+                }
+
+                Divider()
+
+                // 底部操作栏
+                footerView
             }
-
-            Divider()
-
-            // 底部操作栏
-            footerView
+            .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
+            .cornerRadius(12)
+            .frame(width: 500, height: 600)
+            .disabled(showingRemappingDialog)  // ✅ 弹窗显示时禁用背景交互
+            
+            // ✅ 自定义遮罩层和弹窗（替代.sheet）
+            if showingRemappingDialog, let shortcut = selectedShortcut {
+                // 遮罩层
+                Color.black.opacity(0.3)
+                    .cornerRadius(12)
+                    .allowsHitTesting(false)  // ✅ 遮罩不拦截点击事件
+                
+                // 弹窗
+                RemappingDialogView(shortcut: shortcut, isPresented: $showingRemappingDialog)
+            }
         }
-        .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
-        .cornerRadius(12)
         .frame(width: 500, height: 600)
+        .onChange(of: showingRemappingDialog) { isShowing in
+            if !isShowing {
+                // ✅ 对话框关闭后刷新快捷键列表
+                viewModel.loadCurrentAppShortcuts()
+            }
+        }
     }
 
     // MARK: - 子视图
@@ -140,9 +162,22 @@ struct ShortcutPanelView: View {
         VStack(alignment: .leading, spacing: 0) {
             // 主行
             HStack {
-                // 使用 KeyBadgeView 显示快捷键
-                KeyBadgeView(keyCombination: shortcut.keyCombination)
-                    .frame(width: 100, alignment: .leading)
+                // ✅ 使用 KeyBadgeView 显示快捷键（同一行显示重映射）
+                HStack(spacing: 4) {
+                    // 如果有重映射，原快捷键显示为灰色
+                    let hasRemap = getRemappedKey(for: shortcut) != nil
+                    KeyBadgeView(keyCombination: shortcut.keyCombination, isOriginal: hasRemap)
+                    
+                    // ✅ 如果快捷键被重映射，显示 › 和重映射目标
+                    if let remappedKey = getRemappedKey(for: shortcut) {
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        KeyBadgeView(keyCombination: remappedKey, isRemapped: true)
+                    }
+                }
+                .frame(width: 180, alignment: .leading)
 
                 Text(shortcut.description)
                     .font(.body)
@@ -155,10 +190,11 @@ struct ShortcutPanelView: View {
                     showingRemappingDialog = true
                 }) {
                     Image(systemName: "arrow.triangle.2.circlepath")
-                        .foregroundColor(.blue)
+                        .foregroundColor(canRemap(shortcut) ? .blue : .gray)
                 }
                 .buttonStyle(.plain)
-                .help("重映射此快捷键")
+                .disabled(!canRemap(shortcut))
+                .help(canRemap(shortcut) ? "重映射此快捷键" : "此快捷键无法重映射")
 
                 // 冲突图标和展开按钮
                 if isConflict {
@@ -192,11 +228,6 @@ struct ShortcutPanelView: View {
         }
         .background(isConflict ? Color.orange.opacity(0.1) : Color.clear)
         .cornerRadius(6)
-        .sheet(isPresented: $showingRemappingDialog) {
-            if let shortcut = selectedShortcut {
-                RemappingDialogView(shortcut: shortcut, isPresented: $showingRemappingDialog)
-            }
-        }
     }
 
     /// 冲突详情视图
@@ -263,7 +294,7 @@ struct ShortcutPanelView: View {
                         }
                     }
                 }
-                .padding(.vertical, 4)
+                .padding(.vertical, 2)
 
                 if conflict.id != shortcut.conflicts.last?.id {
                     Divider()
@@ -291,6 +322,38 @@ struct ShortcutPanelView: View {
         case .low:
             return .yellow
         }
+    }
+
+    /// 判断快捷键是否可以重映射
+    private func canRemap(_ shortcut: ShortcutInfo) -> Bool {
+        let key = shortcut.keyCombination
+        
+        // 系统保留快捷键
+        let systemReservedKeys: Set<String> = [
+            "⌘Q",       // 退出应用
+            "⌘⌥Esc",    // 强制退出
+            "⌘Space",   // Spotlight
+            "⌃⌘Q",      // 锁定屏幕
+            "⌃⌘Power"   // 关机对话框
+        ]
+        
+        // 特殊触发器（不是标准快捷键）
+        let specialTriggers: Set<String> = [
+            "⌘⌘",       // 双击 Cmd
+            "⌥⌥",       // 双击 Option
+            "⌃⌃"        // 双击 Control
+        ]
+        
+        // 如果是系统保留快捷键或特殊触发器，不允许重映射
+        return !systemReservedKeys.contains(key) && !specialTriggers.contains(key)
+    }
+
+    /// 获取快捷键的重映射目标
+    private func getRemappedKey(for shortcut: ShortcutInfo) -> String? {
+        return RemappingManager.shared.getRemappedKey(
+            shortcut.keyCombination,
+            for: shortcut.application
+        )
     }
 
     private var loadingView: some View {
@@ -374,11 +437,15 @@ struct VisualEffectView: NSViewRepresentable {
 struct RemappingDialogView: View {
     let shortcut: ShortcutInfo
     @Binding var isPresented: Bool
-
+    
+    @Environment(\.colorScheme) var colorScheme  // 检测深色/浅色模式
+    
     @State private var newKeyCombination: String = ""
     @State private var errorMessage: String?
     @State private var isRecording: Bool = false
     @State private var conflictWarning: String?
+    @State private var currentRemappedKey: String?  // 追踪当前重映射状态
+    @State private var isPendingReset: Bool = false  // ✅ 标记用户是否点击了重置
 
     private let remappingManager = RemappingManager.shared
     private let settings = SettingsManager.shared
@@ -402,17 +469,25 @@ struct RemappingDialogView: View {
             // 当前快捷键
             VStack(alignment: .leading, spacing: 8) {
                 Text("当前快捷键")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
 
                 HStack {
-                    Text(shortcut.keyCombination)
-                        .font(.system(.title3, design: .monospaced))
-                        .fontWeight(.bold)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color.gray.opacity(0.1))
-                        .cornerRadius(8)
+                    // ✅ 显示原始快捷键和重映射目标（和主面板保持一致）
+                    HStack(spacing: 4) {
+                        // 如果有重映射，原快捷键显示为灰色
+                        KeyBadgeView(keyCombination: shortcut.keyCombination, isOriginal: currentRemappedKey != nil)
+                        
+                        // 如果快捷键已重映射，显示 › 和重映射目标
+                        if let remappedKey = currentRemappedKey {
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            KeyBadgeView(keyCombination: remappedKey, isRemapped: true)
+                        }
+                    }
 
                     Text(shortcut.description)
                         .foregroundColor(.secondary)
@@ -424,15 +499,37 @@ struct RemappingDialogView: View {
             // 新快捷键输入
             VStack(alignment: .leading, spacing: 8) {
                 Text("新快捷键")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
 
                 HStack(spacing: 8) {
-                    TextField(isRecording ? "请按下快捷键..." : "例如: ⇧⌘T", text: $newKeyCombination)
-                        .font(.system(.title3, design: .monospaced))
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.vertical, 4)
-                        .disabled(isRecording)
+                    // 输入框 - 调整为32px高度，4px内边距
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(isRecording ? Color.gray.opacity(0.05) : Color(NSColor.controlBackgroundColor))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+                        
+                        TextField(isRecording ? "请按下快捷键..." : "例如: ⇧⌘T", text: $newKeyCombination)
+                            .onChange(of: newKeyCombination) { _ in
+                                // ✅ 用户输入新内容时，清除重置标记
+                                if isPendingReset && !newKeyCombination.isEmpty {
+                                    isPendingReset = false
+                                    // 恢复当前实际的重映射状态
+                                    currentRemappedKey = getRemappedKey(for: shortcut)
+                                }
+                            }
+                            .font(.body)  // ✅ 使用和KeyBadgeView相同的字体
+                            .fontWeight(.medium)  // ✅ 中等粗细
+                            .textFieldStyle(.plain)
+                            .disabled(isRecording)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)  // ✅ 调整为4px
+                    }
+                    .frame(height: 28)  // ✅ 调整为28px高度
 
                     // 录制按钮（仅当启用录制模式时显示）
                     if settings.enableRecordingMode {
@@ -443,14 +540,14 @@ struct RemappingDialogView: View {
                                 startRecording()
                             }
                         }) {
-                            HStack(spacing: 4) {
+                            HStack(spacing: 6) {
                                 Image(systemName: isRecording ? "stop.circle.fill" : "keyboard")
-                                    .imageScale(.medium)
+                                    .font(.body)
                                 Text(isRecording ? "停止" : "录制")
-                                    .font(.caption)
+                                    .font(.body)
                             }
+                            .frame(height: 28)  // ✅ 调整为28px高度
                             .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
                             .background(isRecording ? Color.red : Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(6)
@@ -493,69 +590,180 @@ struct RemappingDialogView: View {
             Divider()
 
             // 按钮
-            HStack {
-                Button("取消") {
+            HStack(spacing: 12) {
+                // 取消按钮
+                Button(action: {
                     stopRecording()
+                    isPendingReset = false
                     isPresented = false
+                }) {
+                    Text("取消")
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                )
+                .foregroundColor(.primary)
                 .keyboardShortcut(.cancelAction)
 
-                Spacer()
-
-                Button("重置") {
+                // 重置按钮
+                let canReset = currentRemappedKey != nil
+                Button(action: {
                     removeRemapping()
+                }) {
+                    Text("重置")
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
                 }
-                .foregroundColor(.orange)
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(canReset ? 
+                            (colorScheme == .dark ? Color.orange.opacity(0.3) : Color.orange.opacity(0.15)) : 
+                            (colorScheme == .dark ? Color(white: 0.2) : Color(white: 0.9))
+                        )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(canReset ? Color.orange.opacity(0.6) : Color.gray.opacity(0.2), lineWidth: 1)
+                )
+                .foregroundColor(canReset ? .orange : .gray)
+                .disabled(!canReset)
 
-                Button("确定") {
+                // 确定按钮
+                let isEnabled = isPendingReset || !newKeyCombination.isEmpty
+                Button(action: {
                     applyRemapping()
+                }) {
+                    Text("确定")
+                        .font(.body)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(isEnabled ? Color.blue : 
+                            (colorScheme == .dark ? Color(white: 0.2) : Color(white: 0.9))
+                        )
+                )
+                .foregroundColor(isEnabled ? .white : .gray)
                 .keyboardShortcut(.defaultAction)
-                .disabled(newKeyCombination.isEmpty)
+                .disabled(!isEnabled)
             }
+            .padding(.top, 8)
         }
         .padding(24)
-        .frame(width: 500)
+        .frame(width: 450)  // 稍微窄一点，留出边距
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(NSColor.windowBackgroundColor))
+                .shadow(color: Color.black.opacity(0.3), radius: 20, x: 0, y: 10)
+        )
+        .onAppear {
+            // 初始化当前重映射状态
+            currentRemappedKey = getRemappedKey(for: shortcut)
+        }
     }
 
     private func applyRemapping() {
         // 停止录制（如果正在录制）
         stopRecording()
-
-        // 验证新快捷键
+        
+        // ✅ 检查是否是重置状态
+        if isPendingReset {
+            // 用户点击了重置，现在要确认移除重映射
+            if remappingManager.isRemapped(shortcut.keyCombination, in: shortcut.application) {
+                let rule = RemappingRule(
+                    fromKey: shortcut.keyCombination,
+                    toKey: "",
+                    bundleId: shortcut.application
+                )
+                remappingManager.removeRemapping(rule)
+                Logger.info("🗑 已移除重映射: \(shortcut.keyCombination)")
+                
+                showNotification(
+                    title: "已重置",
+                    message: "\(shortcut.keyCombination) 已恢复默认映射"
+                )
+            }
+            
+            isPresented = false
+            return
+        }
+        
+        // ✅ 验证新快捷键
         guard !newKeyCombination.isEmpty else {
             errorMessage = "请输入新的快捷键"
+            Logger.warning("⚠️ 快捷键为空")
             return
         }
 
+        
+        Logger.info("🔄 准备重映射: \(shortcut.keyCombination) → \(newKeyCombination)")
+        
         // 创建重映射规则
         let rule = RemappingRule(
             fromKey: shortcut.keyCombination,
             toKey: newKeyCombination,
             bundleId: shortcut.application
         )
-
+        
         // 验证规则
+        Logger.info("🔍 开始验证规则...")
         let (isValid, validationError) = remappingManager.validateRemapping(rule)
         if !isValid {
+            Logger.error("❌ 验证失败: \(validationError ?? "未知错误")")
             errorMessage = validationError
             return
         }
-
+        Logger.info("✅ 验证通过")
+        
         // 冲突检测
         checkConflicts(for: newKeyCombination)
-
+        
         // 添加重映射
-        if remappingManager.addRemapping(rule) {
+        Logger.info("💾 开始添加重映射...")
+        let addResult = remappingManager.addRemapping(rule)
+        if addResult {
             Logger.info("✅ 重映射成功: \(rule.fromKey) → \(rule.toKey)")
+            
+            // ✅ 更新当前重映射状态，触发视图刷新
+            currentRemappedKey = newKeyCombination
+            
+            // ✅ 自动启用全局重映射（如果未开启）
+            if !settings.enableGlobalRemapping {
+                settings.enableGlobalRemapping = true
+                Logger.info("🔓 已自动启用全局快捷键重映射")
+                showNotification(
+                    title: "重映射已生效",
+                    message: "\(rule.fromKey) → \(rule.toKey)，全局重映射已自动开启"
+                )
+            } else {
+                showNotification(
+                    title: "重映射成功",
+                    message: "\(rule.fromKey) → \(rule.toKey)"
+                )
+            }
+            
             isPresented = false
-
-            // 显示通知
-            showNotification(
-                title: "重映射成功",
-                message: "\(rule.fromKey) 已重映射为 \(rule.toKey)"
-            )
         } else {
+            Logger.error("❌ 添加重映射失败")
             errorMessage = "重映射失败，请检查输入"
         }
     }
@@ -564,26 +772,18 @@ struct RemappingDialogView: View {
         // 停止录制
         stopRecording()
 
-        // 移除现有的重映射
-        if remappingManager.isRemapped(shortcut.keyCombination, in: shortcut.application) {
-            let rule = RemappingRule(
-                fromKey: shortcut.keyCombination,
-                toKey: "",
-                bundleId: shortcut.application
-            )
-            remappingManager.removeRemapping(rule)
-
-            Logger.info("🗑 已移除重映射: \(shortcut.keyCombination)")
-            isPresented = false
-
-            showNotification(
-                title: "已重置",
-                message: "\(shortcut.keyCombination) 已恢复默认映射"
-            )
-        } else {
-            newKeyCombination = ""
-            errorMessage = nil
-        }
+        // ✅ 清空输入框和消息
+        newKeyCombination = ""
+        errorMessage = nil
+        conflictWarning = nil
+        
+        // ✅ 标记为待重置状态（仅在弹窗内临时显示，不立即生效）
+        isPendingReset = true
+        
+        // ✅ 临时更新视图状态（仅在弹窗内显示为已重置）
+        currentRemappedKey = nil
+        
+        Logger.info("📝 已标记为重置状态（点击确定后生效）")
     }
 
     private func showNotification(title: String, message: String) {
@@ -607,8 +807,16 @@ struct RemappingDialogView: View {
             DispatchQueue.main.async {
                 self.newKeyCombination = keyCombination.displayString
                 self.isRecording = false
+                
+                // ✅ 录制完成后，清除重置标记
+                if self.isPendingReset {
+                    self.isPendingReset = false
+                    // 恢复当前实际的重映射状态
+                    self.currentRemappedKey = self.getRemappedKey(for: self.shortcut)
+                }
+                
                 Logger.info("📝 录制完成: \(keyCombination.displayString)")
-
+                
                 // 自动检测冲突
                 self.checkConflicts(for: keyCombination.displayString)
             }
@@ -621,6 +829,16 @@ struct RemappingDialogView: View {
             isRecording = false
             Logger.info("🛑 停止录制")
         }
+    }
+
+    // MARK: - Helper Methods
+    
+    /// 获取快捷键的重映射目标
+    private func getRemappedKey(for shortcut: ShortcutInfo) -> String? {
+        return RemappingManager.shared.getRemappedKey(
+            shortcut.keyCombination,
+            for: shortcut.application
+        )
     }
 
     // MARK: - 冲突检测
@@ -678,6 +896,8 @@ struct RemappingDialogView: View {
 
 struct KeyBadgeView: View {
     let keyCombination: String
+    var isRemapped: Bool = false  // 是否是重映射后的快捷键（新键）
+    var isOriginal: Bool = false  // 是否是原始快捷键但有重映射（应显示灰色）
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -693,11 +913,15 @@ struct KeyBadgeView: View {
 
     /// 根据色彩模式返回合适的背景色
     private var backgroundColor: Color {
+        // 如果是原始快捷键但有重映射（被替换的键），显示灰色
+        if isOriginal {
+            return Color.gray.opacity(0.5)
+        }
+        
+        // 其他情况（重映射后的新键或普通快捷键）使用深色背景
         if colorScheme == .dark {
-            // 深色模式：浅灰色
             return Color(white: 0.3)
         } else {
-            // 浅色模式：浅灰色（与半透明面板协调）
             return Color(white: 0.25)
         }
     }

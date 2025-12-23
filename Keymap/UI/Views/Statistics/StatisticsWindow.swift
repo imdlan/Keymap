@@ -74,6 +74,7 @@ struct StatisticsView: View {
 
     // MARK: - State
 
+    @Environment(\.colorScheme) var colorScheme  // 检测深色/浅色模式
     @StateObject private var viewModel = StatisticsViewModel()
     @State private var selectedPeriod: StatisticsPeriod = .today
     @State private var selectedApp: String? = nil
@@ -120,19 +121,38 @@ struct StatisticsView: View {
 
     private var toolbarView: some View {
         HStack {
-            // 时间范围选择
-            Picker("时间范围", selection: $selectedPeriod) {
-                Text("今天").tag(StatisticsPeriod.today)
-                Text("本周").tag(StatisticsPeriod.week)
-                Text("本月").tag(StatisticsPeriod.month)
-                Text("全部").tag(StatisticsPeriod.all)
+            // 时间范围选择 - 自定义分段选择器
+            HStack(spacing: 0) {
+                ForEach([
+                    (StatisticsPeriod.today, "今天"),
+                    (StatisticsPeriod.week, "本周"),
+                    (StatisticsPeriod.month, "本月"),
+                    (StatisticsPeriod.all, "全部")
+                ], id: \.0) { period, title in
+                    Button(action: {
+                        selectedPeriod = period
+                        viewModel.loadStatistics(for: period)
+                    }) {
+                        Text(title)
+                            .font(.body)
+                            .fontWeight(selectedPeriod == period ? .semibold : .regular)
+                            .foregroundColor(selectedPeriod == period ? .white : .primary)
+                            .frame(width: 70, height: 28)
+                            .contentShape(Rectangle())
+                            .background(
+                                selectedPeriod == period ? 
+                                    Color.blue : 
+                                    (colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
             }
-            .pickerStyle(.segmented)
-            .frame(minWidth: 280)
-            .fixedSize()
-            .onChange(of: selectedPeriod) { _, newValue in
-                viewModel.loadStatistics(for: newValue)
-            }
+            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+            )
 
             Spacer()
 
@@ -142,9 +162,25 @@ struct StatisticsView: View {
             }) {
                 HStack(spacing: 6) {
                     Image(systemName: "arrow.clockwise")
+                        .font(.body)
                     Text("刷新")
+                        .font(.body)
+                        .fontWeight(.medium)
                 }
+                .padding(.horizontal, 16)
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+            .frame(height: 28)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+            )
+            .foregroundColor(.primary)
 
             // 导出按钮
             Button(action: {
@@ -152,9 +188,21 @@ struct StatisticsView: View {
             }) {
                 HStack(spacing: 6) {
                     Image(systemName: "square.and.arrow.up")
+                        .font(.body)
                     Text("导出")
+                        .font(.body)
+                        .fontWeight(.medium)
                 }
+                .padding(.horizontal, 16)
+                .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
+            .frame(height: 28)
+            .background(
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color.blue)
+            )
+            .foregroundColor(.white)
         }
     }
 
