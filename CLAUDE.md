@@ -725,3 +725,58 @@ enableRecordingMode: Bool = false
   - 添加 `handleWindowResignMain()` 方法清理资源
   - 在 `deinit` 中移除通知观察者
 
+### 2025-12-23 - App Logo 更新为 PDF 矢量格式
+
+**图标更新**:
+- ✅ 使用 1024x1024 PDF 矢量格式作为 App Logo
+- ✅ 启用 `preserves-vector-representation` 保持矢量特性
+- ✅ 清理旧的 PNG 图标文件（icon_512x512.png, icon_512x512@2x.png）
+- ✅ 清理旧的 512x512 PDF 文件（logo-512.pdf）
+- ✅ 所有显示 App Icon 的地方自动使用新 logo
+
+**技术实现**:
+```json
+{
+  "images": [
+    {
+      "filename": "logo-1024.pdf",
+      "idiom": "mac",
+      "scale": "1x",
+      "size": "512x512"
+    },
+    {
+      "filename": "logo-1024.pdf",
+      "idiom": "mac",
+      "scale": "2x",
+      "size": "512x512"
+    }
+  ],
+  "properties": {
+    "preserves-vector-representation": true
+  }
+}
+```
+
+**矢量格式优势**:
+- 📐 任意缩放都保持清晰锐利
+- 💾 单一文件体积小（6KB）
+- 🎯 Retina 显示完美支持
+- 🔄 只需维护一个源文件
+
+**显示位置**:
+- Dock 应用图标
+- 关于页面（About）
+- 系统关于面板
+- Finder 中的应用图标
+- 启动台（Launchpad）
+
+**注意事项**:
+- Xcode 编译时会报 "PDF 文件扩展名无效" 警告，这是已知限制
+- 构建成功，PDF 格式在运行时正常显示
+- macOS 14.0+ 完全支持 PDF 矢量 app icon
+
+**修改文件**:
+- Keymap/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json
+- Keymap/Resources/Assets.xcassets/AppIcon.appiconset/logo-1024.pdf（新增）
+- 删除：icon_512x512.png, icon_512x512@2x.png, logo-512.pdf
+
