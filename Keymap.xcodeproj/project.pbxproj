@@ -27,6 +27,7 @@
 		74B665E7AD4DEB28B09DC153 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5425031DB11FE2D95092AD9F /* PermissionManager.swift */; };
 		7CE052DADFE8351148B6423F /* ShortcutPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0D9F72658BF0113717CB8 /* ShortcutPanelViewModel.swift */; };
 		7DA1C1B28B1C1311A233FA9B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9F13652A67284DCD200870 /* AppDelegate.swift */; };
+		84D7E1C12D169F5A84DA1C44 /* GlobalShortcutDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08C3781F9C29B435F50251A9 /* GlobalShortcutDatabase.swift */; };
 		9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F863A83B5D13465BA0574102 /* NotificationHelper.swift */; };
 		969ACDF3A5EDEBF32EAE41F8 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8D9465654515E712FDA2BD /* Logger.swift */; };
 		9BED982641EF22EB33583AA1 /* ShortcutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4383254773AAF50DC9BD1 /* ShortcutRepository.swift */; };
@@ -47,6 +48,7 @@
 
 /* Begin PBXFileReference section */
 		069A69E272820DEAF8507D33 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		08C3781F9C29B435F50251A9 /* GlobalShortcutDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalShortcutDatabase.swift; sourceTree = "<group>"; };
 		0A0731FDDE7308AA86150A47 /* DoubleCmdDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleCmdDetector.swift; sourceTree = "<group>"; };
 		0AEEE5E26145427DC1D7C66A /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		0F866384FF64C5C2D69F37BE /* ShortcutPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutPanelView.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 			children = (
 				0A0731FDDE7308AA86150A47 /* DoubleCmdDetector.swift */,
 				E721C069A36C304572F9B13A /* GlobalEventMonitor.swift */,
+				08C3781F9C29B435F50251A9 /* GlobalShortcutDatabase.swift */,
 				DC82A5503F016D044A16A2EC /* KeyCombinationDetector.swift */,
 			);
 			path = Monitoring;
@@ -449,6 +452,7 @@
 				568FECE7AF9863A1A8B7F35F /* DatabaseManager.swift in Sources */,
 				A5A47221FB0A9DFC8EBBB776 /* DoubleCmdDetector.swift in Sources */,
 				CEFB75F34C2641EB5744120A /* GlobalEventMonitor.swift in Sources */,
+				84D7E1C12D169F5A84DA1C44 /* GlobalShortcutDatabase.swift in Sources */,
 				4E2B4FD15DF0E61FC399204A /* KeyCombinationDetector.swift in Sources */,
 				531CE9943B523443AB89E589 /* KeyRecorder.swift in Sources */,
 				C46F74C997BFBE0A5A857FF1 /* KeymapApp.swift in Sources */,

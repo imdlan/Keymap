@@ -15,6 +15,9 @@ class ShortcutPanelViewModel: ObservableObject {
     @Published var currentApp: String = ""
     @Published var currentAppIcon: NSImage? = nil
     @Published var isLoading: Bool = false
+    
+    // ✅ 保存当前显示的应用（用于刷新时重新加载同一个应用的快捷键）
+    private var currentRunningApp: NSRunningApplication?
 
     // MARK: - Dependencies
 
@@ -22,6 +25,7 @@ class ShortcutPanelViewModel: ObservableObject {
     private let cache = ShortcutCache()
     private let systemProvider = SystemShortcutProvider.shared
     private let keymapProvider = KeymapShortcutProvider.shared
+    private let conflictDetector = ConflictDetector()
 
     // MARK: - 修饰键名称映射
 
@@ -88,14 +92,21 @@ class ShortcutPanelViewModel: ObservableObject {
 
     // MARK: - 数据加载
 
-    func loadCurrentAppShortcuts() {
+    func loadCurrentAppShortcuts(targetApp: NSRunningApplication? = nil) {
         isLoading = true
 
+        // ✅ 优先级：1. 传入的目标应用  2. 保存的当前应用  3. 前台应用
+        let frontApp = targetApp ?? currentRunningApp ?? NSWorkspace.shared.frontmostApplication
+        
         // 获取当前前端应用
-        if let frontApp = NSWorkspace.shared.frontmostApplication {
-            currentApp = frontApp.localizedName ?? "Unknown"
-            currentAppIcon = frontApp.icon
-            loadShortcuts(for: frontApp)
+        if let app = frontApp {
+            // ✅ 保存当前应用（用于后续刷新）
+            currentRunningApp = app
+            
+            currentApp = app.localizedName ?? "Unknown"
+            currentAppIcon = app.icon
+            print("🎯 准备加载应用快捷键: \(currentApp) (\(app.bundleIdentifier ?? "无Bundle ID"))")
+            loadShortcuts(for: app)
         } else {
             currentApp = "未知应用"
             currentAppIcon = nil
@@ -110,43 +121,94 @@ class ShortcutPanelViewModel: ObservableObject {
             return
         }
 
-        Task { @MainActor in
-            isLoading = true
+        // ✅ 立即在主线程设置加载状态
+        isLoading = true
 
+        // ✅ 使用 Task.detached 在后台线程执行数据加载
+        Task.detached { [weak self] in
+            guard let self = self else { return }
+            
             // ✅ 检查是否是Keymap自身
             if bundleId.contains("Keymap") || bundleId.contains("com.yourcompany") {
                 print("ℹ️ 检测到Keymap应用，使用硬编码快捷键")
-                self.shortcuts = keymapProvider.getKeymapShortcuts()
-                isLoading = false
+                await MainActor.run {
+                    self.shortcuts = self.keymapProvider.getKeymapShortcuts()
+                    self.isLoading = false
+                }
                 return
             }
 
             // 1. 尝试从缓存获取
-            if let cached = cache.getCachedShortcuts(for: bundleId) {
+            if let cached = self.cache.getCachedShortcuts(for: bundleId) {
                 print("📦 从缓存加载快捷键: \(bundleId)")
-                self.shortcuts = mergeWithSystemShortcuts(cached)
-                isLoading = false
+                await MainActor.run {
+                    self.shortcuts = self.mergeWithSystemShortcuts(cached)
+                    self.isLoading = false
+                }
                 return
             }
 
-            // 2. 提取快捷键
+            // 2. 提取快捷键（在后台线程）
             print("🔍 开始提取快捷键: \(bundleId)")
-            let extracted = await extractor.extractShortcuts(from: app)
+            let extracted = await self.extractor.extractShortcuts(from: app)
 
             if extracted.isEmpty {
                 print("⚠️ 未提取到快捷键，使用演示数据")
-                loadDemoShortcuts()
+                await MainActor.run {
+                    self.loadDemoShortcuts()
+                }
                 return
             }
 
             // 3. 缓存结果
-            cache.cacheShortcuts(extracted, for: bundleId)
+            self.cache.cacheShortcuts(extracted, for: bundleId)
 
-            // 4. 合并系统快捷键
-            self.shortcuts = mergeWithSystemShortcuts(extracted)
-            isLoading = false
+            // 4. 合并系统快捷键并在主线程更新UI
+            await MainActor.run {
+                self.shortcuts = self.mergeWithSystemShortcuts(extracted)
+                self.isLoading = false
+                print("✅ 加载完成: \(self.shortcuts.count) 个快捷键")
+            }
+        }
+    }
 
-            print("✅ 加载完成: \(self.shortcuts.count) 个快捷键")
+    /// 加载指定应用的快捷键（通过 bundleId 和 appName）
+    func loadShortcuts(for bundleId: String, appName: String) {
+        print("📱 准备加载应用快捷键: \(appName) (\(bundleId))")
+        
+        // 设置当前应用信息
+        currentApp = appName
+        
+        // 查找运行中的应用
+        let runningApps = NSWorkspace.shared.runningApplications
+        if let app = runningApps.first(where: { $0.bundleIdentifier == bundleId }) {
+            currentAppIcon = app.icon
+            currentRunningApp = app
+            loadShortcuts(for: app)
+        } else {
+            print("⚠️ 应用未在运行中: \(bundleId)")
+            // 应用未运行，从缓存加载或显示空
+            isLoading = true
+            
+            Task.detached { [weak self] in
+                guard let self = self else { return }
+                
+                // 尝试从缓存获取
+                if let cached = self.cache.getCachedShortcuts(for: bundleId) {
+                    print("📦 从缓存加载快捷键: \(bundleId)")
+                    await MainActor.run {
+                        self.shortcuts = self.mergeWithSystemShortcuts(cached)
+                        self.isLoading = false
+                    }
+                } else {
+                    // 没有缓存，显示空列表
+                    print("ℹ️ 没有缓存数据")
+                    await MainActor.run {
+                        self.shortcuts = []
+                        self.isLoading = false
+                    }
+                }
+            }
         }
     }
 
@@ -169,7 +231,45 @@ class ShortcutPanelViewModel: ObservableObject {
             }
         }
 
-        return Array(uniqueShortcuts.values)
+        let mergedShortcuts = Array(uniqueShortcuts.values)
+        
+        // ✅ 检测冲突并添加到每个快捷键
+        return detectAndAssignConflicts(mergedShortcuts)
+    }
+    
+    /// 检测快捷键冲突并分配到每个快捷键
+    private func detectAndAssignConflicts(_ shortcuts: [ShortcutInfo]) -> [ShortcutInfo] {
+        // 使用冲突检测器检测所有冲突
+        let allConflicts = conflictDetector.detectConflicts(shortcuts: shortcuts)
+        
+        // 按 shortcutId 分组冲突
+        var conflictsByShortcutId: [String: [ConflictInfo]] = [:]
+        for conflict in allConflicts {
+            if conflictsByShortcutId[conflict.shortcutId] == nil {
+                conflictsByShortcutId[conflict.shortcutId] = []
+            }
+            conflictsByShortcutId[conflict.shortcutId]?.append(conflict)
+        }
+        
+        // 创建带冲突信息的新快捷键数组
+        var shortcutsWithConflicts: [ShortcutInfo] = []
+        for shortcut in shortcuts {
+            let conflicts = conflictsByShortcutId[shortcut.id] ?? []
+            let updatedShortcut = ShortcutInfo(
+                id: shortcut.id,
+                keyCombination: shortcut.keyCombination,
+                description: shortcut.description,
+                application: shortcut.application,
+                category: shortcut.category,
+                isCustom: shortcut.isCustom,
+                conflicts: conflicts
+            )
+            shortcutsWithConflicts.append(updatedShortcut)
+        }
+        
+        print("🔍 冲突检测完成: \(shortcuts.count) 个快捷键, \(allConflicts.count) 个冲突")
+        
+        return shortcutsWithConflicts
     }
 
     private func loadDemoShortcuts() {

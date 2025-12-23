@@ -171,7 +171,7 @@ class UsageRepository {
         }
         print("📊 Top快捷键数量: \(topShortcuts.count)")
 
-        // 4. 效率分数（无冲突的使用占比）
+        // 4. 无冲突率（无冲突的使用占比）
         let efficiencyScore = totalUsage > 0
             ? Double(totalUsage - conflictCount) / Double(totalUsage) * 100.0
             : 100.0

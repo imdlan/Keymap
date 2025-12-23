@@ -230,11 +230,11 @@ struct StatisticsView: View {
                     color: .orange
                 )
 
-                // 效率评分
+                // 无冲突率
                 statisticCard(
-                    title: "效率评分",
+                    title: "无冲突率",
                     value: String(format: "%.1f%%", viewModel.summary.efficiencyScore),
-                    icon: "chart.line.uptrend.xyaxis",
+                    icon: "checkmark.shield.fill",
                     color: .green
                 )
 
@@ -305,10 +305,8 @@ struct StatisticsView: View {
                 .foregroundColor(.secondary)
                 .frame(width: 30)
 
-            // 快捷键
-            Text(usage.shortcut)
-                .font(.system(.body, design: .monospaced))
-                .fontWeight(.medium)
+            // 快捷键 - 使用 KeyBadgeView
+            KeyBadgeView(keyCombination: usage.shortcut)
                 .frame(width: 100, alignment: .leading)
 
             // 应用
@@ -510,18 +508,24 @@ struct StatisticsView: View {
         .cornerRadius(8)
     }
 
-    private func suggestionRow(suggestion: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "lightbulb.fill")
-                .foregroundColor(.yellow)
+    private func suggestionRow(suggestion: Suggestion) -> some View {
+        HStack(alignment: .center, spacing: 10) {
+            // 图标 - 垂直居中
+            Image(systemName: suggestion.icon)
+                .foregroundColor(suggestion.color)
+                .font(.system(size: 14))
+                .frame(width: 20, height: 20)
 
-            Text(suggestion)
+            // 文字 - 左对齐，自动换行
+            Text(suggestion.text)
+                .font(.body)
                 .foregroundColor(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
-
-            Spacer()
         }
-        .padding()
+        .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+        .frame(minHeight: 36)
         .background(Color(NSColor.windowBackgroundColor))
         .cornerRadius(4)
     }
@@ -536,7 +540,7 @@ class StatisticsViewModel: ObservableObject {
     @Published var summary: StatisticsSummary = StatisticsSummary.empty
     @Published var trendData: [TrendPoint] = []
     @Published var conflictingShortcuts: [String] = []
-    @Published var suggestions: [String] = []
+    @Published var suggestions: [Suggestion] = []
     @Published var activeAppsCount: Int = 0
 
     // MARK: - Computed Properties
@@ -621,44 +625,111 @@ class StatisticsViewModel: ObservableObject {
     private func generateSuggestions() {
         suggestions = []
 
-        // 建议1: 低使用率快捷键
-        if !summary.topShortcuts.isEmpty {
-            let totalUsage = summary.topShortcuts.reduce(0) { $0 + $1.count }
-            let avgUsage = totalUsage / summary.topShortcuts.count
+        // 建议1: 重映射功能使用
+        let remappingManager = RemappingManager.shared
+        let stats = remappingManager.getStatistics()
+        let remappingCount = stats.totalRules
 
-            if let lowUsage = summary.topShortcuts.last, lowUsage.count < avgUsage / 2 {
-                suggestions.append("💡 快捷键 \(lowUsage.shortcut) 使用频率较低，考虑重新映射到更常用的功能")
+        if remappingCount == 0 && summary.totalUsage > 100 {
+            suggestions.append(Suggestion(
+                icon: "arrow.triangle.2.circlepath",
+                color: .blue,
+                text: "您还未使用快捷键重映射功能，可以将不常用的快捷键重映射为更顺手的组合"
+            ))
+        } else if remappingCount > 0 {
+            suggestions.append(Suggestion(
+                icon: "checkmark.circle.fill",
+                color: .green,
+                text: "您已创建 \(remappingCount) 个快捷键重映射，善于定制工作流程"
+            ))
+        }
+
+        // 建议2: 快捷键多样性分析
+        if !summary.topShortcuts.isEmpty && summary.topShortcuts.count >= 5 {
+            let top5Usage = summary.topShortcuts.prefix(5).reduce(0) { $0 + $1.count }
+            let totalUsage = summary.topShortcuts.reduce(0) { $0 + $1.count }
+            let top5Percentage = totalUsage > 0 ? Double(top5Usage) / Double(totalUsage) * 100.0 : 0
+
+            if top5Percentage >= 80 {
+                suggestions.append(Suggestion(
+                    icon: "chart.pie.fill",
+                    color: .orange,
+                    text: "您 \(String(format: "%.0f%%", top5Percentage)) 的操作集中在前5个快捷键，可以探索学习更多快捷键以提升效率"
+                ))
+            } else if top5Percentage < 60 {
+                suggestions.append(Suggestion(
+                    icon: "star.fill",
+                    color: .yellow,
+                    text: "您善于使用多样化的快捷键组合，快捷键使用分布均衡"
+                ))
             }
         }
 
-        // 建议2: 高冲突
+        // 建议3: 高冲突
         if summary.conflictCount > 10 {
-            suggestions.append("⚠️ 检测到 \(summary.conflictCount) 个冲突，建议解决高优先级冲突以提升效率")
+            suggestions.append(Suggestion(
+                icon: "exclamationmark.triangle.fill",
+                color: .orange,
+                text: "检测到 \(summary.conflictCount) 个冲突，建议解决高优先级冲突以避免误操作"
+            ))
         } else if summary.conflictCount > 0 {
-            suggestions.append("✓ 发现 \(summary.conflictCount) 个冲突，建议及时处理避免误操作")
+            suggestions.append(Suggestion(
+                icon: "info.circle.fill",
+                color: .blue,
+                text: "发现 \(summary.conflictCount) 个冲突，建议及时处理避免误操作"
+            ))
         }
 
-        // 建议3: 效率评分
+        // 建议4: 无冲突率评分
         if summary.efficiencyScore < 70 {
-            suggestions.append("📊 当前效率评分为 \(String(format: "%.1f%%", summary.efficiencyScore))，建议优化快捷键配置以提升效率")
+            let conflictRate = 100.0 - summary.efficiencyScore
+            suggestions.append(Suggestion(
+                icon: "chart.bar.fill",
+                color: .orange,
+                text: "当前快捷键冲突率为 \(String(format: "%.1f%%", conflictRate))，建议优化快捷键配置以减少冲突"
+            ))
         } else if summary.efficiencyScore >= 90 {
-            suggestions.append("🎉 您的快捷键使用效率很高（\(String(format: "%.1f%%", summary.efficiencyScore))），保持良好习惯！")
+            suggestions.append(Suggestion(
+                icon: "checkmark.shield.fill",
+                color: .green,
+                text: "您的快捷键无冲突率高达 \(String(format: "%.1f%%", summary.efficiencyScore))，所有操作顺利执行，保持良好习惯！"
+            ))
         }
 
-        // 建议4: 使用统计
+        // 建议5: 使用统计
         if summary.totalUsage == 0 {
-            suggestions.append("🚀 开始使用快捷键来提升工作效率吧！Keymap 会自动记录和分析您的使用习惯")
+            suggestions.append(Suggestion(
+                icon: "paperplane.fill",
+                color: .blue,
+                text: "开始使用快捷键来提升工作效率吧！Keymap 会自动记录和分析您的使用习惯"
+            ))
         } else if summary.totalUsage < 50 {
-            suggestions.append("💪 尝试更多使用快捷键来提升工作效率，目前已使用 \(summary.totalUsage) 次")
+            suggestions.append(Suggestion(
+                icon: "bolt.fill",
+                color: .orange,
+                text: "继续探索快捷键功能，目前已使用 \(summary.totalUsage) 次"
+            ))
         } else if summary.totalUsage >= 1000 {
-            suggestions.append("🏆 您已经使用快捷键 \(summary.totalUsage) 次，是一位快捷键高手！")
+            suggestions.append(Suggestion(
+                icon: "trophy.fill",
+                color: .yellow,
+                text: "您已经使用快捷键 \(summary.totalUsage) 次，是一位快捷键高手！"
+            ))
         }
 
-        // 建议5: 应用多样性
+        // 建议6: 应用覆盖度
         if activeAppsCount >= 5 {
-            suggestions.append("✨ 您在 \(activeAppsCount) 个应用中使用了快捷键，善于利用工具提升效率")
-        } else if activeAppsCount > 0 && activeAppsCount < 3 {
-            suggestions.append("💡 尝试在更多应用中使用快捷键，让工作效率更上一层楼")
+            suggestions.append(Suggestion(
+                icon: "app.badge.checkmark.fill",
+                color: .purple,
+                text: "您在 \(activeAppsCount) 个应用中使用了快捷键，善于利用工具提升效率"
+            ))
+        } else if activeAppsCount > 0 && activeAppsCount < 3 && summary.totalUsage > 50 {
+            suggestions.append(Suggestion(
+                icon: "app.dashed",
+                color: .blue,
+                text: "您主要在 \(activeAppsCount) 个应用中使用快捷键，可以尝试在更多常用应用中探索快捷键功能"
+            ))
         }
 
         print("📊 生成了 \(suggestions.count) 条建议")
@@ -705,6 +776,12 @@ struct TrendPoint {
     let count: Int
 }
 
+struct Suggestion: Hashable {
+    let icon: String
+    let color: Color
+    let text: String
+}
+
 extension StatisticsSummary {
     static var empty: StatisticsSummary {
         StatisticsSummary(
@@ -737,9 +814,13 @@ extension UsageRepository {
             let dateString = ISO8601DateFormatter().string(from: date)
             let count = getDailyUsageCount(for: date)
 
-            trendPoints.append(TrendPoint(date: dateString, count: count))
+            // 只添加有数据的点
+            if count > 0 {
+                trendPoints.append(TrendPoint(date: dateString, count: count))
+            }
         }
 
+        print("📈 趋势数据点数量: \(trendPoints.count)")
         return trendPoints
     }
 
@@ -758,9 +839,11 @@ extension UsageRepository {
 
         let results = db.executeQuery(sql)
         if let first = results.first, let total = first["total"] as? Int {
+            print("📅 日期 \(dateString) 使用次数: \(total)")
             return total
         }
 
+        print("📅 日期 \(dateString) 无数据")
         return 0
     }
 
@@ -776,10 +859,12 @@ extension UsageRepository {
         """
 
         let results = db.executeQuery(sql)
-        if let first = results.first, let count = first["count"] as? Int {
-            return count
+        if let first = results.first, let count = first["count"] as? Int64 {
+            print("📱 活跃应用数: \(count)")
+            return Int(count)
         }
 
+        print("⚠️ 无法获取活跃应用数")
         return 0
     }
 

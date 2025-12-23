@@ -112,6 +112,12 @@ class RemappingManager {
             "⌘Q", "⌘⌥Esc", "⌘Space", "⌃⌘Q", "⌃⌘Power"
         ]
 
+        // ✅ 检查源键是否是系统保留快捷键
+        if systemReservedKeys.contains(rule.fromKey) {
+            return (false, "\(rule.fromKey) 是系统保留快捷键，无法重映射")
+        }
+
+        // ✅ 检查目标键是否是系统保留快捷键
         if systemReservedKeys.contains(rule.toKey) {
             return (false, "\(rule.toKey) 是系统保留快捷键，不能作为目标")
         }

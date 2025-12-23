@@ -138,6 +138,10 @@ struct SettingsView: View {
             generalSettingsView
         case .shortcuts:
             shortcutSettingsView
+        case .globalRemapping:
+            globalRemappingView
+        case .backgroundApps:
+            backgroundAppsView
         case .data:
             dataSettingsView
         case .advanced:
@@ -361,6 +365,431 @@ struct SettingsView: View {
             .padding(.bottom, 16)
         }
         .padding(.top, 16)
+    }
+
+    // MARK: - Global Remapping
+
+    private var globalRemappingView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Header
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("全局映射")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Text("自定义全局快捷键重映射规则")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    // 添加按钮（参考长驻应用刷新按钮样式）
+                    Button(action: {
+                        viewModel.showAddRemappingSheet = true
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "plus")
+                                .font(.body)
+                            Text("添加")
+                                .font(.body)
+                                .fontWeight(.medium)
+                        }
+                        .padding(.horizontal, 16)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .frame(height: 28)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                    )
+                    .foregroundColor(.primary)
+                }
+                .padding(.top, 16)
+
+                Divider()
+
+                // 启用全局重映射开关
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("启用全局快捷键重映射")
+                            .font(.body)
+                        Text("使用下方自定义的快捷键映射规则")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Spacer()
+
+                    Toggle("", isOn: $viewModel.enableGlobalRemapping)
+                        .toggleStyle(.switch)
+                }
+
+                Divider()
+
+                // 映射规则列表
+                if viewModel.remappingRules.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "arrow.left.arrow.right.circle")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        Text("暂无映射规则")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                        Text("点击右上角「添加」按钮创建新的映射规则")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 40)
+                } else {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(viewModel.remappingRules) { rule in
+                            remappingRuleRow(rule)
+                        }
+                    }
+                }
+
+                // 统计信息
+                if !viewModel.remappingRules.isEmpty {
+                    Divider()
+
+                    HStack {
+                        Text("共 \(viewModel.remappingRules.count) 条映射规则")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Spacer()
+
+                        Button(action: {
+                            viewModel.showClearAllAlert = true
+                        }) {
+                            Text("清空所有")
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 16)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .frame(height: 28)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.red.opacity(0.15))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.red.opacity(0.5), lineWidth: 1)
+                        )
+                        .foregroundColor(.red)
+                    }
+                }
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 16)
+        }
+        .padding(.top, 16)
+        .sheet(isPresented: $viewModel.showAddRemappingSheet) {
+            AddRemappingSheet(viewModel: viewModel)
+        }
+        .sheet(item: $viewModel.editingRule) { rule in
+            EditRemappingSheet(viewModel: viewModel, rule: rule)
+        }
+        .alert("确认清空", isPresented: $viewModel.showClearAllAlert) {
+            Button("取消", role: .cancel) {}
+            Button("清空", role: .destructive) {
+                viewModel.clearAllRemappings()
+            }
+        } message: {
+            Text("确定要清空所有映射规则吗？此操作不可恢复。")
+        }
+    }
+
+    // 映射规则行
+    private func remappingRuleRow(_ rule: RemappingRule) -> some View {
+        HStack(spacing: 12) {
+            // 应用图标
+            if let appIcon = viewModel.getAppIcon(for: rule.bundleId) {
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .frame(width: 32, height: 32)
+            } else {
+                Image(systemName: "app")
+                    .resizable()
+                    .frame(width: 32, height: 32)
+                    .foregroundColor(.secondary)
+            }
+
+            // 映射信息
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 8) {
+                    Text(rule.fromKey)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundColor(colorScheme == .dark ? .primary : .white)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(colorScheme == .dark ? Color(white: 0.3) : Color(white: 0.25))
+                        .cornerRadius(4)
+
+                    Image(systemName: "arrow.right")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Text(rule.toKey)
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .foregroundColor(colorScheme == .dark ? .primary : .white)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background(colorScheme == .dark ? Color(white: 0.3) : Color(white: 0.25))
+                        .cornerRadius(4)
+                }
+
+                Text(viewModel.getAppName(for: rule.bundleId))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer()
+
+            // 操作按钮
+            HStack(spacing: 8) {
+                Button(action: {
+                    viewModel.editingRule = rule
+                }) {
+                    Image(systemName: "pencil")
+                        .font(.body)
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+
+                Button(action: {
+                    viewModel.deleteRemappingRule(rule)
+                }) {
+                    Image(systemName: "trash")
+                        .font(.body)
+                        .foregroundColor(.red)
+                        .frame(width: 28, height: 28)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(colorScheme == .dark ? Color(white: 0.15) : Color(white: 0.98))
+        .cornerRadius(8)
+    }
+
+    // MARK: - Background Apps
+
+    private var backgroundAppsView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Header
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("长驻应用")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Text("自动检测可能注册全局热键的后台应用")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    // 刷新按钮
+                    Button(action: {
+                        viewModel.refreshBackgroundApps()
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.body)
+                            Text("刷新")
+                                .font(.body)
+                                .fontWeight(.medium)
+                        }
+                        .padding(.horizontal, 16)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .frame(height: 28)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                    )
+                    .foregroundColor(.primary)
+                }
+                .padding(.top, 16)
+                
+                Divider()
+                
+                // 应用列表
+                if viewModel.isLoadingBackgroundApps {
+                    // 加载指示器
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                        Text("正在扫描长驻应用...")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 40)
+                } else if viewModel.backgroundApps.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "app.dashed")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        
+                        Text("暂未检测到长驻应用")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                        
+                        Text("点击刷新按钮扫描系统中的长驻应用")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 40)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(viewModel.backgroundApps) { app in
+                            backgroundAppRow(app: app)
+                        }
+                    }
+                }
+                
+                Divider()
+                
+                // 说明信息
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("说明")
+                        .font(.headline)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("长驻应用是指常驻系统后台的应用（如菜单栏应用、系统辅助进程）")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("只显示已缓存快捷键的长驻应用，点击刷新可重新扫描")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("点击应用右侧的键盘图标可查看该应用的快捷键列表")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        HStack(alignment: .top, spacing: 8) {
+                            Text("•")
+                            Text("这些应用可能注册了全局快捷键，与当前应用冲突时会触发通知")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
+                .cornerRadius(8)
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 16)
+        }
+        .padding(.top, 16)
+        .onAppear {
+            // ✅ 首次打开标签页时，快速加载长驻应用
+            if viewModel.backgroundApps.isEmpty {
+                viewModel.quickLoadBackgroundApps()
+            }
+        }
+    }
+    
+    private func backgroundAppRow(app: BackgroundAppInfo) -> some View {
+        HStack(spacing: 12) {
+            // 应用图标
+            if let icon = app.icon {
+                Image(nsImage: icon)
+                    .resizable()
+                    .frame(width: 32, height: 32)
+            } else {
+                Image(systemName: "app.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(.secondary)
+                    .frame(width: 32, height: 32)
+            }
+            
+            // 应用信息
+            VStack(alignment: .leading, spacing: 2) {
+                Text(app.name)
+                    .font(.body)
+                    .fontWeight(.medium)
+                
+                HStack(spacing: 8) {
+                    // 激活策略标签
+                    Text(app.policyDescription)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text("•")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    // 快捷键数量
+                    Text("\(app.shortcutCount) 个快捷键")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    // 用户标记指示器
+                    if app.isUserMarked {
+                        Text("•")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        Text("手动标记")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
+            
+            Spacer()
+            
+            // 键盘图标按钮
+            Button(action: {
+                viewModel.showShortcutsForApp(bundleId: app.bundleId)
+            }) {
+                Image(systemName: "keyboard")
+                    .font(.system(size: 20))
+                    .foregroundColor(.blue)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help("查看快捷键")
+        }
+        .padding(12)
+        .background(Color(NSColor.windowBackgroundColor))
+        .cornerRadius(8)
     }
 
     // MARK: - Data Settings
@@ -807,6 +1236,8 @@ struct SettingsView: View {
 enum SettingsTab: CaseIterable {
     case general
     case shortcuts
+    case globalRemapping
+    case backgroundApps
     case data
     case advanced
     case about
@@ -815,6 +1246,8 @@ enum SettingsTab: CaseIterable {
         switch self {
         case .general: return "通用"
         case .shortcuts: return "快捷键"
+        case .globalRemapping: return "全局映射"
+        case .backgroundApps: return "长驻应用"
         case .data: return "数据"
         case .advanced: return "高级"
         case .about: return "关于"
@@ -825,6 +1258,8 @@ enum SettingsTab: CaseIterable {
         switch self {
         case .general: return "gearshape"
         case .shortcuts: return "keyboard"
+        case .globalRemapping: return "arrow.left.arrow.right"
+        case .backgroundApps: return "app.badge"
         case .data: return "externaldrive"
         case .advanced: return "hammer"
         case .about: return "info.circle"
@@ -859,22 +1294,34 @@ class SettingsViewModel: ObservableObject {
     @Published var enableGlobalRemapping: Bool = false
     @Published var enableRecordingMode: Bool = false
 
+    // 全局映射
+    @Published var remappingRules: [RemappingRule] = []
+    @Published var showAddRemappingSheet: Bool = false
+    @Published var editingRule: RemappingRule? = nil
+    @Published var showClearAllAlert: Bool = false
+
     // 数据库信息
     @Published var databaseSize: String = "计算中..."
     @Published var usageRecordsCount: Int = 0
     @Published var shortcutsCount: Int = 0
+    
+    // 长驻应用
+    @Published var backgroundApps: [BackgroundAppInfo] = []
+    @Published var isLoadingBackgroundApps: Bool = false
 
     // MARK: - Dependencies
 
     let settings = SettingsManager.shared
     private let remappingManager = RemappingManager.shared
     private let databaseManager = DatabaseManager.shared
+    private let globalDatabase = GlobalShortcutDatabase.shared
 
     // MARK: - Initialization
 
     init() {
         loadSettings()
         loadDatabaseInfo()
+        // ✅ 移除自动加载长驻应用，改为用户打开标签页时懒加载
     }
 
     // MARK: - Public Methods
@@ -1066,6 +1513,39 @@ class SettingsViewModel: ObservableObject {
             """
         )
     }
+    
+    /// 快速加载长驻应用（仅从缓存获取，不提取新快捷键）
+    func quickLoadBackgroundApps() {
+        isLoadingBackgroundApps = true
+        Task {
+            await globalDatabase.quickScanBackgroundApps()
+            await MainActor.run {
+                loadBackgroundApps()
+                isLoadingBackgroundApps = false
+            }
+        }
+    }
+    
+    /// 刷新长驻应用（完整扫描并提取快捷键）
+    func refreshBackgroundApps() {
+        isLoadingBackgroundApps = true
+        Task {
+            await globalDatabase.scanRunningApplications()
+            await MainActor.run {
+                loadBackgroundApps()
+                isLoadingBackgroundApps = false
+            }
+        }
+    }
+    
+    func showShortcutsForApp(bundleId: String) {
+        // 通知 AppDelegate 显示指定应用的快捷键面板
+        NotificationCenter.default.post(
+            name: Notification.Name("ShowShortcutsForApp"),
+            object: nil,
+            userInfo: ["bundleId": bundleId]
+        )
+    }
 
     // MARK: - Private Methods
 
@@ -1083,6 +1563,9 @@ class SettingsViewModel: ObservableObject {
         logLevel = settings.logLevel
         enableGlobalRemapping = settings.enableGlobalRemapping
         enableRecordingMode = settings.enableRecordingMode
+
+        // 加载映射规则
+        remappingRules = remappingManager.getAllRules()
 
         // 监听设置变化
         observeSettings()
@@ -1166,6 +1649,11 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
+    private func loadBackgroundApps() {
+        backgroundApps = globalDatabase.getBackgroundApps()
+        Logger.shared.info("✅ 已加载 \(backgroundApps.count) 个长驻应用")
+    }
+
     private func showNotification(title: String, message: String) {
         NotificationHelper.shared.send(title: title, message: message)
     }
@@ -1181,9 +1669,655 @@ class SettingsViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Global Remapping Methods
+
+    func addRemappingRule(_ rule: RemappingRule) {
+        if remappingManager.addRemapping(rule) {
+            remappingRules = remappingManager.getAllRules()
+            showNotification(title: "映射规则已添加", message: "\(rule.fromKey) → \(rule.toKey)")
+        } else {
+            showAlert(title: "添加失败", message: "无法添加映射规则，请检查规则是否有效")
+        }
+    }
+
+    func deleteRemappingRule(_ rule: RemappingRule) {
+        remappingManager.removeRemapping(rule)
+        remappingRules = remappingManager.getAllRules()
+        showNotification(title: "映射规则已删除", message: "\(rule.fromKey) → \(rule.toKey)")
+    }
+
+    func clearAllRemappings() {
+        remappingManager.clearAllRemappings()
+        remappingRules = []
+        showNotification(title: "已清空所有映射规则", message: "")
+    }
+
+    func getAppName(for bundleId: String) -> String {
+        if bundleId == "*" {
+            return "全局应用"
+        }
+
+        if let app = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == bundleId }) {
+            return app.localizedName ?? bundleId
+        }
+
+        return bundleId
+    }
+
+    func getAppIcon(for bundleId: String) -> NSImage? {
+        if bundleId == "*" {
+            return NSImage(systemSymbolName: "globe", accessibilityDescription: nil)
+        }
+
+        if let app = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == bundleId }) {
+            return app.icon
+        }
+
+        return nil
+    }
+
     // MARK: - Combine
 
     private var cancellables = Set<AnyCancellable>()
+}
+
+// MARK: - Add Remapping Sheet
+
+struct AddRemappingSheet: View {
+    @ObservedObject var viewModel: SettingsViewModel
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
+
+    @State private var fromKey: String = ""
+    @State private var toKey: String = ""
+    @State private var bundleId: String = "*"
+    @State private var errorMessage: String? = nil
+    @State private var isRecordingFrom: Bool = false
+    @State private var isRecordingTo: Bool = false
+
+    private let settings = SettingsManager.shared
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            // Header
+            Text("添加映射规则")
+                .font(.title2)
+                .fontWeight(.semibold)
+
+            // 源快捷键
+            VStack(alignment: .leading, spacing: 8) {
+                Text("源快捷键")
+                    .font(.body)
+
+                HStack(spacing: 8) {
+                    // 输入框
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(isRecordingFrom ? Color.gray.opacity(0.05) : Color(NSColor.controlBackgroundColor))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+
+                        TextField(isRecordingFrom ? "请按下快捷键..." : "例如: ⌘T", text: $fromKey)
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .textFieldStyle(.plain)
+                            .disabled(isRecordingFrom)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                    }
+                    .frame(height: 28)
+
+                    // 录制按钮（仅当启用录制模式时显示）
+                    if settings.enableRecordingMode {
+                        Button(action: {
+                            if isRecordingFrom {
+                                stopRecordingFrom()
+                            } else {
+                                startRecordingFrom()
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: isRecordingFrom ? "stop.circle.fill" : "keyboard")
+                                    .font(.body)
+                                Text(isRecordingFrom ? "停止" : "录制")
+                                    .font(.body)
+                            }
+                            .frame(height: 28)
+                            .padding(.horizontal, 12)
+                            .background(isRecordingFrom ? Color.red : Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(6)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Text("按下这个快捷键时将被重映射")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // 目标快捷键
+            VStack(alignment: .leading, spacing: 8) {
+                Text("目标快捷键")
+                    .font(.body)
+
+                HStack(spacing: 8) {
+                    // 输入框
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(isRecordingTo ? Color.gray.opacity(0.05) : Color(NSColor.controlBackgroundColor))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+
+                        TextField(isRecordingTo ? "请按下快捷键..." : "例如: ⇧⌘T", text: $toKey)
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .textFieldStyle(.plain)
+                            .disabled(isRecordingTo)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                    }
+                    .frame(height: 28)
+
+                    // 录制按钮（仅当启用录制模式时显示）
+                    if settings.enableRecordingMode {
+                        Button(action: {
+                            if isRecordingTo {
+                                stopRecordingTo()
+                            } else {
+                                startRecordingTo()
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: isRecordingTo ? "stop.circle.fill" : "keyboard")
+                                    .font(.body)
+                                Text(isRecordingTo ? "停止" : "录制")
+                                    .font(.body)
+                            }
+                            .frame(height: 28)
+                            .padding(.horizontal, 12)
+                            .background(isRecordingTo ? Color.red : Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(6)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Text("将被映射为这个快捷键")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // 应用范围
+            VStack(alignment: .leading, spacing: 8) {
+                Text("应用范围")
+                    .font(.body)
+
+                ZStack {
+                    // 背景和边框
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 6)
+                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                        )
+
+                    // Picker
+                    Picker("", selection: $bundleId) {
+                        Text("全局应用").tag("*")
+                        // 这里可以添加更多应用选项
+                    }
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                    .buttonStyle(.plain)
+                    .opacity(0.01)
+
+                    // 显示内容
+                    HStack {
+                        Text(bundleId == "*" ? "全局应用" : bundleId)
+                            .font(.body)
+                            .foregroundColor(.primary)
+                            .padding(.leading, 8)
+                        Spacer()
+                        Image(systemName: "chevron.down")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.trailing, 8)
+                    }
+                    .allowsHitTesting(false)
+                }
+                .frame(height: 28)
+
+                Text("选择映射规则适用的应用")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // 错误消息
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .font(.caption)
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(6)
+            }
+
+            Spacer()
+
+            // 按钮
+            HStack(spacing: 12) {
+                Button(action: {
+                    stopRecordingFrom()
+                    stopRecordingTo()
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("取消")
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                )
+                .foregroundColor(.primary)
+
+                Button(action: {
+                    addRule()
+                }) {
+                    Text("添加")
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(fromKey.isEmpty || toKey.isEmpty ? Color.gray.opacity(0.3) : Color.blue)
+                )
+                .foregroundColor(.white)
+                .cornerRadius(6)
+                .disabled(fromKey.isEmpty || toKey.isEmpty)
+            }
+        }
+        .padding(24)
+        .frame(width: 300)
+    }
+
+    private func addRule() {
+        let rule = RemappingRule(fromKey: fromKey, toKey: toKey, bundleId: bundleId)
+
+        // 验证规则
+        let validation = RemappingManager.shared.validateRemapping(rule)
+        if !validation.isValid {
+            errorMessage = validation.errorMessage
+            return
+        }
+
+        // 添加规则
+        viewModel.addRemappingRule(rule)
+        presentationMode.wrappedValue.dismiss()
+    }
+
+    // MARK: - 录制功能
+
+    private func startRecordingFrom() {
+        guard settings.enableRecordingMode else {
+            errorMessage = "录制功能未启用，请在设置中开启"
+            return
+        }
+
+        Logger.shared.info("🎙️ 开始录制源快捷键...")
+        isRecordingFrom = true
+        errorMessage = nil
+
+        KeyRecorder.shared.startRecording { keyCombination in
+            DispatchQueue.main.async {
+                self.fromKey = keyCombination.displayString
+                self.isRecordingFrom = false
+                Logger.shared.info("📝 录制完成: \(keyCombination.displayString)")
+            }
+        }
+    }
+
+    private func stopRecordingFrom() {
+        isRecordingFrom = false
+        KeyRecorder.shared.stopRecording()
+    }
+
+    private func startRecordingTo() {
+        guard settings.enableRecordingMode else {
+            errorMessage = "录制功能未启用，请在设置中开启"
+            return
+        }
+
+        Logger.shared.info("🎙️ 开始录制目标快捷键...")
+        isRecordingTo = true
+        errorMessage = nil
+
+        KeyRecorder.shared.startRecording { keyCombination in
+            DispatchQueue.main.async {
+                self.toKey = keyCombination.displayString
+                self.isRecordingTo = false
+                Logger.shared.info("📝 录制完成: \(keyCombination.displayString)")
+            }
+        }
+    }
+
+    private func stopRecordingTo() {
+        isRecordingTo = false
+        KeyRecorder.shared.stopRecording()
+    }
+}
+
+// MARK: - Edit Remapping Sheet
+
+struct EditRemappingSheet: View {
+    @ObservedObject var viewModel: SettingsViewModel
+    let rule: RemappingRule
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
+
+    @State private var fromKey: String = ""
+    @State private var toKey: String = ""
+    @State private var bundleId: String = "*"
+    @State private var errorMessage: String? = nil
+    @State private var isRecordingFrom: Bool = false
+    @State private var isRecordingTo: Bool = false
+
+    private let settings = SettingsManager.shared
+
+    init(viewModel: SettingsViewModel, rule: RemappingRule) {
+        self.viewModel = viewModel
+        self.rule = rule
+        _fromKey = State(initialValue: rule.fromKey)
+        _toKey = State(initialValue: rule.toKey)
+        _bundleId = State(initialValue: rule.bundleId)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            // Header
+            Text("编辑映射规则")
+                .font(.title2)
+                .fontWeight(.semibold)
+
+            // 源快捷键
+            VStack(alignment: .leading, spacing: 8) {
+                Text("源快捷键")
+                    .font(.body)
+
+                HStack(spacing: 8) {
+                    // 输入框
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(isRecordingFrom ? Color.gray.opacity(0.05) : Color(NSColor.controlBackgroundColor))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+
+                        TextField(isRecordingFrom ? "请按下快捷键..." : "例如: ⌘T", text: $fromKey)
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .textFieldStyle(.plain)
+                            .disabled(isRecordingFrom)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                    }
+                    .frame(height: 28)
+
+                    // 录制按钮（仅当启用录制模式时显示）
+                    if settings.enableRecordingMode {
+                        Button(action: {
+                            if isRecordingFrom {
+                                stopRecordingFrom()
+                            } else {
+                                startRecordingFrom()
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: isRecordingFrom ? "stop.circle.fill" : "keyboard")
+                                    .font(.body)
+                                Text(isRecordingFrom ? "停止" : "录制")
+                                    .font(.body)
+                            }
+                            .frame(height: 28)
+                            .padding(.horizontal, 12)
+                            .background(isRecordingFrom ? Color.red : Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(6)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Text("按下这个快捷键时将被重映射")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // 目标快捷键
+            VStack(alignment: .leading, spacing: 8) {
+                Text("目标快捷键")
+                    .font(.body)
+
+                HStack(spacing: 8) {
+                    // 输入框
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(isRecordingTo ? Color.gray.opacity(0.05) : Color(NSColor.controlBackgroundColor))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            )
+
+                        TextField(isRecordingTo ? "请按下快捷键..." : "例如: ⇧⌘T", text: $toKey)
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .textFieldStyle(.plain)
+                            .disabled(isRecordingTo)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                    }
+                    .frame(height: 28)
+
+                    // 录制按钮（仅当启用录制模式时显示）
+                    if settings.enableRecordingMode {
+                        Button(action: {
+                            if isRecordingTo {
+                                stopRecordingTo()
+                            } else {
+                                startRecordingTo()
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: isRecordingTo ? "stop.circle.fill" : "keyboard")
+                                    .font(.body)
+                                Text(isRecordingTo ? "停止" : "录制")
+                                    .font(.body)
+                            }
+                            .frame(height: 28)
+                            .padding(.horizontal, 12)
+                            .background(isRecordingTo ? Color.red : Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(6)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Text("将被映射为这个快捷键")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // 应用范围（只读）
+            VStack(alignment: .leading, spacing: 8) {
+                Text("应用范围")
+                    .font(.body)
+                Text(bundleId == "*" ? "全局应用" : viewModel.getAppName(for: bundleId))
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(6)
+                Text("应用范围不可修改")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            // 错误消息
+            if let errorMessage = errorMessage {
+                Text(errorMessage)
+                    .font(.caption)
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(6)
+            }
+
+            Spacer()
+
+            // 按钮
+            HStack(spacing: 12) {
+                Button(action: {
+                    stopRecordingFrom()
+                    stopRecordingTo()
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text("取消")
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                )
+                .foregroundColor(.primary)
+
+                Button(action: {
+                    saveChanges()
+                }) {
+                    Text("保存")
+                        .font(.body)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .frame(height: 28)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(fromKey.isEmpty || toKey.isEmpty ? Color.gray.opacity(0.3) : Color.blue)
+                )
+                .foregroundColor(.white)
+                .cornerRadius(6)
+                .disabled(fromKey.isEmpty || toKey.isEmpty)
+            }
+        }
+        .padding(24)
+        .frame(width: 300)
+    }
+
+    private func saveChanges() {
+        // 先删除旧规则
+        viewModel.deleteRemappingRule(rule)
+
+        // 添加新规则
+        let newRule = RemappingRule(fromKey: fromKey, toKey: toKey, bundleId: bundleId)
+
+        // 验证规则
+        let validation = RemappingManager.shared.validateRemapping(newRule)
+        if !validation.isValid {
+            errorMessage = validation.errorMessage
+            // 恢复旧规则
+            viewModel.addRemappingRule(rule)
+            return
+        }
+
+        // 添加新规则
+        viewModel.addRemappingRule(newRule)
+        presentationMode.wrappedValue.dismiss()
+    }
+    
+    // MARK: - 录制功能
+    
+    private func startRecordingFrom() {
+        guard settings.enableRecordingMode else {
+            errorMessage = "录制功能未启用，请在设置中开启"
+            return
+        }
+        
+        Logger.shared.info("🎙️ 开始录制源快捷键...")
+        isRecordingFrom = true
+        errorMessage = nil
+        
+        KeyRecorder.shared.startRecording { keyCombination in
+            DispatchQueue.main.async {
+                self.fromKey = keyCombination.displayString
+                self.isRecordingFrom = false
+                Logger.shared.info("📝 录制完成: \(keyCombination.displayString)")
+            }
+        }
+    }
+    
+    private func stopRecordingFrom() {
+        isRecordingFrom = false
+        KeyRecorder.shared.stopRecording()
+    }
+    
+    private func startRecordingTo() {
+        guard settings.enableRecordingMode else {
+            errorMessage = "录制功能未启用，请在设置中开启"
+            return
+        }
+        
+        Logger.shared.info("🎙️ 开始录制目标快捷键...")
+        isRecordingTo = true
+        errorMessage = nil
+        
+        KeyRecorder.shared.startRecording { keyCombination in
+            DispatchQueue.main.async {
+                self.toKey = keyCombination.displayString
+                self.isRecordingTo = false
+                Logger.shared.info("📝 录制完成: \(keyCombination.displayString)")
+            }
+        }
+    }
+    
+    private func stopRecordingTo() {
+        isRecordingTo = false
+        KeyRecorder.shared.stopRecording()
+    }
 }
 
 // MARK: - DatabaseManager Extension

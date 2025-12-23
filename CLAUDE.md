@@ -605,3 +605,61 @@ enableGlobalRemapping: Bool = false
 enableRecordingMode: Bool = false
 ```
 
+### 2025-12-23 - 全局映射面板UI优化
+
+**长驻应用列表智能过滤**:
+- ✅ 只显示有快捷键的应用（shortcutCount > 0）
+- ✅ 添加系统核心进程黑名单（40+个系统组件）
+- ✅ 排除Helper/Plugin/Renderer等辅助进程
+- ✅ 第三方应用优先排序
+- ✅ 用户手动标记的应用始终显示
+
+**全局映射面板UI优化**:
+- ✅ 添加按钮样式匹配长驻应用面板（28px高度，白色/灰色背景）
+- ✅ 面板顶部间距统一为16px（.padding(.top, 16)）
+- ✅ 整体布局参考长驻应用面板
+
+**添加/编辑映射弹窗重构**:
+- ✅ 弹窗宽度缩小1/3（450px → 300px）
+- ✅ 高度改为自适应（移除固定500px）
+- ✅ 输入框高度统一28px，样式匹配快捷键面板
+- ✅ 添加快捷键录制功能（源快捷键 + 目标快捷键）
+- ✅ 录制按钮受"高级设置 → 启用快捷键录制模式"控制
+- ✅ 录制状态视觉反馈（录制时输入框变灰，按钮变红）
+- ✅ 取消/添加/保存按钮样式统一
+
+**快捷键显示样式统一**:
+- ✅ 映射规则列表快捷键使用KeyBadge风格
+- ✅ 深色背景：深色模式Color(white: 0.3)，浅色模式Color(white: 0.25)
+- ✅ 白色文字 + 中等字重
+- ✅ 紧凑内边距（horizontal: 4px, vertical: 1px）
+- ✅ 与快捷键面板样式完全一致
+
+**清空所有按钮优化**:
+- ✅ 高度统一28px
+- ✅ 红色半透明背景（Color.red.opacity(0.15)）+ 红色边框
+- ✅ 字体和内边距与其他按钮统一
+
+**技术细节**:
+- **GlobalShortcutDatabase.swift**: 
+  - 新增 `shouldExcludeSystemProcess()` 方法
+  - 增强 `identifyBackgroundApps()` 智能过滤逻辑
+  - 系统进程黑名单包含辅助功能、系统代理、核心组件等
+  
+- **SettingsWindow.swift**:
+  - `AddRemappingSheet` 和 `EditRemappingSheet` 完全重构
+  - 添加录制状态管理（@State isRecordingFrom/To）
+  - 集成 KeyRecorder 实现快捷键录制
+  - 快捷键显示样式从半透明色块改为KeyBadge风格
+  - 清空所有按钮从简单文本改为规范按钮样式
+
+**视觉改进**:
+- 弹窗更紧凑，高度自适应避免空白
+- 所有面板顶部间距统一，视觉更整洁
+- 快捷键清晰醒目，深色背景 + 白色文字
+- 所有按钮28px高度，样式协调统一
+
+**修改文件**:
+- Keymap/Core/Monitoring/GlobalShortcutDatabase.swift
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+

@@ -48,17 +48,22 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
         // 创建半透明窗口（无标题栏）
         panelWindow = KeyboardPanel(
             contentRect: NSRect(x: 0, y: 0, width: 500, height: 600),
-            styleMask: [.borderless],  // 移除标题栏
+            styleMask: [.borderless, .nonactivatingPanel],  // ✅ 添加 nonactivatingPanel
             backing: .buffered,
             defer: false
         )
 
         panelWindow?.isFloatingPanel = true
-        panelWindow?.level = .floating  // 改用 floating 层级，确保窗口在其他窗口之上
+        panelWindow?.level = .floating
         panelWindow?.backgroundColor = .clear
         panelWindow?.isOpaque = false
         panelWindow?.hasShadow = true
         panelWindow?.contentView = hostingView
+        
+        // ✅ 关键：确保窗口可以成为主窗口并接收事件
+        panelWindow?.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        panelWindow?.hidesOnDeactivate = false
+        panelWindow?.becomesKeyOnlyIfNeeded = false  // 强制成为 key window
 
         // 启用窗口拖动
         panelWindow?.isMovableByWindowBackground = true
@@ -78,6 +83,13 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
             return
         }
 
+        // ✅ 在激活 Keymap 之前先获取前台应用（避免获取到 Keymap 自己）
+        let previousFrontmostApp = NSWorkspace.shared.frontmostApplication
+        print("📱 打开面板前的前台应用: \(previousFrontmostApp?.localizedName ?? "nil")")
+
+        // ✅ 激活应用（确保应用在前台）
+        NSApp.activate(ignoringOtherApps: true)
+
         // 获取屏幕可见区域
         let screenFrame = NSScreen.main?.visibleFrame ?? .zero
 
@@ -91,26 +103,69 @@ class ShortcutPanelController: NSWindowController, NSWindowDelegate {
         print("🪟 窗口大小: \(window.frame.size)")
         print("🎚️ 窗口层级: \(window.level.rawValue)")
 
-        // 更新视图数据
-        if let viewModel = hostingView?.rootView.viewModel {
-            viewModel.loadCurrentAppShortcuts()
-            print("📋 开始加载快捷键数据")
-        }
-
-        // 显示窗口
+        // ✅ 显示窗口并立即成为主窗口
         window.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        
+        // ✅ 再次确保窗口成为 key window
+        window.makeKey()
+        
+        print("✅ 窗口已显示")
 
-        // 检查窗口是否真的可见
+        // 检查窗口状态
         print("👁️ 窗口是否可见: \(window.isVisible)")
         print("🔑 窗口是否为主窗口: \(window.isKeyWindow)")
-        print("✅ 窗口已显示")
+        
+        // ✅ 立即在后台加载数据，传入激活前的前台应用
+        if let viewModel = hostingView?.rootView.viewModel {
+            viewModel.loadCurrentAppShortcuts(targetApp: previousFrontmostApp)
+            print("📋 开始加载快捷键数据（后台线程）")
+        }
 
         // 设置ESC监听器
         setupEscapeMonitor()
         
         // 设置自动关闭定时器
         setupAutoCloseTimer()
+    }
+
+    /// 显示指定应用的快捷键面板
+    func showPanel(for bundleId: String) {
+        print("📱 准备显示应用快捷键: \(bundleId)")
+        
+        guard let window = panelWindow else {
+            print("⚠️ 面板窗口未初始化")
+            return
+        }
+        
+        // 获取应用名称
+        let runningApps = NSWorkspace.shared.runningApplications
+        let appName = runningApps.first(where: { $0.bundleIdentifier == bundleId })?.localizedName ?? bundleId
+        
+        print("📱 应用名称: \(appName)")
+        
+        // 创建新的 ViewModel 并设置目标应用
+        let viewModel = ShortcutPanelViewModel()
+        viewModel.loadShortcuts(for: bundleId, appName: appName)
+        
+        // 创建新的面板视图
+        let panelView = ShortcutPanelView(viewModel: viewModel)
+        let newHostingView = NSHostingView(rootView: panelView)
+        
+        // 替换内容视图
+        window.contentView = newHostingView
+        hostingView = newHostingView
+        
+        // 激活应用并显示面板
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
+        
+        // 设置ESC键监听
+        setupEscapeMonitor()
+        
+        // 设置自动关闭定时器
+        setupAutoCloseTimer()
+        
+        print("✅ 面板已显示，内容为应用: \(appName)")
     }
 
     func hidePanel() {

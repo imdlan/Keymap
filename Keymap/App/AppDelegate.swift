@@ -84,14 +84,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
         
-        // 7. 添加全局快捷键监听器
+        // 7. 监听快捷键冲突通知
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleConflictFound),
+            name: .conflictFound,
+            object: nil
+        )
+        
+        // 8. 添加全局快捷键监听器
         setupGlobalShortcuts()
         
-        // 8. 监听触发快捷键设置变化以更新菜单
+        // 9. 监听触发快捷键设置变化以更新菜单
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateMenuBarShortcut),
             name: .triggerKeyChanged,
+            object: nil
+        )
+        
+        // 10. 监听显示指定应用快捷键的请求
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleShowShortcutsForApp),
+            name: Notification.Name("ShowShortcutsForApp"),
             object: nil
         )
     }
@@ -264,6 +280,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         shortcutPanelController?.showPanel()
         print("✅ showPanel方法已调用")
     }
+    
+    @objc private func handleShowShortcutsForApp(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let bundleId = userInfo["bundleId"] as? String else {
+            print("⚠️ 无法获取应用Bundle ID")
+            return
+        }
+        
+        print("📋 准备显示应用快捷键: \(bundleId)")
+        
+        // 关闭设置窗口
+        settingsWindow?.close()
+        
+        // 显示指定应用的快捷键面板
+        shortcutPanelController?.showPanel(for: bundleId)
+    }
 
     @objc private func permissionStatusChanged() {
         print("📢 权限状态变化通知收到")
@@ -347,6 +379,64 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 创建新窗口
         settingsWindow = SettingsWindow()
         settingsWindow?.showWindow()
+    }
+    
+    @objc private func handleConflictFound(_ notification: Notification) {
+        // 从通知中获取冲突信息
+        guard let userInfo = notification.userInfo,
+              let conflicts = userInfo["conflicts"] as? [ConflictInfo],
+              let keyCombination = userInfo["keyCombination"] as? String else {
+            return
+        }
+        
+        print("⚠️ 收到冲突通知: \(keyCombination), \(conflicts.count) 个冲突")
+        
+        // 检查是否启用冲突通知
+        guard SettingsManager.shared.showConflictNotifications else {
+            print("ℹ️ 冲突通知已禁用，跳过显示")
+            return
+        }
+        
+        // 构建通知内容
+        let firstConflict = conflicts.first!
+        let title = "检测到快捷键冲突"
+        var message = "快捷键 \(keyCombination) "
+        
+        switch firstConflict.conflictType {
+        case .system:
+            message += "与系统快捷键冲突"
+        case .global:
+            message += "与 \(firstConflict.conflictingApp) 冲突"
+        case .application:
+            message += "应用内重复定义"
+        case .functional:
+            message += "功能冲突"
+        }
+        
+        if conflicts.count > 1 {
+            message += "，共 \(conflicts.count) 个冲突"
+        }
+        
+        // 显示系统通知（点击打开快捷键面板）
+        NotificationHelper.shared.sendWithAction(
+            title: title,
+            message: message,
+            actionTitle: "查看详情",
+            userInfo: ["keyCombination": keyCombination]
+        ) { [weak self] in
+            // 用户点击通知 - 打开快捷键面板并聚焦到冲突
+            DispatchQueue.main.async {
+                self?.showShortcutPanelAndFocusConflict(keyCombination)
+            }
+        }
+    }
+    
+    private func showShortcutPanelAndFocusConflict(_ keyCombination: String) {
+        // 显示快捷键面板
+        shortcutPanelController?.showPanel()
+        
+        // TODO: 通知 ViewModel 展开特定冲突（需要在 ViewModel 中添加方法）
+        print("📋 打开快捷键面板并聚焦到冲突: \(keyCombination)")
     }
 
     @objc private func showAbout() {
