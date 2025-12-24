@@ -1637,15 +1637,15 @@ class SettingsViewModel: ObservableObject {
         // 获取使用记录数
         let usageSql = "SELECT COUNT(*) as count FROM usage_records"
         let usageResults = databaseManager.executeQuery(usageSql)
-        if let first = usageResults.first, let count = first["count"] as? Int {
-            usageRecordsCount = count
+        if let first = usageResults.first, let count = first["count"] as? Int64 {
+            usageRecordsCount = Int(count)
         }
 
         // 获取快捷键数
         let shortcutsSql = "SELECT COUNT(*) as count FROM shortcuts"
         let shortcutsResults = databaseManager.executeQuery(shortcutsSql)
-        if let first = shortcutsResults.first, let count = first["count"] as? Int {
-            shortcutsCount = count
+        if let first = shortcutsResults.first, let count = first["count"] as? Int64 {
+            shortcutsCount = Int(count)
         }
     }
 
