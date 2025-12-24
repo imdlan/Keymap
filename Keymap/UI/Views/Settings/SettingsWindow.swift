@@ -125,8 +125,8 @@ struct SettingsView: View {
 
             Spacer()
         }
-        .padding(.top, 16)
-        .padding(.bottom, 16)
+        .padding(.top, 22)
+        .padding(.bottom, 22)
     }
 
     // MARK: - Content
@@ -257,7 +257,7 @@ struct SettingsView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 32)
         }
         .padding(.top, 16)
     }
@@ -362,7 +362,7 @@ struct SettingsView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 32)
         }
         .padding(.top, 16)
     }
@@ -491,7 +491,7 @@ struct SettingsView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 32)
         }
         .padding(.top, 16)
         .sheet(isPresented: $viewModel.showAddRemappingSheet) {
@@ -713,7 +713,7 @@ struct SettingsView: View {
                 .cornerRadius(8)
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 32)
         }
         .padding(.top, 16)
         .onAppear {
@@ -1020,7 +1020,7 @@ struct SettingsView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 32)
         }
         .padding(.top, 16)
     }
@@ -1159,7 +1159,7 @@ struct SettingsView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
+            .padding(.bottom, 32)
         }
         .padding(.top, 16)
     }
