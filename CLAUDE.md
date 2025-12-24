@@ -436,6 +436,54 @@ swift scripts/verify/verify_shortcuts.swift  # 验证系统快捷键数量
 
 ## 更新日志
 
+### 2025-12-24 - 修复使用统计追踪功能 Bug
+
+**问题发现**:
+- 🐛 用户报告：使用过很多次快捷键且开启使用统计追踪，但数据库显示使用记录数和快捷键数都是 0
+- 🐛 问题根源：`SettingsManager` 中6个 Bool 属性使用了 `UserDefaults.bool(forKey:)` 方法
+
+**根本原因**:
+- `UserDefaults.bool(forKey:)` 在键不存在时返回 `false`，而**不是**使用 `registerDefaults()` 注册的默认值
+- 即使在 `registerDefaults()` 中设置了 `Keys.enableUsageTracking: true`，第一次读取时仍然返回 `false`
+- 导致 `GlobalEventMonitor` 的 `recordUsageStatistics()` 检查设置后直接 return，不记录任何数据
+
+**修复方案**:
+- 将6个 Bool 属性的 getter 从 `defaults.bool(forKey:)` 改为 `defaults.object(forKey:) as? Bool ?? defaultValue`
+
+**修复的属性**:
+1. ✅ `launchAtLogin` (默认 false)
+2. ✅ `enableRealTimeDetection` (默认 true)
+3. ✅ `showNotifications` (默认 true)
+4. ✅ `enableUsageTracking` (默认 true) ← **最关键**
+5. ✅ `enableGlobalRemapping` (默认 false)
+6. ✅ `enableRecordingMode` (默认 false)
+
+**影响**:
+- 修复后，`enableUsageTracking` 将正确返回 `true`（默认值）
+- `GlobalEventMonitor` 将开始记录快捷键使用数据到数据库
+- 用户可以在设置面板看到正确的使用记录数和快捷键数
+- 统计分析功能将正常工作
+
+**技术细节**:
+```swift
+// ❌ 错误写法（会返回 false 而不是默认值）
+var enableUsageTracking: Bool {
+    get {
+        return defaults.bool(forKey: Keys.enableUsageTracking)
+    }
+}
+
+// ✅ 正确写法（会返回默认值 true）
+var enableUsageTracking: Bool {
+    get {
+        return defaults.object(forKey: Keys.enableUsageTracking) as? Bool ?? true
+    }
+}
+```
+
+**修改文件**:
+- Keymap/Data/SettingsManager.swift
+
 ### 2025-12-24 - 设置面板布局优化
 
 **布局调整**:
