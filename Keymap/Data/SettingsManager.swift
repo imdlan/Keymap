@@ -64,7 +64,7 @@ class SettingsManager {
     /// 开机自动启动
     var launchAtLogin: Bool {
         get {
-            return defaults.bool(forKey: Keys.launchAtLogin)
+            return defaults.object(forKey: Keys.launchAtLogin) as? Bool ?? false
         }
         set {
             defaults.set(newValue, forKey: Keys.launchAtLogin)
@@ -112,7 +112,7 @@ class SettingsManager {
     /// 实时冲突检测开关
     var enableRealTimeDetection: Bool {
         get {
-            return defaults.bool(forKey: Keys.enableRealTimeDetection)
+            return defaults.object(forKey: Keys.enableRealTimeDetection) as? Bool ?? true
         }
         set {
             defaults.set(newValue, forKey: Keys.enableRealTimeDetection)
@@ -142,7 +142,7 @@ class SettingsManager {
     /// 显示通知
     var showNotifications: Bool {
         get {
-            return defaults.bool(forKey: Keys.showNotifications)
+            return defaults.object(forKey: Keys.showNotifications) as? Bool ?? true
         }
         set {
             defaults.set(newValue, forKey: Keys.showNotifications)
@@ -178,7 +178,7 @@ class SettingsManager {
     /// 使用统计追踪开关
     var enableUsageTracking: Bool {
         get {
-            return defaults.bool(forKey: Keys.enableUsageTracking)
+            return defaults.object(forKey: Keys.enableUsageTracking) as? Bool ?? true
         }
         set {
             defaults.set(newValue, forKey: Keys.enableUsageTracking)
@@ -248,7 +248,7 @@ class SettingsManager {
     /// 启用全局快捷键重映射
     var enableGlobalRemapping: Bool {
         get {
-            return defaults.bool(forKey: Keys.enableGlobalRemapping)
+            return defaults.object(forKey: Keys.enableGlobalRemapping) as? Bool ?? false
         }
         set {
             defaults.set(newValue, forKey: Keys.enableGlobalRemapping)
@@ -259,7 +259,7 @@ class SettingsManager {
     /// 启用快捷键录制模式
     var enableRecordingMode: Bool {
         get {
-            return defaults.bool(forKey: Keys.enableRecordingMode)
+            return defaults.object(forKey: Keys.enableRecordingMode) as? Bool ?? false
         }
         set {
             defaults.set(newValue, forKey: Keys.enableRecordingMode)
