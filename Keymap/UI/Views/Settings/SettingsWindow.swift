@@ -1013,7 +1013,7 @@ struct SettingsView: View {
                     }
 
                     HStack {
-                        Text("快捷键数:")
+                        Text("已用快捷键:")
                         Text("\(viewModel.shortcutsCount)")
                             .foregroundColor(.secondary)
                     }
@@ -1641,8 +1641,8 @@ class SettingsViewModel: ObservableObject {
             usageRecordsCount = Int(count)
         }
 
-        // 获取快捷键数
-        let shortcutsSql = "SELECT COUNT(*) as count FROM shortcuts"
+        // 获取不同快捷键数（已使用的快捷键种类）
+        let shortcutsSql = "SELECT COUNT(DISTINCT shortcut_key) as count FROM usage_records"
         let shortcutsResults = databaseManager.executeQuery(shortcutsSql)
         if let first = shortcutsResults.first, let count = first["count"] as? Int64 {
             shortcutsCount = Int(count)
