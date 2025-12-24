@@ -484,6 +484,72 @@ var enableUsageTracking: Bool {
 **修改文件**:
 - Keymap/Data/SettingsManager.swift
 
+### 2025-12-24 - 修复数据库统计查询类型转换错误
+
+**问题发现**:
+- 🐛 用户报告：数据库实际有 2918 条使用记录，但设置面板显示为 0
+- 🐛 问题根源：`loadDatabaseInfo()` 中查询结果类型转换错误
+
+**根本原因**:
+- SQLite 的 `COUNT(*)` 返回 `Int64` 类型
+- `DatabaseManager.executeQuery()` 正确返回了 `Int64`
+- 但 `SettingsWindow` 尝试将其直接转换为 `Int` 失败
+- Swift 的 `as?` 在类型不匹配时返回 `nil`，导致计数获取失败
+
+**修复方案**:
+- 将 `as? Int` 改为 `as? Int64`，然后转换为 `Int(count)`
+
+**技术细节**:
+```swift
+// ❌ 错误写法（Int64 无法直接转换为 Int）
+if let count = first["count"] as? Int {
+    usageRecordsCount = count
+}
+
+// ✅ 正确写法（先转换为 Int64，再转为 Int）
+if let count = first["count"] as? Int64 {
+    usageRecordsCount = Int(count)
+}
+```
+
+**修复内容**:
+1. ✅ 使用记录数查询类型转换
+2. ✅ 快捷键数查询类型转换
+
+**影响**:
+- 修复后，设置面板正确显示使用记录数（2919）
+- 数据验证：通过 sqlite3 命令确认数据库实际包含 2918+ 条记录
+- 统计功能恢复正常
+
+**修改文件**:
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+
+### 2025-12-24 - 优化数据库统计显示
+
+**优化内容**:
+- ✅ 将"快捷键数"改为"已用快捷键"（更简洁明确）
+- ✅ 统计逻辑优化：从无意义的 `shortcuts` 表改为使用记录中的不同快捷键
+- ✅ 查询优化：`COUNT(DISTINCT shortcut_key) FROM usage_records`
+
+**修改前后对比**:
+```
+❌ 旧显示：快捷键数: 0
+✅ 新显示：已用快捷键: 116
+```
+
+**统计含义**:
+- **使用记录数**: 2919（使用快捷键的总次数）
+- **已用快捷键**: 116（使用过的不同快捷键种类）
+- **数据解读**: 平均每种快捷键使用约 25 次（2919 ÷ 116）
+
+**用户价值**:
+- 更准确反映用户实际使用的快捷键种类
+- 与使用记录数配合，清晰展示使用习惯
+- 文字更简洁，界面更清爽
+
+**修改文件**:
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+
 ### 2025-12-24 - 设置面板布局优化
 
 **布局调整**:
