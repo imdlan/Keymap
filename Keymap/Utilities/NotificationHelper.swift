@@ -25,9 +25,13 @@ class NotificationHelper: NSObject, UNUserNotificationCenterDelegate {
     /// 请求通知权限
     private func requestAuthorization() {
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound]) { granted, error in
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {
                 print("⚠️ 通知权限请求失败: \(error.localizedDescription)")
+            } else if granted {
+                print("✅ 通知权限已授予")
+            } else {
+                print("❌ 通知权限被拒绝")
             }
         }
     }

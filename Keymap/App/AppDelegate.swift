@@ -7,6 +7,7 @@
 
 import AppKit
 import SwiftUI
+import UserNotifications
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem?
@@ -49,12 +50,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("⚠️ 请前往: 系统设置 → 隐私与安全性 → 辅助功能")
             print("⚠️ 勾选 Keymap.app")
 
-            // 显示提示通知
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                NotificationHelper.shared.send(
-                    title: "需要辅助功能权限",
-                    message: "请在系统设置中授予Keymap辅助功能权限"
-                )
+            // 延迟2秒发送通知，确保通知权限已授予
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                // 检查通知权限状态
+                UNUserNotificationCenter.current().getNotificationSettings { settings in
+                    if settings.authorizationStatus == .authorized {
+                        print("✅ 通知权限已授予，发送提示通知")
+                        NotificationHelper.shared.send(
+                            title: "需要辅助功能权限",
+                            message: "请在系统设置中授予Keymap辅助功能权限"
+                        )
+                    } else {
+                        print("❌ 通知权限未授予: \(settings.authorizationStatus.rawValue)")
+                    }
+                }
             }
         }
 
