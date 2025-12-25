@@ -23,9 +23,6 @@ class KeyRecorder {
     /// 事件监听器
     private var eventMonitor: Any?
     
-    /// 设置管理器
-    private let settings = SettingsManager.shared
-    
     // MARK: - Singleton
     
     static let shared = KeyRecorder()
@@ -38,15 +35,6 @@ class KeyRecorder {
     func startRecording(callback: @escaping (KeyCombination) -> Void) {
         guard !isRecording else {
             Logger.warning("录制已在进行中")
-            return
-        }
-        
-        guard settings.enableRecordingMode else {
-            Logger.warning("快捷键录制模式未启用，请在设置中开启")
-            NotificationHelper.shared.send(
-                title: "录制模式未启用",
-                message: "请在设置 → 高级 → 实验性功能中启用快捷键录制模式"
-            )
             return
         }
         

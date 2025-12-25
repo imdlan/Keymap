@@ -114,10 +114,10 @@ class UsageRepository {
         let endDate = Date()
         let timestamp = Int64(startDate.timeIntervalSince1970)
 
-        // 调试输出
+        // 详细调试输出
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone.current
         let periodName: String
         switch period {
         case .today: periodName = "今天"
@@ -125,15 +125,20 @@ class UsageRepository {
         case .month: periodName = "本月"
         case .all: periodName = "全部"
         }
-        print("📊 统计周期: \(periodName)")
-        print("📊 开始时间: \(formatter.string(from: startDate)) (timestamp: \(timestamp))")
+        print("📊 ========== 统计查询 ==========")
+        print("📊 周期: \(periodName)")
+        print("📊 本地时区: \(TimeZone.current.identifier)")
+        print("📊 起始时间: \(formatter.string(from: startDate))")
+        print("📊 起始时间戳: \(timestamp)")
         print("📊 结束时间: \(formatter.string(from: endDate))")
+        print("📊 ===============================")
 
         // 1. 总使用次数
         let totalSQL = """
         SELECT COUNT(*) as count FROM usage_records
         WHERE timestamp >= \(timestamp);
         """
+        print("📊 执行SQL: \(totalSQL)")
         let totalRows = db.executeQuery(totalSQL)
         let totalUsage = Int(totalRows.first?["count"] as? Int64 ?? 0)
         print("📊 总使用次数: \(totalUsage)")

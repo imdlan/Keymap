@@ -14,6 +14,7 @@ class StatisticsWindow: NSWindow {
     // MARK: - Properties
 
     private var hostingView: NSHostingView<StatisticsView>?
+    private var viewModel: StatisticsViewModel?
 
     // MARK: - Initialization
 
@@ -50,11 +51,13 @@ class StatisticsWindow: NSWindow {
     }
 
     private func setupContent() {
-        let statisticsView = StatisticsView()
+        let viewModel = StatisticsViewModel()
+        let statisticsView = StatisticsView(viewModel: viewModel)
         let hostingView = NSHostingView(rootView: statisticsView)
 
         contentView = hostingView
         self.hostingView = hostingView
+        self.viewModel = viewModel
     }
 
     // MARK: - Public Methods
@@ -65,6 +68,9 @@ class StatisticsWindow: NSWindow {
 
         // 激活应用
         NSApp.activate(ignoringOtherApps: true)
+        
+        // 刷新数据
+        viewModel?.refresh()
     }
 }
 
@@ -75,7 +81,7 @@ struct StatisticsView: View {
     // MARK: - State
 
     @Environment(\.colorScheme) var colorScheme  // 检测深色/浅色模式
-    @StateObject private var viewModel = StatisticsViewModel()
+    @ObservedObject var viewModel: StatisticsViewModel
     @State private var selectedPeriod: StatisticsPeriod = .today
     @State private var selectedApp: String? = nil
 
@@ -125,8 +131,8 @@ struct StatisticsView: View {
             HStack(spacing: 0) {
                 ForEach([
                     (StatisticsPeriod.today, "今天"),
-                    (StatisticsPeriod.week, "本周"),
-                    (StatisticsPeriod.month, "本月"),
+                    (StatisticsPeriod.week, "过去7天"),
+                    (StatisticsPeriod.month, "过去30天"),
                     (StatisticsPeriod.all, "全部")
                 ], id: \.0) { period, title in
                     Button(action: {
@@ -137,7 +143,7 @@ struct StatisticsView: View {
                             .font(.body)
                             .fontWeight(selectedPeriod == period ? .semibold : .regular)
                             .foregroundColor(selectedPeriod == period ? .white : .primary)
-                            .frame(width: 70, height: 28)
+                            .frame(width: 80, height: 28)
                             .contentShape(Rectangle())
                             .background(
                                 selectedPeriod == period ? 
@@ -215,35 +221,40 @@ struct StatisticsView: View {
 
             HStack(spacing: 20) {
                 // 总使用次数
-                statisticCard(
+                AnimatedStatisticCard(
                     title: "总使用次数",
-                    value: "\(viewModel.summary.totalUsage)",
+                    targetValue: viewModel.summary.totalUsage,
                     icon: "hand.tap.fill",
-                    color: .blue
+                    color: .blue,
+                    isAnimating: viewModel.isAnimating
                 )
 
                 // 冲突次数
-                statisticCard(
+                AnimatedStatisticCard(
                     title: "冲突次数",
-                    value: "\(viewModel.summary.conflictCount)",
+                    targetValue: viewModel.summary.conflictCount,
                     icon: "exclamationmark.triangle.fill",
-                    color: .orange
+                    color: .orange,
+                    isAnimating: viewModel.isAnimating
                 )
 
                 // 无冲突率
-                statisticCard(
+                AnimatedStatisticCard(
                     title: "无冲突率",
-                    value: String(format: "%.1f%%", viewModel.summary.efficiencyScore),
+                    targetValue: Int(viewModel.summary.efficiencyScore * 10),
                     icon: "checkmark.shield.fill",
-                    color: .green
+                    color: .green,
+                    isAnimating: viewModel.isAnimating,
+                    isPercentage: true
                 )
 
                 // 活跃应用数
-                statisticCard(
+                AnimatedStatisticCard(
                     title: "活跃应用",
-                    value: "\(viewModel.activeAppsCount)",
+                    targetValue: viewModel.activeAppsCount,
                     icon: "app.fill",
-                    color: .purple
+                    color: .purple,
+                    isAnimating: viewModel.isAnimating
                 )
             }
         }
@@ -252,25 +263,7 @@ struct StatisticsView: View {
         .cornerRadius(8)
     }
 
-    private func statisticCard(title: String, value: String, icon: String, color: Color) -> some View {
-        VStack(spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
 
-            Text(value)
-                .font(.title2)
-                .fontWeight(.bold)
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(NSColor.windowBackgroundColor))
-        .cornerRadius(6)
-    }
 
     // MARK: - Top Shortcuts Section
 
@@ -321,12 +314,11 @@ struct StatisticsView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
 
-            // 使用频率条
-            GeometryReader { geometry in
-                Rectangle()
-                    .fill(Color.blue.opacity(0.3))
-                    .frame(width: geometry.size.width * CGFloat(usage.count) / CGFloat(viewModel.maxUsageCount))
-            }
+            // 使用频率条 - 带动画
+            AnimatedProgressBar(
+                progress: CGFloat(usage.count) / CGFloat(viewModel.maxUsageCount),
+                isAnimating: viewModel.isAnimating
+            )
             .frame(width: 100, height: 8)
         }
         .padding(.vertical, 4)
@@ -394,22 +386,12 @@ struct StatisticsView: View {
                 ScrollView(.horizontal, showsIndicators: true) {
                     HStack(alignment: .bottom, spacing: 8) {
                         ForEach(viewModel.trendData, id: \.date) { point in
-                            VStack(spacing: 4) {
-                                // 数值
-                                Text("\(point.count)")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-
-                                // 条形
-                                Rectangle()
-                                    .fill(Color.blue)
-                                    .frame(width: 40, height: CGFloat(point.count) / CGFloat(viewModel.maxTrendValue) * 150)
-
-                                // 日期
-                                Text(formatDate(point.date))
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
+                            AnimatedBarView(
+                                value: point.count,
+                                maxValue: viewModel.maxTrendValue,
+                                date: formatDate(point.date),
+                                isAnimating: viewModel.isAnimating
+                            )
                         }
                     }
                     .padding(.horizontal)
@@ -542,6 +524,10 @@ class StatisticsViewModel: ObservableObject {
     @Published var conflictingShortcuts: [String] = []
     @Published var suggestions: [Suggestion] = []
     @Published var activeAppsCount: Int = 0
+    @Published var isAnimating: Bool = false
+    
+    // 当前选择的时间周期
+    var currentPeriod: StatisticsPeriod = .today
 
     // MARK: - Computed Properties
 
@@ -561,20 +547,42 @@ class StatisticsViewModel: ObservableObject {
     // MARK: - Public Methods
 
     func loadStatistics(for period: StatisticsPeriod) {
-        // 加载统计摘要
+        // 记录当前周期
+        currentPeriod = period
+        
+        let periodName: String
+        switch period {
+        case .today: periodName = "今天"
+        case .week: periodName = "过去7天"  
+        case .month: periodName = "过去30天"
+        case .all: periodName = "全部"
+        }
+        print("🔄 ViewModel.loadStatistics 被调用，周期: \(periodName)")
+        
+        // 加载统计数据
         summary = usageRepository.aggregateStatistics(for: period)
-
-        // 加载趋势数据
+        print("🔄 加载完成，总使用次数: \(summary.totalUsage)")
+        
         loadTrendData(for: period)
-
-        // 加载冲突快捷键
         loadConflictingShortcuts()
-
-        // 生成优化建议
         generateSuggestions()
-
-        // 计算活跃应用数
         calculateActiveAppsCount(for: period)
+        
+        // 触发动画 - 先重置再触发，确保onChange被调用
+        isAnimating = false
+        DispatchQueue.main.async {
+            self.isAnimating = true
+            
+            // 1秒后重置动画状态（允许再次触发）
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.isAnimating = false
+            }
+        }
+    }
+    
+    /// 刷新当前数据（使用当前周期）
+    func refresh() {
+        loadStatistics(for: currentPeriod)
     }
 
     func exportStatistics() {
@@ -799,10 +807,11 @@ extension StatisticsSummary {
 extension UsageRepository {
 
     func getTrendData(days: Int) -> [TrendPoint] {
-        // 获取最近N天的每日使用趋势
+        // 获取最近N天的每日使用趋势（包括今天）
         let calendar = Calendar.current
         let endDate = Date()
-        let startDate = calendar.date(byAdding: .day, value: -days, to: endDate)!
+        // 修正：包括今天，所以startDate应该往前推days-1天
+        let startDate = calendar.date(byAdding: .day, value: -(days - 1), to: endDate)!
 
         var trendPoints: [TrendPoint] = []
 
@@ -811,7 +820,10 @@ extension UsageRepository {
                 continue
             }
 
-            let dateString = ISO8601DateFormatter().string(from: date)
+            // 使用统一的日期格式器
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let dateString = dateFormatter.string(from: date)
             let count = getDailyUsageCount(for: date)
 
             // 只添加有数据的点
@@ -825,25 +837,33 @@ extension UsageRepository {
     }
 
     func getDailyUsageCount(for date: Date) -> Int {
-        // 从 statistics_summary 表获取当天的使用次数
+        // 从 usage_records 表获取当天的使用次数（与概览统计一致，避免数据不同步）
         let db = DatabaseManager.shared
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let dateString = dateFormatter.string(from: date)
-
+        let calendar = Calendar.current
+        
+        // 获取当天的开始和结束时间戳
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        
+        let startTimestamp = Int64(startOfDay.timeIntervalSince1970)
+        let endTimestamp = Int64(endOfDay.timeIntervalSince1970)
+        
         let sql = """
-        SELECT SUM(usage_count) as total
-        FROM statistics_summary
-        WHERE date = '\(dateString)'
+        SELECT COUNT(*) as count
+        FROM usage_records
+        WHERE timestamp >= \(startTimestamp) AND timestamp < \(endTimestamp)
         """
-
+        
         let results = db.executeQuery(sql)
-        if let first = results.first, let total = first["total"] as? Int {
-            print("📅 日期 \(dateString) 使用次数: \(total)")
-            return total
+        if let first = results.first, let count = first["count"] as? Int64 {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let dateString = dateFormatter.string(from: date)
+            print("📅 日期 \(dateString) 使用次数: \(count)")
+            return Int(count)
         }
-
-        print("📅 日期 \(dateString) 无数据")
+        
+        print("📅 日期 \(date) 无数据")
         return 0
     }
 
@@ -914,5 +934,236 @@ extension ConflictDetector {
 
         print("📊 高冲突快捷键数量: \(shortcuts.count)")
         return shortcuts
+    }
+}
+
+// MARK: - Animated Components
+
+/// 带数字滚动动画的统计卡片
+struct AnimatedStatisticCard: View {
+    let title: String
+    let targetValue: Int
+    let icon: String
+    let color: Color
+    let isAnimating: Bool
+    var isPercentage: Bool = false
+    
+    @State private var displayValue: Int = 0
+    @State private var animationTimer: Timer?
+    @State private var pendingTargetValue: Int = 0  // 缓存待使用的目标值
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Text(formattedValue)
+                .font(.title2)
+                .fontWeight(.bold)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color(NSColor.windowBackgroundColor))
+        .cornerRadius(6)
+        .onChange(of: targetValue) { newValue in
+            // 立即缓存新的目标值
+            pendingTargetValue = newValue
+            print("🔄 AnimatedStatisticCard[\(title)]: targetValue changed to \(newValue), cached as pendingTargetValue")
+            
+            // 如果不在动画中，直接更新显示值
+            if !isAnimating {
+                displayValue = newValue
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            if newValue {
+                // isAnimating 变为 true 时，使用缓存的目标值开始动画
+                print("🎬 AnimatedStatisticCard[\(title)]: isAnimating=true, starting animation with pendingTarget=\(pendingTargetValue)")
+                startAnimation(target: pendingTargetValue)
+            }
+        }
+        .onAppear {
+            // 首次显示时直接设置目标值和缓存值
+            print("👀 AnimatedStatisticCard[\(title)]: onAppear, targetValue=\(targetValue)")
+            pendingTargetValue = targetValue
+            displayValue = targetValue
+        }
+        .onDisappear {
+            // 清理定时器
+            animationTimer?.invalidate()
+            animationTimer = nil
+        }
+    }
+    
+    private var formattedValue: String {
+        if isPercentage {
+            return String(format: "%.1f%%", Double(displayValue) / 10.0)
+        } else {
+            return "\(displayValue)"
+        }
+    }
+    
+    private func startAnimation(target: Int) {
+        // 取消旧动画
+        animationTimer?.invalidate()
+        animationTimer = nil
+        
+        print("▶️ AnimatedStatisticCard[\(title)]: 开始动画 target=\(target)")
+        
+        // 重置为0开始动画
+        displayValue = 0
+        
+        // 计算动画步数和间隔
+        let duration: TimeInterval = 0.8  // 总动画时长
+        let steps = 30  // 动画步数
+        let stepDuration = duration / Double(steps)
+        
+        // 使用Timer逐步增加数值
+        var currentStep = 0
+        animationTimer = Timer.scheduledTimer(withTimeInterval: stepDuration, repeats: true) { timer in
+            currentStep += 1
+            
+            if currentStep >= steps {
+                displayValue = target
+                timer.invalidate()
+                animationTimer = nil
+                print("✅ AnimatedStatisticCard[\(title)]: 动画完成 displayValue=\(target)")
+            } else {
+                let progress = Double(currentStep) / Double(steps)
+                // 使用easeOut曲线：开始快，结束慢
+                let easedProgress = 1 - pow(1 - progress, 3)
+                displayValue = Int(Double(target) * easedProgress)
+            }
+        }
+    }
+}
+
+/// 带动画的进度条（从左到右增长）
+struct AnimatedProgressBar: View {
+    let progress: CGFloat
+    let isAnimating: Bool
+    
+    @State private var animatedProgress: CGFloat = 0
+    @State private var pendingProgress: CGFloat = 0  // 缓存待使用的进度
+    
+    var body: some View {
+        GeometryReader { geometry in
+            Rectangle()
+                .fill(Color.blue.opacity(0.3))
+                .frame(width: geometry.size.width * animatedProgress)
+        }
+        .onChange(of: progress) { newValue in
+            // 立即缓存新的目标进度
+            pendingProgress = newValue
+            
+            // 如果不在动画中，直接更新显示进度
+            if !isAnimating {
+                animatedProgress = newValue
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            if newValue {
+                // isAnimating 变为 true 时，使用缓存的目标值开始动画
+                animateProgress()
+            }
+        }
+        .onAppear {
+            // 首次显示时直接设置目标进度和缓存值
+            pendingProgress = progress
+            animatedProgress = progress
+        }
+    }
+    
+    private func animateProgress() {
+        // 重置进度为0
+        animatedProgress = 0
+        
+        // 使用动画增长到缓存的目标进度
+        withAnimation(.easeOut(duration: 0.8)) {
+            animatedProgress = pendingProgress
+        }
+    }
+}
+
+/// 带生长动画的柱状图条
+struct AnimatedBarView: View {
+    let value: Int
+    let maxValue: Int
+    let date: String
+    let isAnimating: Bool
+    
+    @State private var animatedHeight: CGFloat = 0
+    @State private var pendingHeight: CGFloat = 0  // 缓存待使用的目标高度
+    
+    private let maxBarHeight: CGFloat = 150
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            // 顶部数值和柱状图区域（固定高度）
+            VStack(spacing: 4) {
+                // 数值（固定在柱状图上方）
+                Text("\(value)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .opacity(animatedHeight > 0 ? 1 : 0)
+                    .frame(height: 16)  // 固定高度避免布局跳动
+                
+                // 柱状图容器（固定高度 = maxBarHeight）
+                VStack {
+                    Spacer(minLength: 0)  // 顶部弹性空间
+                    
+                    // 条形（从底部向上增长）
+                    Rectangle()
+                        .fill(Color.blue)
+                        .frame(width: 40, height: animatedHeight)
+                }
+                .frame(height: maxBarHeight)  // 固定容器高度
+            }
+            
+            // 日期
+            Text(date)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .frame(height: 16)  // 固定高度
+        }
+        .onChange(of: targetHeight) { newValue in
+            // 立即缓存新的目标高度
+            pendingHeight = newValue
+            
+            // 如果不在动画中，直接更新显示高度
+            if !isAnimating {
+                animatedHeight = newValue
+            }
+        }
+        .onChange(of: isAnimating) { newValue in
+            if newValue {
+                // isAnimating 变为 true 时，使用缓存的目标值开始动画
+                animateBar()
+            }
+        }
+        .onAppear {
+            // 首次显示时直接设置目标高度和缓存值
+            pendingHeight = targetHeight
+            animatedHeight = targetHeight
+        }
+    }
+    
+    private var targetHeight: CGFloat {
+        return CGFloat(value) / CGFloat(max(maxValue, 1)) * maxBarHeight
+    }
+    
+    private func animateBar() {
+        // 重置高度为0
+        animatedHeight = 0
+        
+        // 使用动画增长到缓存的目标高度
+        withAnimation(.easeOut(duration: 0.8)) {
+            animatedHeight = pendingHeight
+        }
     }
 }

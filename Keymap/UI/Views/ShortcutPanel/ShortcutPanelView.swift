@@ -531,9 +531,8 @@ struct RemappingDialogView: View {
                     }
                     .frame(height: 28)  // ✅ 调整为28px高度
 
-                    // 录制按钮（仅当启用录制模式时显示）
-                    if settings.enableRecordingMode {
-                        Button(action: {
+                    // 录制按钮
+                    Button(action: {
                             if isRecording {
                                 stopRecording()
                             } else {
@@ -553,7 +552,6 @@ struct RemappingDialogView: View {
                             .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
-                    }
                 }
 
                 Text("提示: 使用 ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + 字母/数字")
@@ -793,11 +791,6 @@ struct RemappingDialogView: View {
     // MARK: - 录制功能
 
     private func startRecording() {
-        guard settings.enableRecordingMode else {
-            errorMessage = "录制功能未启用，请在设置中开启"
-            return
-        }
-
         Logger.info("🎙️ 开始录制快捷键...")
         isRecording = true
         errorMessage = nil

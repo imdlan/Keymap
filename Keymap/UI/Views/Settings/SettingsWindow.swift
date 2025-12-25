@@ -79,6 +79,22 @@ struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme  // 检测深色/浅色模式
     @StateObject private var viewModel = SettingsViewModel()
     @State private var selectedTab: SettingsTab = .general
+    
+    // MARK: - Computed Properties
+    
+    /// 触发键的显示名称
+    private var triggerKeyDisplayName: String {
+        switch viewModel.triggerKey {
+        case "doubleCmd":
+            return "Cmd"
+        case "doubleOption":
+            return "Option"
+        case "doubleControl":
+            return "Control"
+        default:
+            return "Cmd"
+        }
+    }
 
     // MARK: - Body
 
@@ -108,8 +124,11 @@ struct SettingsView: View {
                 }) {
                     HStack(alignment: .center, spacing: 8) {
                         Image(systemName: tab.icon)
+                            .font(.system(size: 16))
                             .frame(width: 20, alignment: .center)
                         Text(tab.title)
+                            .font(.system(size: 14))
+                            .fontWeight(.semibold)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(.horizontal, 12)
@@ -136,18 +155,40 @@ struct SettingsView: View {
         switch selectedTab {
         case .general:
             generalSettingsView
-        case .shortcuts:
-            shortcutSettingsView
-        case .globalRemapping:
-            globalRemappingView
-        case .backgroundApps:
-            backgroundAppsView
+        case .conflictResolution:
+            conflictResolutionView
         case .data:
             dataSettingsView
-        case .advanced:
-            advancedSettingsView
         case .about:
             aboutView
+        }
+    }
+
+    // MARK: - Reusable Components
+
+    /// 设置板块卡片容器 - 圆角透明背景
+    @ViewBuilder
+    private func settingsSectionCard<Content: View>(
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            content()
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(colorScheme == .dark ? Color(white: 0.15) : Color(white: 0.98))
+        )
+    }
+
+    /// 板块标题 - 包含下方分割线
+    @ViewBuilder
+    private func sectionHeader(_ title: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+
+            Divider()
         }
     }
 
@@ -156,344 +197,428 @@ struct SettingsView: View {
     private var generalSettingsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("通用设置")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.bottom, 4)
-                    .padding(.top, 16)
+                // ===== 应用行为板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("应用行为")
 
-                // 开机自动启动
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("开机自动启动")
-                            .font(.body)
-                        Text("应用将在系统启动时自动运行")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                        // 开机自动启动
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("开机自动启动")
+                                    .font(.body)
+                                Text("应用将在系统启动时自动运行")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
 
-                    Spacer()
-
-                    Toggle("", isOn: $viewModel.launchAtLogin)
-                        .toggleStyle(.switch)
-                        .onChange(of: viewModel.launchAtLogin) { _, newValue in
-                            viewModel.updateLaunchAtLogin(newValue)
-                        }
-                }
-
-                Divider()
-
-                // 在Dock显示图标
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("在Dock显示图标")
-                            .font(.body)
-                        Text("关闭后应用仅在菜单栏显示")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: $viewModel.showInDock)
-                        .toggleStyle(.switch)
-                        .onChange(of: viewModel.showInDock) { _, newValue in
-                            viewModel.settings.showInDock = newValue
-                        }
-                }
-
-                Divider()
-
-                // 实时冲突检测
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("启用实时冲突检测")
-                            .font(.body)
-                        Text("在使用快捷键时实时检测并提示冲突")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: $viewModel.enableRealTimeDetection)
-                        .toggleStyle(.switch)
-                }
-
-                Divider()
-
-                // 使用统计追踪
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("启用使用统计追踪")
-                            .font(.body)
-                        Text("记录快捷键使用情况以提供统计分析")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: $viewModel.enableUsageTracking)
-                        .toggleStyle(.switch)
-                }
-
-                Divider()
-
-                // 冲突通知
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("显示冲突通知")
-                            .font(.body)
-                        Text("检测到冲突时显示系统通知")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: $viewModel.showConflictNotifications)
-                        .toggleStyle(.switch)
-                }
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 32)
-        }
-        .padding(.top, 16)
-    }
-
-    // MARK: - Shortcut Settings
-
-    private var shortcutSettingsView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("快捷键设置")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.bottom, 4)
-                    .padding(.top, 16)
-
-                // 双击Cmd阈值
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("双击Cmd阈值")
-                        Spacer()
-                        Text(String(format: "%.2f 秒", viewModel.doubleCmdThreshold))
-                            .foregroundColor(.secondary)
-                    }
-
-                    Slider(value: $viewModel.doubleCmdThreshold, in: 0.1...1.0, step: 0.05)
-                        .accentColor(.blue)
-
-                    Text("调整双击Cmd键的灵敏度（越小越灵敏）")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Divider()
-
-                // 触发快捷键选择
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("触发快捷键")
-                            .font(.body)
-                        Text("选择触发快捷键面板的方式")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    ZStack {
-                        // 背景和边框
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 6)
-                                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                            )
-                        
-                        // Picker（无可见样式）
-                        Picker("", selection: $viewModel.triggerKey) {
-                            Text("双击Cmd").tag("doubleCmd")
-                            Text("双击Option").tag("doubleOption")
-                            Text("双击Control").tag("doubleControl")
-                        }
-                        .pickerStyle(.menu)
-                        .labelsHidden()
-                        .buttonStyle(.plain)
-                        .opacity(0.01)  // 几乎透明，但仍可点击
-                        
-                        // 显示内容
-                        HStack {
-                            Text(viewModel.triggerKey == "doubleCmd" ? "双击Cmd" : 
-                                 viewModel.triggerKey == "doubleOption" ? "双击Option" : "双击Control")
-                                .font(.body)
-                                .foregroundColor(.primary)
-                                .padding(.leading, 8)
                             Spacer()
-                            Image(systemName: "chevron.down")
+
+                            Toggle("", isOn: $viewModel.launchAtLogin)
+                                .toggleStyle(.switch)
+                                .onChange(of: viewModel.launchAtLogin) { _, newValue in
+                                    viewModel.updateLaunchAtLogin(newValue)
+                                }
+                        }
+
+                        // 在Dock显示图标
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("在Dock显示图标")
+                                    .font(.body)
+                                Text("关闭后应用仅在菜单栏显示")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            Toggle("", isOn: $viewModel.showInDock)
+                                .toggleStyle(.switch)
+                                .onChange(of: viewModel.showInDock) { _, newValue in
+                                    viewModel.settings.showInDock = newValue
+                                }
+                        }
+
+                        // 语言选择
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("语言")
+                                    .font(.body)
+                                Text("选择应用界面语言")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                                    )
+
+                                Picker("", selection: $viewModel.selectedLanguage) {
+                                    Text("跟随系统").tag("system")
+                                    Text("简体中文").tag("zh-Hans")
+                                    Text("English").tag("en")
+                                }
+                                .pickerStyle(.menu)
+                                .labelsHidden()
+                                .buttonStyle(.plain)
+                                .opacity(0.01)
+
+                                HStack {
+                                    Text(viewModel.selectedLanguage == "system" ? "跟随系统" :
+                                         viewModel.selectedLanguage == "zh-Hans" ? "简体中文" : "English")
+                                        .font(.body)
+                                        .foregroundColor(.primary)
+                                        .padding(.leading, 8)
+                                    Spacer()
+                                    Image(systemName: "chevron.down")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .padding(.trailing, 8)
+                                }
+                                .allowsHitTesting(false)
+                            }
+                            .frame(width: 150, height: 28)
+                        }
+                    }
+                }
+
+                // ===== 快捷键设置板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("快捷键设置")
+
+                        // 双击阈值
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("双击\(triggerKeyDisplayName)阈值")
+                                Spacer()
+                                Text(String(format: "%.2f 秒", viewModel.doubleCmdThreshold))
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Slider(value: $viewModel.doubleCmdThreshold, in: 0.1...1.0, step: 0.05)
+                                .accentColor(.blue)
+
+                            Text("调整双击\(triggerKeyDisplayName)键的灵敏度（越小越灵敏）")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                                .padding(.trailing, 8)
                         }
-                        .allowsHitTesting(false)
+
+                        // 触发快捷键选择
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("触发快捷键")
+                                    .font(.body)
+                                Text("选择触发快捷键面板的方式")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                                    )
+
+                                Picker("", selection: $viewModel.triggerKey) {
+                                    Text("双击Cmd").tag("doubleCmd")
+                                    Text("双击Option").tag("doubleOption")
+                                    Text("双击Control").tag("doubleControl")
+                                }
+                                .pickerStyle(.menu)
+                                .labelsHidden()
+                                .buttonStyle(.plain)
+                                .opacity(0.01)
+
+                                HStack {
+                                    Text(viewModel.triggerKey == "doubleCmd" ? "双击Cmd" :
+                                         viewModel.triggerKey == "doubleOption" ? "双击Option" : "双击Control")
+                                        .font(.body)
+                                        .foregroundColor(.primary)
+                                        .padding(.leading, 8)
+                                    Spacer()
+                                    Image(systemName: "chevron.down")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .padding(.trailing, 8)
+                                }
+                                .allowsHitTesting(false)
+                            }
+                            .frame(width: 150, height: 28)
+                        }
+
+                        // 面板自动关闭延迟
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("面板自动关闭延迟")
+                                Spacer()
+                                Text(viewModel.panelAutoCloseDelay == 0 ? "从不" : "\(Int(viewModel.panelAutoCloseDelay)) 秒")
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Slider(value: $viewModel.panelAutoCloseDelay, in: 0...30, step: 5)
+                                .accentColor(.blue)
+
+                            Text("设置为0则不自动关闭")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
-                    .frame(width: 150, height: 28)
-                }
-
-                Divider()
-
-                // 面板显示时长
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("面板自动关闭延迟")
-                        Spacer()
-                        Text(viewModel.panelAutoCloseDelay == 0 ? "从不" : "\(Int(viewModel.panelAutoCloseDelay)) 秒")
-                            .foregroundColor(.secondary)
-                    }
-
-                    Slider(value: $viewModel.panelAutoCloseDelay, in: 0...30, step: 5)
-                        .accentColor(.blue)
-
-                    Text("设置为0则不自动关闭")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
             }
+            .padding(.top, 32)
             .padding(.horizontal)
             .padding(.bottom, 32)
         }
-        .padding(.top, 16)
     }
 
-    // MARK: - Global Remapping
+    // MARK: - Conflict Resolution
 
-    private var globalRemappingView: some View {
+    private var conflictResolutionView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Header
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("全局映射")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        Text("自定义全局快捷键重映射规则")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                // ===== 检测设置板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("检测设置")
 
-                    Spacer()
+                        // 启用实时冲突检测
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("启用实时冲突检测")
+                                    .font(.body)
+                                Text("使用快捷键时实时检测冲突")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
 
-                    // 添加按钮（参考长驻应用刷新按钮样式）
-                    Button(action: {
-                        viewModel.showAddRemappingSheet = true
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "plus")
-                                .font(.body)
-                            Text("添加")
-                                .font(.body)
-                                .fontWeight(.medium)
+                            Spacer()
+
+                            Toggle("", isOn: $viewModel.enableRealTimeDetection)
+                                .toggleStyle(.switch)
                         }
-                        .padding(.horizontal, 16)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .frame(height: 28)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                    )
-                    .foregroundColor(.primary)
-                }
-                .padding(.top, 16)
 
-                Divider()
+                        // 显示冲突通知
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("显示冲突通知")
+                                    .font(.body)
+                                Text("检测到冲突时显示系统通知")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
 
-                // 启用全局重映射开关
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("启用全局快捷键重映射")
-                            .font(.body)
-                        Text("使用下方自定义的快捷键映射规则")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                            Spacer()
 
-                    Spacer()
+                            Toggle("", isOn: $viewModel.showConflictNotifications)
+                                .toggleStyle(.switch)
+                        }
 
-                    Toggle("", isOn: $viewModel.enableGlobalRemapping)
-                        .toggleStyle(.switch)
-                }
+                        // 启用使用统计追踪
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("启用使用统计追踪")
+                                    .font(.body)
+                                Text("记录快捷键使用情况，用于冲突分析")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
 
-                Divider()
+                            Spacer()
 
-                // 映射规则列表
-                if viewModel.remappingRules.isEmpty {
-                    VStack(spacing: 12) {
-                        Image(systemName: "arrow.left.arrow.right.circle")
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
-                        Text("暂无映射规则")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                        Text("点击右上角「添加」按钮创建新的映射规则")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-                } else {
-                    VStack(alignment: .leading, spacing: 12) {
-                        ForEach(viewModel.remappingRules) { rule in
-                            remappingRuleRow(rule)
+                            Toggle("", isOn: $viewModel.enableUsageTracking)
+                                .toggleStyle(.switch)
                         }
                     }
                 }
 
-                // 统计信息
-                if !viewModel.remappingRules.isEmpty {
-                    Divider()
-
-                    HStack {
-                        Text("共 \(viewModel.remappingRules.count) 条映射规则")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-
-                        Spacer()
-
-                        Button(action: {
-                            viewModel.showClearAllAlert = true
-                        }) {
-                            Text("清空所有")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
+                // ===== 长驻应用板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // 标题行：包含标题、tips图标、刷新按钮
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(spacing: 4) {
+                                Text("长驻应用")
+                                    .font(.headline)
+                                
+                                Image(systemName: "info.circle")
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                                    .help("查看后台长驻应用的快捷键，帮助识别冲突源")
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    viewModel.refreshBackgroundApps()
+                                }) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.body)
+                                        .foregroundColor(.blue)
+                                        .frame(width: 28, height: 28)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .help("刷新长驻应用")
+                            }
+                            
+                            Divider()
                         }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color.red.opacity(0.15))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.red.opacity(0.5), lineWidth: 1)
-                        )
-                        .foregroundColor(.red)
+
+                        // 应用列表
+                        if viewModel.isLoadingBackgroundApps {
+                            VStack(spacing: 12) {
+                                ProgressView()
+                                    .scaleEffect(1.2)
+                                Text("正在扫描长驻应用...")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 40)
+                        } else if viewModel.backgroundApps.isEmpty {
+                            VStack(spacing: 12) {
+                                Image(systemName: "app.dashed")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(.secondary)
+                                Text("暂未检测到长驻应用")
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                                Text("点击刷新按钮扫描系统中的长驻应用")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 40)
+                        } else {
+                            VStack(spacing: 12) {
+                                ForEach(viewModel.backgroundApps) { app in
+                                    backgroundAppRow(app: app)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // ===== 快捷键重映射板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // 标题行：包含标题、tips图标、添加按钮
+                        VStack(alignment: .leading, spacing: 4) {
+                            HStack(spacing: 4) {
+                                Text("快捷键重映射")
+                                    .font(.headline)
+                                
+                                Image(systemName: "info.circle")
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                                    .help("创建重映射规则以解决快捷键冲突或个性化定制")
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    viewModel.showAddRemappingSheet = true
+                                }) {
+                                    Image(systemName: "plus.circle")
+                                        .font(.body)
+                                        .foregroundColor(.blue)
+                                        .frame(width: 28, height: 28)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                .help("添加重映射规则")
+                            }
+                            
+                            Divider()
+                        }
+
+                        // 启用全局重映射开关
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("启用全局快捷键重映射")
+                                    .font(.body)
+                                Text("启用后所有重映射规则将生效")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            Toggle("", isOn: $viewModel.enableGlobalRemapping)
+                                .toggleStyle(.switch)
+                        }
+
+                        // 规则列表
+                        if viewModel.remappingRules.isEmpty {
+                            VStack(spacing: 12) {
+                                Image(systemName: "arrow.left.arrow.right.circle")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(.secondary)
+                                Text("暂无映射规则")
+                                    .font(.body)
+                                    .foregroundColor(.secondary)
+                                Text("点击上方「添加重映射规则」按钮创建新规则")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 40)
+                        } else {
+                            VStack(alignment: .leading, spacing: 12) {
+                                ForEach(viewModel.remappingRules) { rule in
+                                    remappingRuleRow(rule)
+                                }
+                            }
+
+                            // 清空所有按钮
+                            if !viewModel.remappingRules.isEmpty {
+                                HStack {
+                                    Text("共 \(viewModel.remappingRules.count) 条映射规则")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+
+                                    Spacer()
+
+                                    Button(action: {
+                                        viewModel.showClearAllAlert = true
+                                    }) {
+                                        Text("清空所有")
+                                            .font(.body)
+                                            .fontWeight(.medium)
+                                            .padding(.horizontal, 16)
+                                            .contentShape(Rectangle())
+                                    }
+                                    .buttonStyle(.plain)
+                                    .frame(height: 28)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .fill(Color.red.opacity(0.15))
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 6)
+                                            .stroke(Color.red.opacity(0.5), lineWidth: 1)
+                                    )
+                                    .foregroundColor(.red)
+                                }
+                            }
+                        }
                     }
                 }
             }
+            .padding(.top, 32)
             .padding(.horizontal)
             .padding(.bottom, 32)
         }
-        .padding(.top, 16)
         .sheet(isPresented: $viewModel.showAddRemappingSheet) {
             AddRemappingSheet(viewModel: viewModel)
         }
@@ -507,6 +632,12 @@ struct SettingsView: View {
             }
         } message: {
             Text("确定要清空所有映射规则吗？此操作不可恢复。")
+        }
+        .onAppear {
+            // 首次打开标签页时，快速加载长驻应用
+            if viewModel.backgroundApps.isEmpty {
+                viewModel.quickLoadBackgroundApps()
+            }
         }
     }
 
@@ -580,151 +711,12 @@ struct SettingsView: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(colorScheme == .dark ? Color(white: 0.15) : Color(white: 0.98))
+        .padding(12)
+        .background(Color(NSColor.windowBackgroundColor))
         .cornerRadius(8)
     }
 
-    // MARK: - Background Apps
-
-    private var backgroundAppsView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Header
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("长驻应用")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        Text("自动检测可能注册全局热键的后台应用")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    // 刷新按钮
-                    Button(action: {
-                        viewModel.refreshBackgroundApps()
-                    }) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.body)
-                            Text("刷新")
-                                .font(.body)
-                                .fontWeight(.medium)
-                        }
-                        .padding(.horizontal, 16)
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .frame(height: 28)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                    )
-                    .foregroundColor(.primary)
-                }
-                .padding(.top, 16)
-                
-                Divider()
-                
-                // 应用列表
-                if viewModel.isLoadingBackgroundApps {
-                    // 加载指示器
-                    VStack(spacing: 12) {
-                        ProgressView()
-                            .scaleEffect(1.2)
-                        Text("正在扫描长驻应用...")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-                } else if viewModel.backgroundApps.isEmpty {
-                    VStack(spacing: 12) {
-                        Image(systemName: "app.dashed")
-                            .font(.system(size: 48))
-                            .foregroundColor(.secondary)
-                        
-                        Text("暂未检测到长驻应用")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        
-                        Text("点击刷新按钮扫描系统中的长驻应用")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 40)
-                } else {
-                    VStack(spacing: 12) {
-                        ForEach(viewModel.backgroundApps) { app in
-                            backgroundAppRow(app: app)
-                        }
-                    }
-                }
-                
-                Divider()
-                
-                // 说明信息
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("说明")
-                        .font(.headline)
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack(alignment: .top, spacing: 8) {
-                            Text("•")
-                            Text("长驻应用是指常驻系统后台的应用（如菜单栏应用、系统辅助进程）")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        HStack(alignment: .top, spacing: 8) {
-                            Text("•")
-                            Text("只显示已缓存快捷键的长驻应用，点击刷新可重新扫描")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        HStack(alignment: .top, spacing: 8) {
-                            Text("•")
-                            Text("点击应用右侧的键盘图标可查看该应用的快捷键列表")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        
-                        HStack(alignment: .top, spacing: 8) {
-                            Text("•")
-                            Text("这些应用可能注册了全局快捷键，与当前应用冲突时会触发通知")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color(NSColor.controlBackgroundColor).opacity(0.5))
-                .cornerRadius(8)
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 32)
-        }
-        .padding(.top, 16)
-        .onAppear {
-            // ✅ 首次打开标签页时，快速加载长驻应用
-            if viewModel.backgroundApps.isEmpty {
-                viewModel.quickLoadBackgroundApps()
-            }
-        }
-    }
-    
-    private func backgroundAppRow(app: BackgroundAppInfo) -> some View {
+        private func backgroundAppRow(app: BackgroundAppInfo) -> some View {
         HStack(spacing: 12) {
             // 应用图标
             if let icon = app.icon {
@@ -797,395 +789,254 @@ struct SettingsView: View {
     private var dataSettingsView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("数据管理")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.bottom, 4)
-                    .padding(.top, 16)
+                // ===== 缓存设置板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("缓存设置")
 
-                // 缓存设置
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("缓存时长")
-                        Spacer()
-                        Text("\(viewModel.cacheDuration) 小时")
-                            .foregroundColor(.secondary)
+                        // 缓存时长
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("缓存时长")
+                                Spacer()
+                                Text("\(viewModel.cacheDuration) 小时")
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Slider(value: Binding(
+                                get: { Double(viewModel.cacheDuration) },
+                                set: { viewModel.cacheDuration = Int($0) }
+                            ), in: 1...72, step: 1)
+                            .accentColor(.blue)
+
+                            Text("快捷键提取结果的缓存有效期")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        // 最大缓存应用数
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("最大缓存应用数")
+                                Spacer()
+                                Text("\(viewModel.maxCachedApps) 个")
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Slider(value: Binding(
+                                get: { Double(viewModel.maxCachedApps) },
+                                set: { viewModel.maxCachedApps = Int($0) }
+                            ), in: 10...100, step: 10)
+                            .accentColor(.blue)
+
+                            Text("内存中最多缓存的应用数量")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
-
-                    Slider(value: Binding(
-                        get: { Double(viewModel.cacheDuration) },
-                        set: { viewModel.cacheDuration = Int($0) }
-                    ), in: 1...72, step: 1)
-                    .accentColor(.blue)
-
-                    Text("快捷键提取结果的缓存有效期")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
 
-                Divider()
+                // ===== 清理旧数据板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("清理旧数据")
 
-                // 最大缓存应用数
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("最大缓存应用数")
-                        Spacer()
-                        Text("\(viewModel.maxCachedApps) 个")
-                            .foregroundColor(.secondary)
-                    }
-
-                    Slider(value: Binding(
-                        get: { Double(viewModel.maxCachedApps) },
-                        set: { viewModel.maxCachedApps = Int($0) }
-                    ), in: 10...100, step: 10)
-                    .accentColor(.blue)
-
-                    Text("内存中最多缓存的应用数量")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Divider()
-
-                // 清理旧数据
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("清理旧数据")
-
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            viewModel.clearCache()
-                        }) {
-                            Text("清除缓存")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                        )
-                        .foregroundColor(.primary)
-
-                        Button(action: {
-                            viewModel.clearUsageRecords()
-                        }) {
-                            Text("清除使用记录")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                        )
-                        .foregroundColor(.primary)
-
-                        Button(action: {
-                            viewModel.clearAllData()
-                        }) {
-                            Text("清除所有数据")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color.red.opacity(0.15))
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.red.opacity(0.5), lineWidth: 1)
-                        )
-                        .foregroundColor(.red)
-                    }
-
-                    Text("清除操作不可恢复，请谨慎操作")
-                        .font(.caption)
-                        .foregroundColor(.red)
-                }
-
-                Divider()
-
-                // 导出/导入
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("导出/导入")
-
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            viewModel.exportRemappings()
-                        }) {
-                            Text("导出重映射规则")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                        )
-                        .foregroundColor(.primary)
-
-                        Button(action: {
-                            viewModel.importRemappings()
-                        }) {
-                            Text("导入重映射规则")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 6)
-                                .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
-                        )
-                        .foregroundColor(.primary)
-
-                        Button(action: {
-                            viewModel.exportSettings()
-                        }) {
-                            Text("导出设置")
-                                .font(.body)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .frame(height: 28)
-                        .background(
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color.blue)
-                        )
-                        .foregroundColor(.white)
-                    }
-
-                    Text("可以备份并在其他设备上使用")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                Divider()
-
-                // 数据库信息
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("数据库信息")
-                        .font(.headline)
-
-                    HStack {
-                        Text("数据库大小:")
-                        Text(viewModel.databaseSize)
-                            .foregroundColor(.secondary)
-                    }
-
-                    HStack {
-                        Text("使用记录数:")
-                        Text("\(viewModel.usageRecordsCount)")
-                            .foregroundColor(.secondary)
-                    }
-
-                    HStack {
-                        Text("已用快捷键:")
-                        Text("\(viewModel.shortcutsCount)")
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 32)
-        }
-        .padding(.top, 16)
-    }
-
-    // MARK: - Advanced Settings
-
-    private var advancedSettingsView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("高级设置")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .padding(.bottom, 4)
-                    .padding(.top, 16)
-
-                // 日志级别
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("日志级别")
-                            .font(.body)
-                        Text("设置控制台日志的详细程度")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-
-                    Spacer()
-
-                    ZStack {
-                        // 背景和边框
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                viewModel.clearCache()
+                            }) {
+                                Text("清除缓存")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 16)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 28)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            )
                             .overlay(
                                 RoundedRectangle(cornerRadius: 6)
                                     .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
                             )
-                        
-                        // Picker（无可见样式）
-                        Picker("", selection: $viewModel.logLevel) {
-                            Text("关闭").tag(0)
-                            Text("错误").tag(1)
-                            Text("警告").tag(2)
-                            Text("信息").tag(3)
-                            Text("调试").tag(4)
+                            .foregroundColor(.primary)
+
+                            Button(action: {
+                                viewModel.clearUsageRecords()
+                            }) {
+                                Text("清除使用记录")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 16)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 28)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                            )
+                            .foregroundColor(.primary)
+
+                            Button(action: {
+                                viewModel.clearAllData()
+                            }) {
+                                Text("清除所有数据")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 16)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 28)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color.red.opacity(0.15))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.red.opacity(0.5), lineWidth: 1)
+                            )
+                            .foregroundColor(.red)
                         }
-                        .pickerStyle(.menu)
-                        .labelsHidden()
-                        .buttonStyle(.plain)
-                        .opacity(0.01)  // 几乎透明，但仍可点击
-                        
-                        // 显示内容
+
+                        Text("清除操作不可恢复，请谨慎操作")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
+                }
+
+                // ===== 导出/导入板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("导出/导入")
+
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                viewModel.exportRemappings()
+                            }) {
+                                Text("导出重映射规则")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 16)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 28)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                            )
+                            .foregroundColor(.primary)
+
+                            Button(action: {
+                                viewModel.importRemappings()
+                            }) {
+                                Text("导入重映射规则")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 16)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 28)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(colorScheme == .dark ? Color(white: 0.25) : Color.white)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray.opacity(colorScheme == .dark ? 0.5 : 0.3), lineWidth: 1)
+                            )
+                            .foregroundColor(.primary)
+
+                            Button(action: {
+                                viewModel.exportSettings()
+                            }) {
+                                Text("导出设置")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 16)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .frame(height: 28)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color.blue)
+                            )
+                            .foregroundColor(.white)
+                        }
+
+                        Text("可以备份并在其他设备上使用")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                // ===== 数据库信息板块 =====
+                settingsSectionCard {
+                    VStack(alignment: .leading, spacing: 16) {
+                        sectionHeader("数据库信息")
+
                         HStack {
-                            Text(["关闭", "错误", "警告", "信息", "调试"][viewModel.logLevel])
-                                .font(.body)
-                                .foregroundColor(.primary)
-                                .padding(.leading, 8)
-                            Spacer()
-                            Image(systemName: "chevron.down")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.trailing, 8)
-                        }
-                        .allowsHitTesting(false)
-                    }
-                    .frame(width: 100, height: 28)
-                }
-
-                Divider()
-
-                // 高级功能
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("高级功能")
-                        .font(.headline)
-
-                    HStack(alignment: .center) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("启用全局快捷键重映射")
-                                .font(.body)
-                            Text("开启后，已配置的重映射规则将立即生效")
-                                .font(.caption)
+                            Text("数据库大小:")
+                            Text(viewModel.databaseSize)
                                 .foregroundColor(.secondary)
                         }
 
-                        Spacer()
-
-                        Toggle("", isOn: $viewModel.enableGlobalRemapping)
-                            .toggleStyle(.switch)
-                    }
-
-                    HStack(alignment: .center) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("启用快捷键录制模式")
-                                .font(.body)
-                            Text("允许在配置重映射时通过按键录制快捷键")
-                                .font(.caption)
+                        HStack {
+                            Text("使用记录数:")
+                            Text("\(viewModel.usageRecordsCount)")
                                 .foregroundColor(.secondary)
                         }
 
-                        Spacer()
-
-                        Toggle("", isOn: $viewModel.enableRecordingMode)
-                            .toggleStyle(.switch)
+                        HStack {
+                            Text("已用快捷键:")
+                            Text("\(viewModel.shortcutsCount)")
+                                .foregroundColor(.secondary)
+                        }
                     }
-                }
-
-                Divider()
-
-                // 重置设置
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("重置")
-                        .font(.headline)
-
-                    Button(action: {
-                        viewModel.resetAllSettings()
-                    }) {
-                        Text("重置所有设置")
-                            .font(.body)
-                            .fontWeight(.medium)
-                            .padding(.horizontal, 16)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .frame(height: 28)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(Color.red.opacity(0.15))
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 6)
-                            .stroke(Color.red.opacity(0.5), lineWidth: 1)
-                    )
-                    .foregroundColor(.red)
-
-                    Text("将所有设置恢复为默认值")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
             }
+            .padding(.top, 32)
             .padding(.horizontal)
             .padding(.bottom, 32)
         }
-        .padding(.top, 16)
     }
 
     // MARK: - About View
 
     private var aboutView: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: 20) {
                 // Logo和名称
-                VStack(spacing: 12) {
+                VStack(spacing: 8) {
                     if let appIcon = NSImage(named: "AppIcon") {
                         Image(nsImage: appIcon)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 128, height: 128)
-                            .cornerRadius(16)
+                            .frame(width: 80, height: 80)
+                            .cornerRadius(12)
                     } else {
                         Image(systemName: "keyboard")
-                            .font(.system(size: 64))
+                            .font(.system(size: 48))
                             .foregroundColor(.accentColor)
                     }
 
                     Text("Keymap")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
+                        .font(.title2)
+                        .fontWeight(.semibold)
 
                     Text("一个适用于macOS平台的快捷键冲突检测与管理工具")
                         .font(.body)
@@ -1194,9 +1045,6 @@ struct SettingsView: View {
                         .padding(.horizontal, 40)
                 }
                 .padding(.top, 16)
-
-                Divider()
-                    .padding(.horizontal, 40)
 
                 // 版本信息
                 VStack(spacing: 8) {
@@ -1213,9 +1061,6 @@ struct SettingsView: View {
                     }
                 }
 
-                Divider()
-                    .padding(.horizontal, 40)
-
                 // 版权信息
                 VStack(spacing: 8) {
                     Text("Copyright 2025 David Lan")
@@ -1225,9 +1070,9 @@ struct SettingsView: View {
 
                 Spacer()
             }
+            .padding(.top, 32)
             .frame(maxWidth: .infinity)
         }
-        .padding(.top, 16)
     }
 }
 
@@ -1235,21 +1080,15 @@ struct SettingsView: View {
 
 enum SettingsTab: CaseIterable {
     case general
-    case shortcuts
-    case globalRemapping
-    case backgroundApps
+    case conflictResolution
     case data
-    case advanced
     case about
 
     var title: String {
         switch self {
         case .general: return "通用"
-        case .shortcuts: return "快捷键"
-        case .globalRemapping: return "全局映射"
-        case .backgroundApps: return "长驻应用"
+        case .conflictResolution: return "检测"
         case .data: return "数据"
-        case .advanced: return "高级"
         case .about: return "关于"
         }
     }
@@ -1257,11 +1096,8 @@ enum SettingsTab: CaseIterable {
     var icon: String {
         switch self {
         case .general: return "gearshape"
-        case .shortcuts: return "keyboard"
-        case .globalRemapping: return "arrow.left.arrow.right"
-        case .backgroundApps: return "app.badge"
+        case .conflictResolution: return "exclamationmark.triangle"
         case .data: return "externaldrive"
-        case .advanced: return "hammer"
         case .about: return "info.circle"
         }
     }
@@ -1290,9 +1126,8 @@ class SettingsViewModel: ObservableObject {
     @Published var maxCachedApps: Int = 50
 
     // 高级设置
-    @Published var logLevel: Int = 2
     @Published var enableGlobalRemapping: Bool = false
-    @Published var enableRecordingMode: Bool = false
+    @Published var selectedLanguage: String = "system"
 
     // 全局映射
     @Published var remappingRules: [RemappingRule] = []
@@ -1560,9 +1395,8 @@ class SettingsViewModel: ObservableObject {
         cacheDuration = settings.cacheDuration
         maxCachedApps = settings.maxCachedApps
         panelAutoCloseDelay = settings.panelAutoCloseDelay
-        logLevel = settings.logLevel
         enableGlobalRemapping = settings.enableGlobalRemapping
-        enableRecordingMode = settings.enableRecordingMode
+        selectedLanguage = settings.selectedLanguage
 
         // 加载映射规则
         remappingRules = remappingManager.getAllRules()
@@ -1608,16 +1442,12 @@ class SettingsViewModel: ObservableObject {
         }.store(in: &cancellables)
 
         // 高级设置
-        $logLevel.sink { newValue in
-            self.settings.logLevel = newValue
-        }.store(in: &cancellables)
-
         $enableGlobalRemapping.sink { newValue in
             self.settings.enableGlobalRemapping = newValue
         }.store(in: &cancellables)
 
-        $enableRecordingMode.sink { newValue in
-            self.settings.enableRecordingMode = newValue
+        $selectedLanguage.sink { newValue in
+            self.settings.selectedLanguage = newValue
         }.store(in: &cancellables)
     }
 
@@ -1778,9 +1608,8 @@ struct AddRemappingSheet: View {
                     }
                     .frame(height: 28)
 
-                    // 录制按钮（仅当启用录制模式时显示）
-                    if settings.enableRecordingMode {
-                        Button(action: {
+                    // 录制按钮
+                    Button(action: {
                             if isRecordingFrom {
                                 stopRecordingFrom()
                             } else {
@@ -1800,7 +1629,6 @@ struct AddRemappingSheet: View {
                             .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
-                    }
                 }
 
                 Text("按下这个快捷键时将被重映射")
@@ -1833,9 +1661,8 @@ struct AddRemappingSheet: View {
                     }
                     .frame(height: 28)
 
-                    // 录制按钮（仅当启用录制模式时显示）
-                    if settings.enableRecordingMode {
-                        Button(action: {
+                    // 录制按钮
+                    Button(action: {
                             if isRecordingTo {
                                 stopRecordingTo()
                             } else {
@@ -1855,7 +1682,6 @@ struct AddRemappingSheet: View {
                             .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
-                    }
                 }
 
                 Text("将被映射为这个快捷键")
@@ -1989,11 +1815,6 @@ struct AddRemappingSheet: View {
     // MARK: - 录制功能
 
     private func startRecordingFrom() {
-        guard settings.enableRecordingMode else {
-            errorMessage = "录制功能未启用，请在设置中开启"
-            return
-        }
-
         Logger.shared.info("🎙️ 开始录制源快捷键...")
         isRecordingFrom = true
         errorMessage = nil
@@ -2013,11 +1834,6 @@ struct AddRemappingSheet: View {
     }
 
     private func startRecordingTo() {
-        guard settings.enableRecordingMode else {
-            errorMessage = "录制功能未启用，请在设置中开启"
-            return
-        }
-
         Logger.shared.info("🎙️ 开始录制目标快捷键...")
         isRecordingTo = true
         errorMessage = nil
@@ -2103,9 +1919,8 @@ struct EditRemappingSheet: View {
                     }
                     .frame(height: 28)
 
-                    // 录制按钮（仅当启用录制模式时显示）
-                    if settings.enableRecordingMode {
-                        Button(action: {
+                    // 录制按钮
+                    Button(action: {
                             if isRecordingFrom {
                                 stopRecordingFrom()
                             } else {
@@ -2125,7 +1940,6 @@ struct EditRemappingSheet: View {
                             .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
-                    }
                 }
 
                 Text("按下这个快捷键时将被重映射")
@@ -2158,9 +1972,8 @@ struct EditRemappingSheet: View {
                     }
                     .frame(height: 28)
 
-                    // 录制按钮（仅当启用录制模式时显示）
-                    if settings.enableRecordingMode {
-                        Button(action: {
+                    // 录制按钮
+                    Button(action: {
                             if isRecordingTo {
                                 stopRecordingTo()
                             } else {
@@ -2180,7 +1993,6 @@ struct EditRemappingSheet: View {
                             .cornerRadius(6)
                         }
                         .buttonStyle(.plain)
-                    }
                 }
 
                 Text("将被映射为这个快捷键")
@@ -2292,11 +2104,6 @@ struct EditRemappingSheet: View {
     // MARK: - 录制功能
     
     private func startRecordingFrom() {
-        guard settings.enableRecordingMode else {
-            errorMessage = "录制功能未启用，请在设置中开启"
-            return
-        }
-        
         Logger.shared.info("🎙️ 开始录制源快捷键...")
         isRecordingFrom = true
         errorMessage = nil
@@ -2316,11 +2123,6 @@ struct EditRemappingSheet: View {
     }
     
     private func startRecordingTo() {
-        guard settings.enableRecordingMode else {
-            errorMessage = "录制功能未启用，请在设置中开启"
-            return
-        }
-        
         Logger.shared.info("🎙️ 开始录制目标快捷键...")
         isRecordingTo = true
         errorMessage = nil

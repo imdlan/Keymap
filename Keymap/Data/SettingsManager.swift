@@ -35,9 +35,8 @@ class SettingsManager {
         static let conflictNotificationLevel = "conflictNotificationLevel"
         static let cleanupInterval = "cleanupInterval"
         static let panelAutoCloseDelay = "panelAutoCloseDelay"
-        static let logLevel = "logLevel"
         static let enableGlobalRemapping = "enableGlobalRemapping"
-        static let enableRecordingMode = "enableRecordingMode"
+        static let selectedLanguage = "selectedLanguage"
     }
 
     // MARK: - Initialization
@@ -232,19 +231,6 @@ class SettingsManager {
 
     // MARK: - Advanced Settings
 
-    /// 日志级别（0=关闭, 1=错误, 2=警告, 3=信息, 4=调试）
-    var logLevel: Int {
-        get {
-            let value = defaults.integer(forKey: Keys.logLevel)
-            // 如果没有设置过，默认返回 2（警告）
-            return defaults.object(forKey: Keys.logLevel) != nil ? value : 2
-        }
-        set {
-            defaults.set(newValue, forKey: Keys.logLevel)
-            print("⚙️ 日志级别已设置为: \(newValue)")
-        }
-    }
-
     /// 启用全局快捷键重映射
     var enableGlobalRemapping: Bool {
         get {
@@ -256,14 +242,21 @@ class SettingsManager {
         }
     }
 
-    /// 启用快捷键录制模式
-    var enableRecordingMode: Bool {
+    /// 语言选择
+    var selectedLanguage: String {
         get {
-            return defaults.object(forKey: Keys.enableRecordingMode) as? Bool ?? false
+            return defaults.string(forKey: Keys.selectedLanguage) ?? "system"
         }
         set {
-            defaults.set(newValue, forKey: Keys.enableRecordingMode)
-            print("⚙️ 快捷键录制模式: \(newValue ? "开启" : "关闭")")
+            defaults.set(newValue, forKey: Keys.selectedLanguage)
+            print("⚙️ 语言已设置为: \(newValue)")
+
+            // 发送通知
+            NotificationCenter.default.post(
+                name: .settingsChanged,
+                object: nil,
+                userInfo: ["key": Keys.selectedLanguage, "value": newValue]
+            )
         }
     }
 
@@ -284,9 +277,8 @@ class SettingsManager {
             Keys.conflictNotificationLevel: "medium",
             Keys.cleanupInterval: 90,
             Keys.panelAutoCloseDelay: 0,
-            Keys.logLevel: 2,
             Keys.enableGlobalRemapping: false,
-            Keys.enableRecordingMode: false
+            Keys.selectedLanguage: "system"
         ]
 
         self.defaults.register(defaults: defaults)
@@ -307,9 +299,8 @@ class SettingsManager {
         conflictNotificationLevel = .medium
         cleanupInterval = 90
         panelAutoCloseDelay = 0
-        logLevel = 2
         enableGlobalRemapping = false
-        enableRecordingMode = false
+        selectedLanguage = "system"
 
         print("🔄 所有设置已重置为默认值")
     }
@@ -329,9 +320,8 @@ class SettingsManager {
             Keys.conflictNotificationLevel: conflictNotificationLevel.rawValue,
             Keys.cleanupInterval: cleanupInterval,
             Keys.panelAutoCloseDelay: panelAutoCloseDelay,
-            Keys.logLevel: logLevel,
             Keys.enableGlobalRemapping: enableGlobalRemapping,
-            Keys.enableRecordingMode: enableRecordingMode
+            Keys.selectedLanguage: selectedLanguage
         ]
     }
 
@@ -374,14 +364,11 @@ class SettingsManager {
         if let delay = settings[Keys.panelAutoCloseDelay] as? Double {
             panelAutoCloseDelay = delay
         }
-        if let level = settings[Keys.logLevel] as? Int {
-            logLevel = level
-        }
         if let remapping = settings[Keys.enableGlobalRemapping] as? Bool {
             enableGlobalRemapping = remapping
         }
-        if let recording = settings[Keys.enableRecordingMode] as? Bool {
-            enableRecordingMode = recording
+        if let language = settings[Keys.selectedLanguage] as? String {
+            selectedLanguage = language
         }
 
         print("✅ 设置已导入")

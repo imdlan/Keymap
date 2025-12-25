@@ -46,10 +46,9 @@ class Logger {
     
     // MARK: - Properties
     
-    private let settings = SettingsManager.shared
-    
+    /// 固定日志级别为警告（不再从设置读取）
     private var currentLevel: Level {
-        return Level(rawValue: settings.logLevel) ?? .warning
+        return .warning
     }
     
     private init() {}
