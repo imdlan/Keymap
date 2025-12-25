@@ -748,28 +748,80 @@ class StatisticsViewModel: ObservableObject {
     }
 
     private func exportData() throws -> Data {
-        let exportData: [String: Any] = [
-            "summary": [
-                "totalUsage": summary.totalUsage,
-                "conflictCount": summary.conflictCount,
-                "efficiencyScore": summary.efficiencyScore,
-                "timeRange": "\(summary.timeRange.start) - \(summary.timeRange.end)"
-            ],
-            "topShortcuts": summary.topShortcuts.map { [
-                "shortcut": $0.shortcut,
-                "application": $0.application,
-                "count": $0.count
-            ]},
-            "trendData": trendData.map { [
-                "date": $0.date,
-                "count": $0.count
-            ]},
-            "conflicts": conflictingShortcuts,
-            "suggestions": suggestions,
-            "exportDate": ISO8601DateFormatter().string(from: Date())
-        ]
+        // 手动构建 JSON 以确保严格的顺序控制
+        var jsonString = "{\n"
 
-        return try JSONSerialization.data(withJSONObject: exportData, options: .prettyPrinted)
+        // 1. 导出日期
+        let dateFormatter = ISO8601DateFormatter()
+        jsonString += "  \"exportDate\" : \"\(dateFormatter.string(from: Date()))\",\n"
+
+        // 2. 概览
+        jsonString += "  \"summary\" : {\n"
+        jsonString += "    \"totalUsage\" : \(summary.totalUsage),\n"
+        jsonString += "    \"conflictCount\" : \(summary.conflictCount),\n"
+        jsonString += "    \"efficiencyScore\" : \(summary.efficiencyScore),\n"
+        jsonString += "    \"timeRange\" : \"\(summary.timeRange.start) - \(summary.timeRange.end)\"\n"
+        jsonString += "  },\n"
+
+        // 3. 使用频率排行
+        jsonString += "  \"topShortcuts\" : [\n"
+        for (index, shortcut) in summary.topShortcuts.enumerated() {
+            jsonString += "    {\n"
+            jsonString += "      \"shortcut\" : \"\(escapeJSON(shortcut.shortcut))\",\n"
+            jsonString += "      \"application\" : \"\(escapeJSON(shortcut.application))\",\n"
+            jsonString += "      \"count\" : \(shortcut.count)\n"
+            jsonString += "    }"
+            jsonString += (index < summary.topShortcuts.count - 1) ? ",\n" : "\n"
+        }
+        jsonString += "  ],\n"
+
+        // 4. 使用趋势
+        jsonString += "  \"trendData\" : [\n"
+        for (index, trend) in trendData.enumerated() {
+            jsonString += "    {\n"
+            jsonString += "      \"date\" : \"\(trend.date)\",\n"
+            jsonString += "      \"count\" : \(trend.count)\n"
+            jsonString += "    }"
+            jsonString += (index < trendData.count - 1) ? ",\n" : "\n"
+        }
+        jsonString += "  ],\n"
+
+        // 5. 高冲突快捷键
+        jsonString += "  \"conflicts\" : [\n"
+        for (index, conflict) in conflictingShortcuts.enumerated() {
+            jsonString += "    \"\(escapeJSON(conflict))\""
+            jsonString += (index < conflictingShortcuts.count - 1) ? ",\n" : "\n"
+        }
+        jsonString += "  ],\n"
+
+        // 6. 优化建议
+        jsonString += "  \"suggestions\" : [\n"
+        for (index, suggestion) in suggestions.enumerated() {
+            jsonString += "    {\n"
+            jsonString += "      \"icon\" : \"\(escapeJSON(suggestion.icon))\",\n"
+            jsonString += "      \"text\" : \"\(escapeJSON(suggestion.text))\"\n"
+            jsonString += "    }"
+            jsonString += (index < suggestions.count - 1) ? ",\n" : "\n"
+        }
+        jsonString += "  ]\n"
+
+        jsonString += "}"
+
+        guard let data = jsonString.data(using: .utf8) else {
+            throw NSError(domain: "Keymap", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法生成 JSON 数据"])
+        }
+
+        return data
+    }
+
+    /// 转义 JSON 字符串中的特殊字符
+    private func escapeJSON(_ string: String) -> String {
+        return string
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\r", with: "\\r")
+            .replacingOccurrences(of: "\t", with: "\\t")
     }
 
     private func showNotification(title: String, message: String) {
