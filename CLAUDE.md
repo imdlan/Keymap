@@ -914,3 +914,81 @@ enableRecordingMode: Bool = false
 - Keymap/Resources/Assets.xcassets/AppIcon.appiconset/logo-1024.pdf（新增）
 - 删除：icon_512x512.png, icon_512x512@2x.png, logo-512.pdf
 
+### 2025-12-25 - 安全增强：移除危险脚本与权限配置
+
+**安全问题修复**:
+- ❌ 移除 `scripts/clean_metal_cache.sh` 脚本
+  - 脚本包含不安全的 `rm -rf` 命令
+  - 可能导致意外删除系统文件或应用
+  - 已在执行过程中导致应用被误删
+
+**全局安全配置**:
+- ✅ 创建严格的 Claude Code 权限规则（`~/.claude/settings.json`）
+- ✅ 文件访问限制：仅允许 `~/Sites`, `~/Documents`, `~/Desktop`, `~/Downloads`
+- ✅ 禁止访问系统目录：`/System`, `/Library`, `/Applications`, `/usr`, `/etc`
+- ✅ 禁止访问敏感配置：`~/.ssh`, `~/.aws`, `~/.gnupg`, `~/.kube`
+
+**危险命令完全禁止**:
+- ❌ `rm`, `rmdir` - 删除文件/目录
+- ❌ `sudo` - 管理员权限
+- ❌ `brew uninstall/remove` - 卸载软件
+- ❌ `mas uninstall` - 卸载 App Store 应用
+- ❌ `npm uninstall -g` - 卸载全局包
+- ❌ `xcode-select --reset` - 重置 Xcode
+- ❌ `killall`, `pkill` - 结束进程
+
+**需确认的危险操作**:
+- ⚠️ `git clean` - 清理未跟踪文件
+- ⚠️ `git reset --hard` - 硬重置仓库
+- ⚠️ `defaults delete` - 删除系统配置
+
+**影响**:
+- Claude Code 无法执行任何删除操作
+- 无法访问系统关键目录
+- 项目文件受到完整保护
+- 不影响用户手动在终端执行命令
+
+**修改文件**:
+- /Users/David/.claude/settings.json（新增安全规则）
+- scripts/clean_metal_cache.sh（已删除）
+
+### 2025-12-25 - 代码质量提升：修复 9 个编译警告
+
+**已修复警告** (9/12):
+
+1. **AppDelegate.swift** - 字符串插值可选值警告（1处）
+   - ❌ 旧代码：`updateMenuItemShortcutDisplay(showPanelMenuItem!)`
+   - ✅ 新代码：使用局部变量 `panelMenuItem` 避免强制解包
+   - 问题：Optional 强制解包会产生警告
+
+2. **ShortcutPanelView.swift** - onChange API 弃用警告（2处）
+   - ❌ 旧 API：`.onChange(of: value) { newValue in }`
+   - ✅ 新 API：`.onChange(of: value) { _, newValue in }`
+   - 位置：showingRemappingDialog (60行)、newKeyCombination (517行)
+
+3. **StatisticsWindow.swift** - onChange API 弃用警告（6处）
+   - ❌ 旧 API：`.onChange(of: value) { newValue in }`
+   - ✅ 新 API：`.onChange(of: value) { _, newValue in }`
+   - 位置：
+     - AnimatedStatisticCard: targetValue (1025行)、isAnimating (1035行)
+     - AnimatedProgressView: progress (1112行)、isAnimating (1121行)
+     - AnimatedBarView: targetHeight (1186行)、isAnimating (1195行)
+
+**剩余警告** (3/12):
+- Assets.xcassets - PDF 图标警告（3个）
+  - "PDF 文件扩展名无效"（2个）
+  - "logo-1024.pdf 是 1024x1024 但应该是 512x512"（1个）
+  - **已知限制**：不影响功能，PDF 矢量格式正常运行
+
+**技术改进**:
+- ✅ 遵循 macOS 14.0+ SwiftUI 最佳实践
+- ✅ 使用新版 onChange API（两参数闭包）
+- ✅ 避免可选值强制解包
+- ✅ 消除弃用 API 警告
+- ✅ 提升代码可维护性
+
+**修改文件**:
+- Keymap/App/AppDelegate.swift
+- Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift
+- Keymap/UI/Views/Statistics/StatisticsWindow.swift
+
