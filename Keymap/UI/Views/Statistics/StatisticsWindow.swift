@@ -1022,17 +1022,17 @@ struct AnimatedStatisticCard: View {
         .padding()
         .background(Color(NSColor.windowBackgroundColor))
         .cornerRadius(6)
-        .onChange(of: targetValue) { newValue in
+        .onChange(of: targetValue) { _, newValue in
             // 立即缓存新的目标值
             pendingTargetValue = newValue
             print("🔄 AnimatedStatisticCard[\(title)]: targetValue changed to \(newValue), cached as pendingTargetValue")
-            
+
             // 如果不在动画中，直接更新显示值
             if !isAnimating {
                 displayValue = newValue
             }
         }
-        .onChange(of: isAnimating) { newValue in
+        .onChange(of: isAnimating) { _, newValue in
             if newValue {
                 // isAnimating 变为 true 时，使用缓存的目标值开始动画
                 print("🎬 AnimatedStatisticCard[\(title)]: isAnimating=true, starting animation with pendingTarget=\(pendingTargetValue)")
@@ -1109,16 +1109,16 @@ struct AnimatedProgressBar: View {
                 .fill(Color.blue.opacity(0.3))
                 .frame(width: geometry.size.width * animatedProgress)
         }
-        .onChange(of: progress) { newValue in
+        .onChange(of: progress) { _, newValue in
             // 立即缓存新的目标进度
             pendingProgress = newValue
-            
+
             // 如果不在动画中，直接更新显示进度
             if !isAnimating {
                 animatedProgress = newValue
             }
         }
-        .onChange(of: isAnimating) { newValue in
+        .onChange(of: isAnimating) { _, newValue in
             if newValue {
                 // isAnimating 变为 true 时，使用缓存的目标值开始动画
                 animateProgress()
@@ -1183,16 +1183,16 @@ struct AnimatedBarView: View {
                 .foregroundColor(.secondary)
                 .frame(height: 16)  // 固定高度
         }
-        .onChange(of: targetHeight) { newValue in
+        .onChange(of: targetHeight) { _, newValue in
             // 立即缓存新的目标高度
             pendingHeight = newValue
-            
+
             // 如果不在动画中，直接更新显示高度
             if !isAnimating {
                 animatedHeight = newValue
             }
         }
-        .onChange(of: isAnimating) { newValue in
+        .onChange(of: isAnimating) { _, newValue in
             if newValue {
                 // isAnimating 变为 true 时，使用缓存的目标值开始动画
                 animateBar()

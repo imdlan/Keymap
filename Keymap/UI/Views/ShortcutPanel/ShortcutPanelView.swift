@@ -57,7 +57,7 @@ struct ShortcutPanelView: View {
             }
         }
         .frame(width: 500, height: 600)
-        .onChange(of: showingRemappingDialog) { isShowing in
+        .onChange(of: showingRemappingDialog) { _, isShowing in
             if !isShowing {
                 // ✅ 对话框关闭后刷新快捷键列表
                 viewModel.loadCurrentAppShortcuts()
@@ -514,7 +514,7 @@ struct RemappingDialogView: View {
                             )
                         
                         TextField(isRecording ? "请按下快捷键..." : "例如: ⇧⌘T", text: $newKeyCombination)
-                            .onChange(of: newKeyCombination) { _ in
+                            .onChange(of: newKeyCombination) { _, _ in
                                 // ✅ 用户输入新内容时，清除重置标记
                                 if isPendingReset && !newKeyCombination.isEmpty {
                                     isPendingReset = false

@@ -202,13 +202,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // 创建"显示快捷键面板"菜单项，添加动态快捷键显示
-        showPanelMenuItem = NSMenuItem(
+        let panelMenuItem = NSMenuItem(
             title: "显示快捷键面板",
             action: #selector(showShortcutPanel),
             keyEquivalent: ""
         )
-        updateMenuItemShortcutDisplay(showPanelMenuItem!)
-        menu.addItem(showPanelMenuItem!)
+        updateMenuItemShortcutDisplay(panelMenuItem)
+        menu.addItem(panelMenuItem)
+        showPanelMenuItem = panelMenuItem
 
         menu.addItem(NSMenuItem(
             title: "统计分析",
