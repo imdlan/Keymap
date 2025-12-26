@@ -22,25 +22,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var showPanelMenuItem: NSMenuItem?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // 0. 初始化本地化管理器（必须最先执行，确保所有UI使用正确语言）
+        _ = LocalizationManager.shared
+
         // ✅ 完全移除主菜单栏（只保留苹果菜单）
         setupEmptyMenuBar()
-        
+
         // 根据设置决定是否在Dock显示图标
         let showInDock = SettingsManager.shared.showInDock
         NSApp.setActivationPolicy(showInDock ? .regular : .accessory)
 
         print("🚀 应用启动中...")
 
-        // 1. 检查并申请权限
+        // 1. 执行数据库迁移（如果需要）
+        if EnumMigration.needsMigration() {
+            print("🔄 检测到需要迁移数据库枚举值...")
+            
+            // 显示迁移统计
+            let stats = EnumMigration.getMigrationStatistics()
+            print(stats.description)
+            
+            do {
+                try EnumMigration.migrate()
+                print("✅ 数据库迁移完成")
+            } catch {
+                print("❌ 数据库迁移失败: \(error.localizedDescription)")
+                print("⚠️ 应用可能无法正常工作，请检查日志")
+            }
+        } else {
+            print("✅ 数据库无需迁移（已经是最新版本）")
+        }
+
+        // 2. 检查并申请权限
         PermissionManager.shared.checkAndRequestPermissions()
 
-        // 2. 创建菜单栏图标
+        // 3. 创建菜单栏图标
         setupMenuBar()
 
-        // 3. 初始化快捷键面板控制器
+        // 4. 初始化快捷键面板控制器
         shortcutPanelController = ShortcutPanelController()
 
-        // 4. 初始化全局监控（无论是否有权限都尝试启动，会自动请求权限）
+        // 5. 初始化全局监控（无论是否有权限都尝试启动，会自动请求权限）
         print("🔍 检查辅助功能权限状态...")
         let hasPermission = PermissionManager.shared.hasAccessibilityPermission()
         print("📋 辅助功能权限: \(hasPermission ? "✅ 已授予" : "❌ 未授予")")
@@ -57,8 +79,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     if settings.authorizationStatus == .authorized {
                         print("✅ 通知权限已授予，发送提示通知")
                         NotificationHelper.shared.send(
-                            title: "需要辅助功能权限",
-                            message: "请在系统设置中授予Keymap辅助功能权限"
+                            title: "notification.permission.title".localized(),
+                            message: "notification.permission.message".localized()
                         )
                     } else {
                         print("❌ 通知权限未授予: \(settings.authorizationStatus.rawValue)")
@@ -70,7 +92,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // 无论权限状态如何都尝试启动，这样可以触发权限请求
         setupGlobalMonitoring()
 
-        // 5. 监听权限变化
+        // 6. 监听权限变化
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(permissionStatusChanged),
@@ -78,7 +100,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
 
-        // 6. 监听窗口打开请求
+        // 7. 监听窗口打开请求
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(showStatistics),
@@ -93,7 +115,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
         
-        // 7. 监听快捷键冲突通知
+        // 8. 监听快捷键冲突通知
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleConflictFound),
@@ -101,10 +123,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
         
-        // 8. 添加全局快捷键监听器
+        // 9. 添加全局快捷键监听器
         setupGlobalShortcuts()
         
-        // 9. 监听触发快捷键设置变化以更新菜单
+        // 10. 监听触发快捷键设置变化以更新菜单
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(updateMenuBarShortcut),
@@ -112,7 +134,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
         
-        // 10. 监听显示指定应用快捷键的请求
+        // 11. 监听显示指定应用快捷键的请求
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleShowShortcutsForApp),
@@ -142,8 +164,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("⚠️ 没有辅助功能权限，提示用户授权")
             // 显示权限提示通知
             NotificationHelper.shared.send(
-                title: "需要辅助功能权限",
-                message: "请在系统设置中授予Keymap辅助功能权限后使用"
+                title: "notification.permission.title".localized(),
+                message: "notification.permission.message.dock".localized()
             )
             // 打开系统设置
             PermissionManager.shared.openSystemPreferences()
@@ -166,9 +188,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.addItem(appleMenuItem)
         
         // 只添加"关于"和"退出"
-        appleMenu.addItem(NSMenuItem(title: "关于 Keymap", action: #selector(showAbout), keyEquivalent: ""))
+        appleMenu.addItem(NSMenuItem(title: "menu.about".localized(), action: #selector(showAbout), keyEquivalent: ""))
         appleMenu.addItem(NSMenuItem.separator())
-        appleMenu.addItem(NSMenuItem(title: "退出 Keymap", action: #selector(quitApp), keyEquivalent: "q"))
+        appleMenu.addItem(NSMenuItem(title: "menu.quit".localized(), action: #selector(quitApp), keyEquivalent: "q"))
         
         NSApp.mainMenu = mainMenu
         print("✅ 主菜单栏已移除")
@@ -192,18 +214,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if !hasPermission {
             let permissionItem = NSMenuItem(
-                title: "⚠️ 需要辅助功能权限",
+                title: "menu.permission_warning".localized(),
                 action: #selector(openSystemPreferences),
                 keyEquivalent: ""
             )
-            permissionItem.toolTip = "点击打开系统设置授予权限"
+            permissionItem.toolTip = "menu.permission_tooltip".localized()
             menu.addItem(permissionItem)
             menu.addItem(NSMenuItem.separator())
         }
 
         // 创建"显示快捷键面板"菜单项，添加动态快捷键显示
         let panelMenuItem = NSMenuItem(
-            title: "显示快捷键面板",
+            title: "menu.show_panel".localized(),
             action: #selector(showShortcutPanel),
             keyEquivalent: ""
         )
@@ -212,7 +234,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         showPanelMenuItem = panelMenuItem
 
         menu.addItem(NSMenuItem(
-            title: "统计分析",
+            title: "menu.statistics".localized(),
             action: #selector(showStatistics),
             keyEquivalent: "d"
         ))
@@ -220,7 +242,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         menu.addItem(NSMenuItem(
-            title: "设置...",
+            title: "menu.settings".localized(),
             action: #selector(showSettings),
             keyEquivalent: ","
         ))
@@ -228,7 +250,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         let aboutItem = NSMenuItem(
-            title: "关于 Keymap",
+            title: "menu.about_keymap".localized(),
             action: #selector(showAbout),
             keyEquivalent: ""
         )
@@ -237,7 +259,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         menu.addItem(NSMenuItem(
-            title: "退出 Keymap",
+            title: "menu.quit_keymap".localized(),
             action: #selector(quitApp),
             keyEquivalent: "q"
         ))
@@ -337,7 +359,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// 更新菜单项的快捷键显示
     private func updateMenuItemShortcutDisplay(_ menuItem: NSMenuItem) {
         let shortcutText = getTriggerKeyDisplay()
-        menuItem.title = "显示快捷键面板 (\(shortcutText))"
+        menuItem.title = String(format: "menu.show_panel_with_key".localized(), shortcutText)
     }
     
     /// 获取触发快捷键的显示文字
@@ -409,29 +431,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // 构建通知内容
         let firstConflict = conflicts.first!
-        let title = "检测到快捷键冲突"
-        var message = "快捷键 \(keyCombination) "
+        let title = "notification.conflict.title".localized()
+        var message = "\(keyCombination) "
         
         switch firstConflict.conflictType {
         case .system:
-            message += "与系统快捷键冲突"
+            message += "notification.conflict.system".localized()
         case .global:
-            message += "与 \(firstConflict.conflictingApp) 冲突"
+            message += String(format: "notification.conflict.global".localized(), firstConflict.conflictingApp ?? "Unknown")
         case .application:
-            message += "应用内重复定义"
+            message += "notification.conflict.application".localized()
         case .functional:
-            message += "功能冲突"
+            message += "notification.conflict.functional".localized()
         }
         
         if conflicts.count > 1 {
-            message += "，共 \(conflicts.count) 个冲突"
+            message += String(format: "notification.conflict.multiple".localized(), conflicts.count)
         }
         
         // 显示系统通知（点击打开快捷键面板）
         NotificationHelper.shared.sendWithAction(
             title: title,
             message: message,
-            actionTitle: "查看详情",
+            actionTitle: "notification.conflict.view_details".localized(),
             userInfo: ["keyCombination": keyCombination]
         ) { [weak self] in
             // 用户点击通知 - 打开快捷键面板并聚焦到冲突

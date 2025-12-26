@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0030BE9B51B6A9C80FB7CD6D /* RemappingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E01BC531EC1E3725BFFED8FA /* RemappingEngine.swift */; };
+		180C0B32394469B42A8DF03C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7DA52A8946CBD3A2505AA126 /* Localizable.strings */; };
 		1C8D048A8C9D0897CF9B7D10 /* ShortcutCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F55E83F1C09D876B573418 /* ShortcutCache.swift */; };
 		2545DA8608E54BA5A0DA4F51 /* ConflictAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA94B0CBBE9AA8CA3B5D55EB /* ConflictAnalyzer.swift */; };
 		2BD630BB9DA3AD7685EEF89A /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62EFEA777612EF103110FE1 /* SettingsManager.swift */; };
@@ -23,6 +24,7 @@
 		568FECE7AF9863A1A8B7F35F /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEEE5E26145427DC1D7C66A /* DatabaseManager.swift */; };
 		5B64255B866DE12943B4DBE6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A80E3ACC039141DD6C351E91 /* Assets.xcassets */; };
 		5E09EF2DE3BB1AD32F4DC60A /* ShortcutPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F866384FF64C5C2D69F37BE /* ShortcutPanelView.swift */; };
+		6AFBF142868710FCFF27122F /* EnumMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F622E5417BE8A26FDBE701CE /* EnumMigration.swift */; };
 		6B72401D704D5939AB6E697A /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 069A69E272820DEAF8507D33 /* Carbon.framework */; };
 		74B665E7AD4DEB28B09DC153 /* PermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5425031DB11FE2D95092AD9F /* PermissionManager.swift */; };
 		7CE052DADFE8351148B6423F /* ShortcutPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0D9F72658BF0113717CB8 /* ShortcutPanelViewModel.swift */; };
@@ -31,6 +33,7 @@
 		9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F863A83B5D13465BA0574102 /* NotificationHelper.swift */; };
 		969ACDF3A5EDEBF32EAE41F8 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8D9465654515E712FDA2BD /* Logger.swift */; };
 		9BED982641EF22EB33583AA1 /* ShortcutRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F4383254773AAF50DC9BD1 /* ShortcutRepository.swift */; };
+		9ED5E6DA1E89E1BE3FF5EE0C /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46DEBD237265F220D3B5EE3F /* LocalizationManager.swift */; };
 		A0E69794EE6B5D7C509FCBDC /* SystemShortcutProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCF0BC5F5D32C4F48E225D2 /* SystemShortcutProvider.swift */; };
 		A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA45D8D5074D6D89604CEC5 /* MenuItemParser.swift */; };
 		A5A47221FB0A9DFC8EBBB776 /* DoubleCmdDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0731FDDE7308AA86150A47 /* DoubleCmdDetector.swift */; };
@@ -55,6 +58,8 @@
 		10ED3E2A9B284500510F4035 /* Keymap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Keymap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		21492ADCACC77E9600326CD5 /* StatisticsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsWindow.swift; sourceTree = "<group>"; };
 		284249152616D37340F21A07 /* UsageRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRepository.swift; sourceTree = "<group>"; };
+		439DA2E7220DEE37A48625AE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		46DEBD237265F220D3B5EE3F /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
 		5425031DB11FE2D95092AD9F /* PermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionManager.swift; sourceTree = "<group>"; };
 		543CDB9C864BFA6F5FFF17A1 /* Entitlements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = Entitlements.plist; path = Keymap/Resources/Entitlements.plist; sourceTree = "<group>"; };
 		5A13AD1CBC65511353D19F6B /* KeymapApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeymapApp.swift; sourceTree = "<group>"; };
@@ -83,9 +88,11 @@
 		DEA45D8D5074D6D89604CEC5 /* MenuItemParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemParser.swift; sourceTree = "<group>"; };
 		E01BC531EC1E3725BFFED8FA /* RemappingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemappingEngine.swift; sourceTree = "<group>"; };
 		E721C069A36C304572F9B13A /* GlobalEventMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalEventMonitor.swift; sourceTree = "<group>"; };
+		F622E5417BE8A26FDBE701CE /* EnumMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumMigration.swift; sourceTree = "<group>"; };
 		F62EFEA777612EF103110FE1 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
 		F86044362846C26C386274D1 /* StatisticsSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsSummary.swift; sourceTree = "<group>"; };
 		F863A83B5D13465BA0574102 /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
+		FFB28876855318525D2BA002 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +282,14 @@
 			path = ViewModels;
 			sourceTree = "<group>";
 		};
+		B55A516CAC66CFA4D7B3FA1D /* Localizations */ = {
+			isa = PBXGroup;
+			children = (
+				7DA52A8946CBD3A2505AA126 /* Localizable.strings */,
+			);
+			path = Localizations;
+			sourceTree = "<group>";
+		};
 		B6C7EB296A1CA9A4DCEF7A86 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,12 +301,21 @@
 		B7478431A78FABA40B886ABF /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				46DEBD237265F220D3B5EE3F /* LocalizationManager.swift */,
 				6B8D9465654515E712FDA2BD /* Logger.swift */,
 				F863A83B5D13465BA0574102 /* NotificationHelper.swift */,
 				5425031DB11FE2D95092AD9F /* PermissionManager.swift */,
 			);
 			name = Utilities;
 			path = Keymap/Utilities;
+			sourceTree = "<group>";
+		};
+		B9A7795C6102C3A0FB72E934 /* Migrations */ = {
+			isa = PBXGroup;
+			children = (
+				F622E5417BE8A26FDBE701CE /* EnumMigration.swift */,
+			);
+			path = Migrations;
 			sourceTree = "<group>";
 		};
 		BAF6CCB356163ED2CFB4774C /* Models */ = {
@@ -310,6 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				A80E3ACC039141DD6C351E91 /* Assets.xcassets */,
+				B55A516CAC66CFA4D7B3FA1D /* Localizations */,
 			);
 			name = Resources;
 			path = Keymap/Resources;
@@ -347,6 +372,7 @@
 			children = (
 				0AEEE5E26145427DC1D7C66A /* DatabaseManager.swift */,
 				F62EFEA777612EF103110FE1 /* SettingsManager.swift */,
+				B9A7795C6102C3A0FB72E934 /* Migrations */,
 				F2E499C22627ECB11B4B44FE /* Repositories */,
 			);
 			name = Data;
@@ -410,10 +436,11 @@
 			};
 			buildConfigurationList = 3073BD99284218B221EFE1BB /* Build configuration list for PBXProject "Keymap" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = "zh-Hans";
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				en,
 				"zh-Hans",
 			);
 			mainGroup = 25DC853B68EC917CA55F3307;
@@ -433,6 +460,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B64255B866DE12943B4DBE6 /* Assets.xcassets in Resources */,
+				180C0B32394469B42A8DF03C /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,12 +479,14 @@
 				502F01B8040053A2E2BF12DE /* ConflictResolver.swift in Sources */,
 				568FECE7AF9863A1A8B7F35F /* DatabaseManager.swift in Sources */,
 				A5A47221FB0A9DFC8EBBB776 /* DoubleCmdDetector.swift in Sources */,
+				6AFBF142868710FCFF27122F /* EnumMigration.swift in Sources */,
 				CEFB75F34C2641EB5744120A /* GlobalEventMonitor.swift in Sources */,
 				84D7E1C12D169F5A84DA1C44 /* GlobalShortcutDatabase.swift in Sources */,
 				4E2B4FD15DF0E61FC399204A /* KeyCombinationDetector.swift in Sources */,
 				531CE9943B523443AB89E589 /* KeyRecorder.swift in Sources */,
 				C46F74C997BFBE0A5A857FF1 /* KeymapApp.swift in Sources */,
 				A9D5D8D1C0F960F085ED515D /* KeymapShortcutProvider.swift in Sources */,
+				9ED5E6DA1E89E1BE3FF5EE0C /* LocalizationManager.swift in Sources */,
 				969ACDF3A5EDEBF32EAE41F8 /* Logger.swift in Sources */,
 				A4E6DDA0EFD4B22A52457405 /* MenuItemParser.swift in Sources */,
 				9515EDB0FD8D4E8D0EA7EEA5 /* NotificationHelper.swift in Sources */,
@@ -480,6 +510,18 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		7DA52A8946CBD3A2505AA126 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FFB28876855318525D2BA002 /* en */,
+				439DA2E7220DEE37A48625AE /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		176C7836B15043758AFF172C /* Release */ = {
@@ -621,6 +663,11 @@
 					"\"Keymap/Resources\"",
 				);
 				INFOPLIST_FILE = Keymap/App/Info.plist;
+				KNOWN_REGIONS = (
+					en,
+					"zh-Hans",
+					Base,
+				);
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.Keymap;
 				PRODUCT_NAME = Keymap;
@@ -646,6 +693,11 @@
 					"\"Keymap/Resources\"",
 				);
 				INFOPLIST_FILE = Keymap/App/Info.plist;
+				KNOWN_REGIONS = (
+					en,
+					"zh-Hans",
+					Base,
+				);
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.Keymap;
 				PRODUCT_NAME = Keymap;

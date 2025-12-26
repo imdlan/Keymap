@@ -9,10 +9,20 @@ import Foundation
 
 /// 冲突解决策略
 enum ResolutionStrategy: String, Codable {
-    case disable = "禁用"     // 禁用某个应用的快捷键
-    case remap = "重映射"     // 重新映射快捷键
-    case ignore = "忽略"      // 忽略冲突
-    case manual = "手动处理"  // 需要用户手动处理
+    case disable = "disable"  // 禁用某个应用的快捷键
+    case remap = "remap"      // 重新映射快捷键
+    case ignore = "ignore"    // 忽略冲突
+    case manual = "manual"    // 需要用户手动处理
+
+    /// 本地化显示名称
+    var displayName: String {
+        switch self {
+        case .disable: return "resolution.strategy.disable".localized()
+        case .remap:   return "resolution.strategy.remap".localized()
+        case .ignore:  return "resolution.strategy.ignore".localized()
+        case .manual:  return "resolution.strategy.manual".localized()
+        }
+    }
 }
 
 /// 解决方案记录

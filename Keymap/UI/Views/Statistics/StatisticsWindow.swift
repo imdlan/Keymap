@@ -36,7 +36,7 @@ class StatisticsWindow: NSWindow {
     // MARK: - Setup
 
     private func setupWindow() {
-        title = "统计分析"
+        title = "window.statistics".localized()
         center()
         isReleasedWhenClosed = false
 
@@ -130,10 +130,10 @@ struct StatisticsView: View {
             // 时间范围选择 - 自定义分段选择器
             HStack(spacing: 0) {
                 ForEach([
-                    (StatisticsPeriod.today, "今天"),
-                    (StatisticsPeriod.week, "过去7天"),
-                    (StatisticsPeriod.month, "过去30天"),
-                    (StatisticsPeriod.all, "全部")
+                    (StatisticsPeriod.today, "statistics.period.today".localized()),
+                    (StatisticsPeriod.week, "statistics.period.week".localized()),
+                    (StatisticsPeriod.month, "statistics.period.month".localized()),
+                    (StatisticsPeriod.all, "statistics.period.all".localized())
                 ], id: \.0) { period, title in
                     Button(action: {
                         selectedPeriod = period
@@ -143,11 +143,12 @@ struct StatisticsView: View {
                             .font(.body)
                             .fontWeight(selectedPeriod == period ? .semibold : .regular)
                             .foregroundColor(selectedPeriod == period ? .white : .primary)
-                            .frame(width: 80, height: 28)
+                            .padding(.horizontal, 12)
+                            .frame(height: 28)
                             .contentShape(Rectangle())
                             .background(
-                                selectedPeriod == period ? 
-                                    Color.blue : 
+                                selectedPeriod == period ?
+                                    Color.blue :
                                     (colorScheme == .dark ? Color(white: 0.25) : Color.white)
                             )
                     }
@@ -169,7 +170,7 @@ struct StatisticsView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "arrow.clockwise")
                         .font(.body)
-                    Text("刷新")
+                    Text("statistics.refresh".localized())
                         .font(.body)
                         .fontWeight(.medium)
                 }
@@ -195,7 +196,7 @@ struct StatisticsView: View {
                 HStack(spacing: 6) {
                     Image(systemName: "square.and.arrow.up")
                         .font(.body)
-                    Text("导出")
+                    Text("statistics.export".localized())
                         .font(.body)
                         .fontWeight(.medium)
                 }
@@ -216,13 +217,13 @@ struct StatisticsView: View {
 
     private var overviewSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("概览")
+            Text("statistics.overview".localized())
                 .font(.headline)
 
             HStack(spacing: 20) {
                 // 总使用次数
                 AnimatedStatisticCard(
-                    title: "总使用次数",
+                    title: "statistics.card.total_usage".localized(),
                     targetValue: viewModel.summary.totalUsage,
                     icon: "hand.tap.fill",
                     color: .blue,
@@ -231,7 +232,7 @@ struct StatisticsView: View {
 
                 // 冲突次数
                 AnimatedStatisticCard(
-                    title: "冲突次数",
+                    title: "statistics.card.conflict_count".localized(),
                     targetValue: viewModel.summary.conflictCount,
                     icon: "exclamationmark.triangle.fill",
                     color: .orange,
@@ -240,7 +241,7 @@ struct StatisticsView: View {
 
                 // 无冲突率
                 AnimatedStatisticCard(
-                    title: "无冲突率",
+                    title: "statistics.card.efficiency_rate".localized(),
                     targetValue: Int(viewModel.summary.efficiencyScore * 10),
                     icon: "checkmark.shield.fill",
                     color: .green,
@@ -250,7 +251,7 @@ struct StatisticsView: View {
 
                 // 活跃应用数
                 AnimatedStatisticCard(
-                    title: "活跃应用",
+                    title: "statistics.card.active_apps".localized(),
                     targetValue: viewModel.activeAppsCount,
                     icon: "app.fill",
                     color: .purple,
@@ -269,11 +270,11 @@ struct StatisticsView: View {
 
     private var topShortcutsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("使用频率排行 (Top 10)")
+            Text("statistics.top_shortcuts".localized())
                 .font(.headline)
 
             if viewModel.summary.topShortcuts.isEmpty {
-                Text("暂无数据")
+                Text("statistics.no_data".localized())
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
@@ -310,7 +311,7 @@ struct StatisticsView: View {
             Spacer()
 
             // 使用次数
-            Text("\(usage.count) 次")
+            Text(String(format: "statistics.count_times".localized(), usage.count))
                 .font(.caption)
                 .foregroundColor(.secondary)
 
@@ -332,7 +333,7 @@ struct StatisticsView: View {
     private var trendChartSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("使用趋势")
+                Text("statistics.usage_trend".localized())
                     .font(.headline)
 
                 Spacer()
@@ -342,7 +343,7 @@ struct StatisticsView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "info.circle")
                             .font(.caption)
-                        Text("需要开启使用统计追踪")
+                        Text("statistics.tracking_disabled".localized())
                             .font(.caption)
                     }
                     .foregroundColor(.secondary)
@@ -351,7 +352,7 @@ struct StatisticsView: View {
 
             if viewModel.trendData.isEmpty {
                 VStack(spacing: 12) {
-                    Text("暂无数据")
+                    Text("statistics.no_data".localized())
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
 
@@ -365,13 +366,13 @@ struct StatisticsView: View {
                         }
                         HStack(alignment: .top, spacing: 8) {
                             Text("•")
-                            Text("使用快捷键后，系统会自动记录使用数据")
+                            Text("statistics.tracking_hint_2".localized())
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         HStack(alignment: .top, spacing: 8) {
                             Text("•")
-                            Text("数据将在次日开始显示趋势图")
+                            Text("statistics.tracking_hint_3".localized())
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -418,14 +419,14 @@ struct StatisticsView: View {
 
     private var conflictsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("高冲突快捷键")
+            Text("statistics.high_conflict_shortcuts".localized())
                 .font(.headline)
 
             if viewModel.conflictingShortcuts.isEmpty {
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
-                    Text("太棒了！当前没有冲突")
+                    Text("statistics.no_conflicts".localized())
                         .foregroundColor(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -454,7 +455,7 @@ struct StatisticsView: View {
 
             Spacer()
 
-            Button("查看详情") {
+            Button("button.view_details".localized()) {
                 // TODO: 显示冲突详情
             }
             .buttonStyle(.link)
@@ -469,11 +470,11 @@ struct StatisticsView: View {
 
     private var suggestionsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("优化建议")
+            Text("statistics.optimization_suggestions".localized())
                 .font(.headline)
 
             if viewModel.suggestions.isEmpty {
-                Text("暂无建议")
+                Text("statistics.no_suggestions".localized())
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
@@ -552,10 +553,10 @@ class StatisticsViewModel: ObservableObject {
         
         let periodName: String
         switch period {
-        case .today: periodName = "今天"
-        case .week: periodName = "过去7天"  
-        case .month: periodName = "过去30天"
-        case .all: periodName = "全部"
+        case .today: periodName = "statistics.period.today".localized()
+        case .week: periodName = "statistics.period.week".localized()  
+        case .month: periodName = "statistics.period.month".localized()
+        case .all: periodName = "statistics.period.all".localized()
         }
         print("🔄 ViewModel.loadStatistics 被调用，周期: \(periodName)")
         
@@ -642,13 +643,13 @@ class StatisticsViewModel: ObservableObject {
             suggestions.append(Suggestion(
                 icon: "arrow.triangle.2.circlepath",
                 color: .blue,
-                text: "您还未使用快捷键重映射功能，可以将不常用的快捷键重映射为更顺手的组合"
+                text: "statistics.suggestion.no_remapping".localized()
             ))
         } else if remappingCount > 0 {
             suggestions.append(Suggestion(
                 icon: "checkmark.circle.fill",
                 color: .green,
-                text: "您已创建 \(remappingCount) 个快捷键重映射，善于定制工作流程"
+                text: String(format: "statistics.suggestion.remapping_enabled".localized(), remappingCount)
             ))
         }
 
@@ -662,13 +663,13 @@ class StatisticsViewModel: ObservableObject {
                 suggestions.append(Suggestion(
                     icon: "chart.pie.fill",
                     color: .orange,
-                    text: "您 \(String(format: "%.0f%%", top5Percentage)) 的操作集中在前5个快捷键，可以探索学习更多快捷键以提升效率"
+                    text: String(format: "statistics.suggestion.usage_concentrated".localized(), top5Percentage)
                 ))
             } else if top5Percentage < 60 {
                 suggestions.append(Suggestion(
                     icon: "star.fill",
                     color: .yellow,
-                    text: "您善于使用多样化的快捷键组合，快捷键使用分布均衡"
+                    text: "statistics.suggestion.diverse_usage".localized()
                 ))
             }
         }
@@ -678,13 +679,13 @@ class StatisticsViewModel: ObservableObject {
             suggestions.append(Suggestion(
                 icon: "exclamationmark.triangle.fill",
                 color: .orange,
-                text: "检测到 \(summary.conflictCount) 个冲突，建议解决高优先级冲突以避免误操作"
+                text: String(format: "statistics.suggestion.high_conflicts".localized(), summary.conflictCount)
             ))
         } else if summary.conflictCount > 0 {
             suggestions.append(Suggestion(
                 icon: "info.circle.fill",
                 color: .blue,
-                text: "发现 \(summary.conflictCount) 个冲突，建议及时处理避免误操作"
+                text: String(format: "statistics.suggestion.some_conflicts".localized(), summary.conflictCount)
             ))
         }
 
@@ -694,13 +695,13 @@ class StatisticsViewModel: ObservableObject {
             suggestions.append(Suggestion(
                 icon: "chart.bar.fill",
                 color: .orange,
-                text: "当前快捷键冲突率为 \(String(format: "%.1f%%", conflictRate))，建议优化快捷键配置以减少冲突"
+                text: String(format: "statistics.suggestion.conflict_rate_high".localized(), conflictRate)
             ))
         } else if summary.efficiencyScore >= 90 {
             suggestions.append(Suggestion(
                 icon: "checkmark.shield.fill",
                 color: .green,
-                text: "您的快捷键无冲突率高达 \(String(format: "%.1f%%", summary.efficiencyScore))，所有操作顺利执行，保持良好习惯！"
+                text: String(format: "statistics.suggestion.efficiency_excellent".localized(), summary.efficiencyScore)
             ))
         }
 
@@ -709,19 +710,19 @@ class StatisticsViewModel: ObservableObject {
             suggestions.append(Suggestion(
                 icon: "paperplane.fill",
                 color: .blue,
-                text: "开始使用快捷键来提升工作效率吧！Keymap 会自动记录和分析您的使用习惯"
+                text: "statistics.suggestion.start_using".localized()
             ))
         } else if summary.totalUsage < 50 {
             suggestions.append(Suggestion(
                 icon: "bolt.fill",
                 color: .orange,
-                text: "继续探索快捷键功能，目前已使用 \(summary.totalUsage) 次"
+                text: String(format: "statistics.suggestion.continuing_usage".localized(), summary.totalUsage)
             ))
         } else if summary.totalUsage >= 1000 {
             suggestions.append(Suggestion(
                 icon: "trophy.fill",
                 color: .yellow,
-                text: "您已经使用快捷键 \(summary.totalUsage) 次，是一位快捷键高手！"
+                text: String(format: "statistics.suggestion.power_user".localized(), summary.totalUsage)
             ))
         }
 
@@ -730,13 +731,13 @@ class StatisticsViewModel: ObservableObject {
             suggestions.append(Suggestion(
                 icon: "app.badge.checkmark.fill",
                 color: .purple,
-                text: "您在 \(activeAppsCount) 个应用中使用了快捷键，善于利用工具提升效率"
+                text: String(format: "statistics.suggestion.multi_app_user".localized(), activeAppsCount)
             ))
         } else if activeAppsCount > 0 && activeAppsCount < 3 && summary.totalUsage > 50 {
             suggestions.append(Suggestion(
                 icon: "app.dashed",
                 color: .blue,
-                text: "您主要在 \(activeAppsCount) 个应用中使用快捷键，可以尝试在更多常用应用中探索快捷键功能"
+                text: String(format: "statistics.suggestion.explore_more_apps".localized(), activeAppsCount)
             ))
         }
 

@@ -83,7 +83,7 @@ struct ShortcutPanelView: View {
             }
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("快捷键面板")
+                Text("panel.title".localized())
                     .font(.headline)
                 Text(viewModel.currentApp)
                     .font(.caption)
@@ -92,7 +92,7 @@ struct ShortcutPanelView: View {
 
             Spacer()
 
-            Text("按ESC键关闭")
+            Text("panel.close_hint".localized())
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -103,7 +103,7 @@ struct ShortcutPanelView: View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.secondary)
-            TextField("搜索快捷键...", text: $viewModel.searchText)
+            TextField("panel.search_shortcuts_placeholder".localized(), text: $viewModel.searchText)
                 .textFieldStyle(.plain)
         }
         .padding()
@@ -129,7 +129,7 @@ struct ShortcutPanelView: View {
                     shortcutSection(
                         icon: "command",
                         iconColor: .blue,
-                        title: "常用快捷键",
+                        title: "panel.common_shortcuts_title".localized(),
                         count: viewModel.normalShortcuts.count,
                         shortcuts: viewModel.normalShortcuts,
                         isConflict: false
@@ -237,7 +237,7 @@ struct ShortcutPanelView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     // 严重程度
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("严重程度")
+                        Text("conflict.severity".localized())
                             .font(.caption)
                             .fontWeight(.bold)
 
@@ -252,7 +252,7 @@ struct ShortcutPanelView: View {
 
                     // 冲突类型
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("冲突类型")
+                        Text("conflict.type".localized())
                             .font(.caption)
                             .fontWeight(.bold)
 
@@ -264,7 +264,7 @@ struct ShortcutPanelView: View {
                     // 冲突应用
                     if let app = conflict.conflictingApp {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("冲突应用")
+                            Text("conflict.conflicting_app".localized())
                                 .font(.caption)
                                 .fontWeight(.bold)
 
@@ -277,7 +277,7 @@ struct ShortcutPanelView: View {
                     // 修改建议
                     if !conflict.suggestions.isEmpty {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("建议")
+                            Text("conflict.suggestions".localized())
                                 .font(.caption)
                                 .fontWeight(.bold)
 
@@ -360,7 +360,7 @@ struct ShortcutPanelView: View {
         VStack {
             ProgressView()
                 .scaleEffect(1.5)
-            Text("加载中...")
+            Text("panel.loading".localized())
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .padding(.top)
@@ -370,7 +370,7 @@ struct ShortcutPanelView: View {
 
     private var footerView: some View {
         HStack {
-            Text("\(viewModel.shortcuts.count) 个快捷键")
+            Text("common.shortcuts_count".localized(with: viewModel.shortcuts.count))
                 .font(.caption)
                 .foregroundColor(.secondary)
 
@@ -381,7 +381,7 @@ struct ShortcutPanelView: View {
             }) {
                 HStack(spacing: 6) {
                     Image(systemName: "chart.bar")
-                    Text("统计")
+                    Text("panel.statistics".localized())
                 }
             }
             .buttonStyle(.borderless)
@@ -392,7 +392,7 @@ struct ShortcutPanelView: View {
             }) {
                 HStack(spacing: 6) {
                     Image(systemName: "gear")
-                    Text("设置")
+                    Text("panel.settings".localized())
                 }
             }
             .buttonStyle(.borderless)
@@ -455,11 +455,11 @@ struct RemappingDialogView: View {
         VStack(spacing: 20) {
             // 标题
             VStack(spacing: 4) {
-                Text("重映射快捷键")
+                Text("remapping.title".localized())
                     .font(.title2)
                     .fontWeight(.semibold)
 
-                Text("将快捷键映射到其他组合，仅在当前应用中生效")
+                Text("remapping.description".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -468,7 +468,7 @@ struct RemappingDialogView: View {
 
             // 当前快捷键
             VStack(alignment: .leading, spacing: 8) {
-                Text("当前快捷键")
+                Text("remapping.current_shortcut".localized())
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -498,7 +498,7 @@ struct RemappingDialogView: View {
 
             // 新快捷键输入
             VStack(alignment: .leading, spacing: 8) {
-                Text("新快捷键")
+                Text("remapping.new_shortcut".localized())
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
@@ -513,7 +513,7 @@ struct RemappingDialogView: View {
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                             )
                         
-                        TextField(isRecording ? "请按下快捷键..." : "例如: ⇧⌘T", text: $newKeyCombination)
+                        TextField(isRecording ? "recording.placeholder_recording".localized() : "recording.placeholder_example_shift".localized(), text: $newKeyCombination)
                             .onChange(of: newKeyCombination) { _, _ in
                                 // ✅ 用户输入新内容时，清除重置标记
                                 if isPendingReset && !newKeyCombination.isEmpty {
@@ -542,7 +542,7 @@ struct RemappingDialogView: View {
                             HStack(spacing: 6) {
                                 Image(systemName: isRecording ? "stop.circle.fill" : "keyboard")
                                     .font(.body)
-                                Text(isRecording ? "停止" : "录制")
+                                Text(isRecording ? "recording.stop".localized() : "recording.record".localized())
                                     .font(.body)
                             }
                             .frame(height: 28)  // ✅ 调整为28px高度
@@ -554,7 +554,7 @@ struct RemappingDialogView: View {
                         .buttonStyle(.plain)
                 }
 
-                Text("提示: 使用 ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + 字母/数字")
+                Text("remapping.hint".localized())
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
@@ -595,7 +595,7 @@ struct RemappingDialogView: View {
                     isPendingReset = false
                     isPresented = false
                 }) {
-                    Text("取消")
+                    Text("action.cancel".localized())
                         .font(.body)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
@@ -619,7 +619,7 @@ struct RemappingDialogView: View {
                 Button(action: {
                     removeRemapping()
                 }) {
-                    Text("重置")
+                    Text("action.reset".localized())
                         .font(.body)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
@@ -646,7 +646,7 @@ struct RemappingDialogView: View {
                 Button(action: {
                     applyRemapping()
                 }) {
-                    Text("确定")
+                    Text("action.confirm".localized())
                         .font(.body)
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)

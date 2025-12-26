@@ -22,13 +22,13 @@ struct BackgroundAppInfo: Identifiable, Hashable {
     var policyDescription: String {
         switch activationPolicy {
         case .regular:
-            return "普通应用"
+            return "activation_policy.regular".localized()
         case .accessory:
-            return "长驻后台"
+            return "activation_policy.accessory".localized()
         case .prohibited:
-            return "辅助进程"
+            return "activation_policy.prohibited".localized()
         @unknown default:
-            return "未知"
+            return "activation_policy.unknown".localized()
         }
     }
 }
@@ -41,10 +41,13 @@ class GlobalShortcutDatabase: ObservableObject {
     static let shared = GlobalShortcutDatabase()
     
     // MARK: - Properties
-    
+
+    /// 同步队列（保护字典访问）
+    private let syncQueue = DispatchQueue(label: "com.keymap.globalshortcutdb", attributes: [])
+
     /// 快捷键索引：keyCombination -> [应用信息]
     private var shortcutIndex: [String: [AppShortcutEntry]] = [:]
-    
+
     /// 应用快捷键缓存：bundleId -> [ShortcutInfo]
     private var appShortcutsCache: [String: [ShortcutInfo]] = [:]
     
@@ -101,8 +104,9 @@ class GlobalShortcutDatabase: ObservableObject {
                 }
             }
         }
-        
-        print("✅ 扫描完成，已加载 \(appShortcutsCache.count) 个应用的快捷键")
+
+        let loadedCount = syncQueue.sync { appShortcutsCache.count }
+        print("✅ 扫描完成，已加载 \(loadedCount) 个应用的快捷键")
         printStatistics()
     }
     
@@ -123,13 +127,13 @@ class GlobalShortcutDatabase: ObservableObject {
             
             for app in runningApps {
                 guard let bundleId = app.bundleIdentifier else { continue }
-                
-                // 检查是否是长驻应用且没有缓存
-                let isBackgroundApp = app.activationPolicy == .accessory || 
+
+                // 检查是否是长驻应用且没有缓存（线程安全）
+                let isBackgroundApp = app.activationPolicy == .accessory ||
                                      app.activationPolicy == .prohibited
                 let hasCache = self.cache.getCachedShortcuts(for: bundleId) != nil ||
-                              self.appShortcutsCache[bundleId] != nil
-                
+                              self.syncQueue.sync { self.appShortcutsCache[bundleId] != nil }
+
                 if isBackgroundApp && !hasCache {
                     print("📥 提取快捷键: \(app.localizedName ?? bundleId)")
                     await self.loadShortcuts(for: app)
@@ -171,12 +175,14 @@ class GlobalShortcutDatabase: ObservableObject {
                                  userMarked.contains(bundleId)
 
             if isBackgroundApp {
-                // ✅ 先从缓存快速获取快捷键数量
+                // ✅ 先从缓存快速获取快捷键数量（线程安全）
                 var shortcutCount = 0
                 if let cachedShortcuts = cache.getCachedShortcuts(for: bundleId) {
                     shortcutCount = cachedShortcuts.count
-                } else if let loadedShortcuts = appShortcutsCache[bundleId] {
-                    shortcutCount = loadedShortcuts.count
+                } else {
+                    shortcutCount = syncQueue.sync {
+                        return appShortcutsCache[bundleId]?.count ?? 0
+                    }
                 }
 
                 // ✅ 智能过滤：
@@ -357,12 +363,14 @@ class GlobalShortcutDatabase: ObservableObject {
         return false
     }
     
-    /// 更新长驻应用的快捷键数量
+    /// 更新长驻应用的快捷键数量（线程安全）
     private func updateBackgroundAppShortcutCounts() {
         var updated: [BackgroundAppInfo] = []
-        
+
         for app in backgroundApps {
-            let count = appShortcutsCache[app.bundleId]?.count ?? 0
+            let count = syncQueue.sync {
+                return appShortcutsCache[app.bundleId]?.count ?? 0
+            }
             let updatedApp = BackgroundAppInfo(
                 id: app.bundleId,
                 bundleId: app.bundleId,
@@ -374,7 +382,7 @@ class GlobalShortcutDatabase: ObservableObject {
             )
             updated.append(updatedApp)
         }
-        
+
         backgroundApps = updated
     }
     
@@ -388,29 +396,33 @@ class GlobalShortcutDatabase: ObservableObject {
         }
     }
     
-    /// 移除应用的快捷键（应用退出时调用）
+    /// 移除应用的快捷键（应用退出时调用，线程安全）
     func removeShortcuts(for bundleId: String) {
-        guard let shortcuts = appShortcutsCache[bundleId] else { return }
-        
-        // 从索引中移除
-        for shortcut in shortcuts {
-            shortcutIndex[shortcut.keyCombination]?.removeAll { $0.bundleId == bundleId }
-            if shortcutIndex[shortcut.keyCombination]?.isEmpty == true {
-                shortcutIndex.removeValue(forKey: shortcut.keyCombination)
+        syncQueue.sync {
+            guard let shortcuts = appShortcutsCache[bundleId] else { return }
+
+            // 从索引中移除
+            for shortcut in shortcuts {
+                shortcutIndex[shortcut.keyCombination]?.removeAll { $0.bundleId == bundleId }
+                if shortcutIndex[shortcut.keyCombination]?.isEmpty == true {
+                    shortcutIndex.removeValue(forKey: shortcut.keyCombination)
+                }
             }
+
+            // 从缓存中移除
+            appShortcutsCache.removeValue(forKey: bundleId)
+
+            print("🗑 移除应用快捷键: \(bundleId)")
         }
-        
-        // 从缓存中移除
-        appShortcutsCache.removeValue(forKey: bundleId)
-        
-        print("🗑 移除应用快捷键: \(bundleId)")
     }
     
-    /// 查询使用指定快捷键的所有应用
+    /// 查询使用指定快捷键的所有应用（线程安全）
     /// - Parameter keyCombination: 快捷键组合
     /// - Returns: 使用该快捷键的应用列表
     func findAppsUsingShortcut(_ keyCombination: String) -> [AppShortcutEntry] {
-        return shortcutIndex[keyCombination] ?? []
+        return syncQueue.sync {
+            return shortcutIndex[keyCombination] ?? []
+        }
     }
     
     /// 检测快捷键冲突（针对当前激活应用）
@@ -483,27 +495,29 @@ class GlobalShortcutDatabase: ObservableObject {
         return (bundleId, shortcuts)
     }
     
-    /// 添加快捷键到数据库
+    /// 添加快捷键到数据库（线程安全）
     private func addShortcuts(_ shortcuts: [ShortcutInfo], for bundleId: String) {
-        // 保存到缓存
-        appShortcutsCache[bundleId] = shortcuts
-        
-        // 构建索引
-        for shortcut in shortcuts {
-            let entry = AppShortcutEntry(
-                bundleId: bundleId,
-                appName: shortcut.application,
-                shortcut: shortcut,
-                activationPolicy: getActivationPolicy(for: bundleId)
-            )
-            
-            if shortcutIndex[shortcut.keyCombination] == nil {
-                shortcutIndex[shortcut.keyCombination] = []
+        syncQueue.sync {
+            // 保存到缓存
+            appShortcutsCache[bundleId] = shortcuts
+
+            // 构建索引
+            for shortcut in shortcuts {
+                let entry = AppShortcutEntry(
+                    bundleId: bundleId,
+                    appName: shortcut.application,
+                    shortcut: shortcut,
+                    activationPolicy: getActivationPolicy(for: bundleId)
+                )
+
+                if shortcutIndex[shortcut.keyCombination] == nil {
+                    shortcutIndex[shortcut.keyCombination] = []
+                }
+                shortcutIndex[shortcut.keyCombination]?.append(entry)
             }
-            shortcutIndex[shortcut.keyCombination]?.append(entry)
         }
-        
-        // 更新长驻应用的快捷键数量
+
+        // 更新长驻应用的快捷键数量（在队列外执行，避免嵌套）
         updateBackgroundAppShortcutCounts()
     }
     
@@ -515,18 +529,22 @@ class GlobalShortcutDatabase: ObservableObject {
         return .regular
     }
     
-    /// 打印统计信息
+    /// 打印统计信息（线程安全）
     private func printStatistics() {
-        let totalShortcuts = shortcutIndex.values.flatMap { $0 }.count
-        let uniqueShortcuts = shortcutIndex.count
-        
-        print("""
-        📊 全局快捷键数据库统计:
-        - 已加载应用: \(appShortcutsCache.count)
-        - 唯一快捷键: \(uniqueShortcuts)
-        - 总快捷键数: \(totalShortcuts)
-        - 长驻应用: \(backgroundApps.count)
-        """)
+        syncQueue.sync {
+            let totalShortcuts = shortcutIndex.values.flatMap { $0 }.count
+            let uniqueShortcuts = shortcutIndex.count
+            let appsCount = appShortcutsCache.count
+            let bgAppsCount = backgroundApps.count
+
+            print("""
+            📊 全局快捷键数据库统计:
+            - 已加载应用: \(appsCount)
+            - 唯一快捷键: \(uniqueShortcuts)
+            - 总快捷键数: \(totalShortcuts)
+            - 长驻应用: \(bgAppsCount)
+            """)
+        }
     }
 }
 

@@ -1,0 +1,401 @@
+// 简体中文本地化字符串
+
+// MARK: - 设置窗口
+"settings.title" = "设置";
+"settings.general" = "通用";
+"settings.shortcuts" = "快捷键";
+"settings.global_mapping" = "全局映射";
+"settings.always_on_apps" = "长驻应用";
+"settings.data" = "数据";
+"settings.advanced" = "高级";
+
+// MARK: - 通用设置
+"settings.launch_at_login" = "开机自动启动";
+"settings.launch_at_login.description" = "应用将在系统启动时自动运行";
+"settings.show_in_dock" = "在Dock显示图标";
+"settings.show_in_dock.description" = "关闭后应用仅在菜单栏显示";
+"settings.language" = "语言";
+"settings.language.system" = "跟随系统";
+"settings.language.simplified_chinese" = "简体中文";
+
+// MARK: - 快捷键设置
+"settings.double_press_threshold" = "双击%@阈值";
+"settings.double_press_threshold.description" = "调整双击灵敏度（越小越灵敏）";
+"settings.trigger_key" = "触发快捷键";
+"settings.trigger_key.description" = "选择触发快捷键面板的方式";
+"settings.trigger_key.double_cmd" = "双击Cmd";
+"settings.trigger_key.double_option" = "双击Option";
+"settings.trigger_key.double_control" = "双击Control";
+"settings.panel_auto_close" = "面板自动关闭延迟";
+"settings.panel_auto_close.description" = "设置为0则不自动关闭";
+"settings.enable_realtime_detection" = "启用实时冲突检测";
+"settings.enable_realtime_detection.description" = "使用快捷键时实时检测冲突";
+"settings.show_conflict_notifications" = "显示冲突通知";
+"settings.show_conflict_notifications.description" = "检测到冲突时显示系统通知";
+"settings.enable_usage_tracking" = "启用使用统计追踪";
+"settings.enable_usage_tracking.description" = "记录快捷键使用情况，用于冲突分析";
+
+// MARK: - 长驻应用
+"settings.always_on_apps.title" = "长驻应用";
+"settings.always_on_apps.scanning" = "正在扫描长驻应用...";
+"settings.always_on_apps.empty" = "暂未检测到长驻应用";
+"settings.always_on_apps.empty.hint" = "点击刷新按钮扫描系统中的长驻应用";
+"settings.always_on_apps.mark_manually" = "手动标记";
+
+// MARK: - 全局映射
+"settings.global_mapping.title" = "快捷键重映射";
+"settings.enable_global_remapping" = "启用全局快捷键重映射";
+"settings.enable_global_remapping.description" = "启用后所有重映射规则将生效";
+"settings.global_mapping.empty" = "暂无映射规则";
+"settings.global_mapping.empty.hint" = "点击上方「添加重映射规则」按钮创建新规则";
+"settings.global_mapping.rule_count" = "共 %d 条映射规则";
+"settings.global_mapping.clear_all" = "清空所有";
+"settings.global_mapping.confirm_clear" = "确定要清空所有映射规则吗？此操作不可恢复。";
+"settings.global_mapping.add_rule" = "添加重映射规则";
+"settings.global_mapping.edit_rule" = "编辑重映射规则";
+"settings.global_mapping.source" = "源快捷键";
+"settings.global_mapping.target" = "目标快捷键";
+"settings.global_mapping.scope" = "应用范围";
+"settings.global_mapping.scope.global" = "全局应用";
+"settings.global_mapping.source.description" = "按下这个快捷键时将被重映射";
+"settings.global_mapping.target.description" = "将被映射为这个快捷键";
+"settings.global_mapping.scope.description" = "选择映射规则适用的应用";
+"settings.global_mapping.scope.readonly" = "应用范围不可修改";
+"settings.global_mapping.add.title" = "添加映射规则";
+"settings.global_mapping.add.subtitle" = "自定义快捷键重映射，将源键映射到目标键";
+"settings.global_mapping.edit.title" = "编辑映射规则";
+"settings.global_mapping.edit.subtitle" = "修改快捷键映射规则，调整源键或目标键";
+
+// MARK: - 数据设置
+"settings.cache_duration" = "缓存时长";
+"settings.cache_duration.description" = "快捷键提取结果的缓存有效期";
+"settings.max_cached_apps" = "最大缓存应用数";
+"settings.max_cached_apps.description" = "内存中最多缓存的应用数量";
+"settings.clear_cache" = "清除缓存";
+"settings.clear_usage_records" = "清除使用记录";
+"settings.clear_all_data" = "清除所有数据";
+"settings.clear_warning" = "清除操作不可恢复，请谨慎操作";
+"settings.export_remapping_rules" = "导出重映射规则";
+"settings.import_remapping_rules" = "导入重映射规则";
+"settings.export_settings" = "导出设置";
+"settings.export_settings.description" = "可以备份并在其他设备上使用";
+"settings.database_size" = "数据库大小：";
+"settings.usage_records_count" = "使用记录数：";
+"settings.shortcuts_used_count" = "已用快捷键：";
+
+// MARK: - 高级设置
+"settings.log_level" = "日志级别";
+"settings.log_level.description" = "设置应用日志输出级别";
+"settings.enable_recording_mode" = "启用快捷键录制模式";
+"settings.enable_recording_mode.description" = "允许录制快捷键（实验性功能）";
+
+// MARK: - 关于
+"settings.about.description" = "一个适用于macOS平台的快捷键冲突检测与管理工具";
+"settings.about.version" = "版本：";
+"settings.about.system_requirements" = "系统要求：";
+
+// MARK: - 快捷键面板
+"panel.title" = "快捷键面板";
+"panel.search_placeholder" = "搜索快捷键...";
+"panel.close_hint" = "按ESC键关闭";
+"panel.conflict_shortcuts" = "冲突快捷键";
+"panel.common_shortcuts" = "常用快捷键";
+"panel.loading" = "加载中...";
+"panel.statistics" = "统计";
+"panel.settings" = "设置";
+
+// MARK: - 冲突详情
+"conflict.severity" = "严重程度";
+"conflict.type" = "冲突类型";
+"conflict.conflicting_app" = "冲突应用";
+"conflict.suggestions" = "建议";
+
+// MARK: - 重映射对话框
+"remapping.title" = "重映射快捷键";
+"remapping.description" = "将快捷键映射到其他组合，仅在当前应用中生效";
+"remapping.current_shortcut" = "当前快捷键";
+"remapping.new_shortcut" = "新快捷键";
+"remapping.hint" = "提示: 使用 ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + 字母/数字";
+"remapping.reset" = "重置";
+
+// MARK: - 菜单栏
+"menu.show_panel" = "显示快捷键面板";
+"menu.statistics" = "统计分析";
+"menu.settings" = "设置...";
+"menu.about" = "关于 Keymap";
+"menu.quit" = "退出 Keymap";
+"menu.permission_warning" = "⚠️ 需要辅助功能权限";
+"menu.permission_tooltip" = "点击打开系统设置授予权限";
+
+// MARK: - 分类
+"category.file" = "文件";
+"category.edit" = "编辑";
+"category.view" = "视图";
+"category.window" = "窗口";
+"category.system" = "系统";
+"category.navigation" = "导航";
+"category.other" = "其他";
+
+// MARK: - 冲突类型
+"conflict.type.system" = "系统级";
+"conflict.type.application" = "应用级";
+"conflict.type.global" = "全局";
+"conflict.type.functional" = "功能";
+
+// MARK: - 冲突严重程度
+"conflict.severity.high" = "高";
+"conflict.severity.medium" = "中";
+"conflict.severity.low" = "低";
+
+// MARK: - 使用上下文
+"usage.context.normal" = "正常";
+"usage.context.conflict" = "冲突";
+"usage.context.remapped" = "重映射";
+
+// MARK: - 解决策略
+"resolution.strategy.disable" = "禁用";
+"resolution.strategy.remap" = "重映射";
+"resolution.strategy.ignore" = "忽略";
+"resolution.strategy.manual" = "手动处理";
+
+// MARK: - 通知
+"notification.permission.title" = "需要授权";
+"notification.permission.message" = "请在系统设置中授予 Keymap 辅助功能权限";
+"notification.permission.message.dock" = "请在系统设置中授予Keymap辅助功能权限后使用";
+"notification.conflict.title" = "检测到快捷键冲突";
+"notification.conflict.system" = "与系统快捷键冲突";
+"notification.conflict.global" = "与 %@ 冲突";
+"notification.conflict.application" = "应用内重复定义";
+"notification.conflict.functional" = "功能冲突";
+"notification.conflict.multiple" = "，共 %d 个冲突";
+"notification.conflict.view_details" = "查看详情";
+"notification.remapping.success.title" = "重映射成功";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - 统计窗口
+"statistics.title" = "统计分析";
+"statistics.overview" = "概览";
+"statistics.total_usage" = "总使用次数";
+"statistics.conflicts" = "冲突次数";
+"statistics.efficiency_score" = "无冲突率";
+"statistics.active_apps" = "活跃应用";
+"statistics.refresh" = "刷新";
+"statistics.export" = "导出";
+"statistics.top_shortcuts" = "使用频率排行 (Top 10)";
+"statistics.no_data" = "暂无数据";
+"statistics.usage_trend" = "使用趋势";
+"statistics.tracking_disabled" = "需要开启使用统计追踪";
+"statistics.tracking_hint_1" = "确保在设置中开启了\"使用统计追踪\"功能";
+"statistics.tracking_hint_2" = "使用快捷键后，系统会自动记录使用数据";
+"statistics.tracking_hint_3" = "数据将在次日开始显示趋势图";
+"statistics.high_conflict_shortcuts" = "高冲突快捷键";
+"statistics.no_conflicts" = "太棒了！当前没有冲突";
+"statistics.optimization_suggestions" = "优化建议";
+"statistics.no_suggestions" = "暂无建议";
+
+// MARK: - 常用操作
+"action.save" = "保存";
+"action.cancel" = "取消";
+"action.delete" = "删除";
+"action.reset" = "重置";
+"action.confirm" = "确定";
+"action.export" = "导出";
+"action.import" = "导入";
+"action.refresh" = "刷新";
+"action.add" = "添加";
+"action.record" = "录制";
+"action.recording" = "录制中...";
+
+// MARK: - 时间单位
+"time.seconds" = "秒";
+"time.hours" = "小时";
+
+// MARK: - 通用短语
+"common.loading" = "加载中...";
+"common.empty" = "空";
+"common.total" = "总计";
+"common.count" = "数量";
+"common.shortcuts_count" = "%d 个快捷键";
+"common.hours_count" = "%d 小时";
+"common.apps_count" = "%d 个";
+
+// MARK: - 通用短语（补充）
+"common.cancel" = "取消";
+"common.save" = "保存";
+"common.export_success" = "导出成功";
+"common.add_failed" = "添加失败";
+"common.seconds_format" = "%.2f 秒";
+"common.seconds" = "%d 秒";
+"settings.never" = "从不";
+"settings.calculating" = "计算中...";
+
+// MARK: - 设置板块标题
+"settings.section.app_behavior" = "应用行为";
+"settings.section.shortcut_settings" = "快捷键设置";
+"settings.section.always_on_apps" = "长驻应用";
+"settings.section.global_mapping" = "全局快捷键映射";
+"settings.section.data_management" = "数据管理";
+"settings.section.advanced_settings" = "高级设置";
+
+// MARK - 语言显示名称（用于下拉框）
+"settings.language.system_display" = "跟随系统";
+"settings.language.simplified_chinese_display" = "简体中文";
+"settings.language.english_display" = "English";
+
+// MARK: - 触发键显示名称（用于下拉框）
+"settings.trigger_key.double_cmd_display" = "双击Cmd";
+"settings.trigger_key.double_option_display" = "双击Option";
+"settings.trigger_key.double_control_display" = "双击Control";
+
+// MARK: - 映射规则
+"settings.clear_all" = "清空所有";
+"settings.add_mapping" = "添加映射";
+"settings.edit_mapping" = "编辑映射";
+"settings.mapping.add_failed" = "无法添加映射规则，请检查规则是否有效";
+"settings.mapping.cleared" = "已清空所有映射规则";
+"settings.mapping.rules_saved" = "重映射规则已保存";
+"settings.settings_saved" = "设置已保存";
+
+// MARK: - 窗口标题
+"window.settings" = "设置";
+"window.statistics" = "统计分析";
+
+// MARK: - 统计窗口
+"statistics.title" = "统计分析";
+"statistics.period.today" = "今天";
+"statistics.period.week" = "过去7天";
+"statistics.period.month" = "过去30天";
+"statistics.period.all" = "全部";
+
+// MARK: - 统计卡片标题
+"statistics.card.total_usage" = "总使用次数";
+"statistics.card.conflict_count" = "冲突次数";
+"statistics.card.efficiency_rate" = "无冲突率";
+"statistics.card.active_apps" = "活跃应用";
+
+// MARK: - 统计数量单位
+"statistics.times" = "次";
+"statistics.count_times" = "%d 次";
+
+// MARK: - 统计建议（已有的需要补充格式化参数）
+"statistics.suggestion.remapping_enabled" = "您已创建 %d 个快捷键重映射，善于定制工作流程";
+"statistics.suggestion.usage_concentrated" = "您 %.0f%% 的操作集中在前5个快捷键，可以探索学习更多快捷键以提升效率";
+"statistics.suggestion.high_conflicts" = "检测到 %d 个冲突，建议解决高优先级冲突以避免误操作";
+"statistics.suggestion.some_conflicts" = "发现 %d 个冲突，建议及时处理避免误操作";
+"statistics.suggestion.conflict_rate_high" = "当前快捷键冲突率为 %.1f%%，建议优化快捷键配置以减少冲突";
+"statistics.suggestion.efficiency_excellent" = "您的快捷键无冲突率高达 %.1f%%，所有操作顺利执行，保持良好习惯！";
+"statistics.suggestion.continuing_usage" = "继续探索快捷键功能，目前已使用 %d 次";
+"statistics.suggestion.power_user" = "您已经使用快捷键 %d 次，是一位快捷键高手！";
+"statistics.suggestion.multi_app_user" = "您在 %d 个应用中使用了快捷键，善于利用工具提升效率";
+"statistics.suggestion.explore_more_apps" = "您主要在 %d 个应用中使用快捷键，可以尝试在更多常用应用中探索快捷键功能";
+
+// MARK: - 按钮（补充）
+"button.view_details" = "查看详情";
+
+// MARK: - 菜单栏
+"menu.show_panel_with_key" = "显示快捷键面板 (%@)";
+"menu.about_keymap" = "关于 Keymap";
+"menu.quit_keymap" = "退出 Keymap";
+
+// Settings Tab Titles
+"settings.tab.general" = "通用";
+"settings.tab.conflictResolution" = "检测";
+"settings.tab.data" = "数据";
+"settings.tab.about" = "关于";
+
+// Settings Section Headers
+"settings.section.detection" = "检测设置";
+"settings.section.cache" = "缓存设置";
+"settings.section.cleanup" = "清理旧数据";
+"settings.section.export_import" = "导出/导入";
+"settings.section.database_info" = "数据库信息";
+
+// About Page
+"about.version" = "版本";
+"about.system_requirements" = "系统要求";
+
+// Recording
+"recording.stop" = "停止";
+"recording.record" = "录制";
+"recording.placeholder_recording" = "请按下快捷键...";
+"recording.placeholder_example" = "例如: ⌘T";
+"recording.placeholder_example_shift" = "例如: ⇧⌘T";
+
+// Language Settings
+"settings.language.description" = "切换应用界面语言";
+"settings.language.system_display" = "跟随系统";
+"settings.language.simplified_chinese_display" = "简体中文";
+
+// Database Info Labels
+"database.size" = "数据库大小";
+"database.usage_records" = "使用记录数";
+"database.shortcuts_used" = "已用快捷键";
+
+// Trigger Key Display Names
+"settings.trigger_key.double_cmd_display" = "双击 ⌘";
+"settings.trigger_key.double_option_display" = "双击 ⌥";
+"settings.trigger_key.double_control_display" = "双击 ⌃";
+
+// 统计建议（补充缺失的建议）
+"statistics.suggestion.no_remapping" = "您还未使用快捷键重映射功能，可以将不常用的快捷键重映射为更顺手的组合";
+"statistics.suggestion.diverse_usage" = "您善于使用多样化的快捷键组合，快捷键使用分布均衡";
+"statistics.suggestion.start_using" = "开始使用快捷键来提升工作效率吧！Keymap 会自动记录和分析您的使用习惯";
+
+// 应用范围显示名称
+"scope.global_app" = "全局应用";
+
+// 应用激活策略描述
+"activation_policy.regular" = "普通应用";
+"activation_policy.accessory" = "长驻后台";
+"activation_policy.prohibited" = "辅助进程";
+"activation_policy.unknown" = "未知";
+
+// 快捷键面板
+"panel.search_shortcuts_placeholder" = "搜索快捷键...";
+"panel.common_shortcuts_title" = "常用快捷键";
+
+// Keymap 快捷键描述
+"keymap.shortcut.show_panel" = "显示快捷键面板";
+"keymap.shortcut.statistics" = "统计分析";
+"keymap.shortcut.settings" = "设置";
+"keymap.shortcut.quit" = "退出 Keymap";
+
+// 系统快捷键描述 - 通用
+"system.quit_app" = "退出应用";
+"system.close_window" = "关闭窗口";
+"system.hide_app" = "隐藏当前应用";
+"system.hide_others" = "隐藏其他应用";
+"system.minimize_window" = "最小化窗口";
+"system.new_window" = "新建窗口/文档";
+"system.save" = "保存";
+"system.print" = "打印";
+"system.undo" = "撤销";
+"system.redo" = "重做";
+"system.cut" = "剪切";
+"system.copy" = "复制";
+"system.paste" = "粘贴";
+"system.select_all" = "全选";
+"system.find" = "查找";
+
+// 系统快捷键描述 - 窗口管理
+"system.app_switcher" = "切换应用";
+"system.window_switcher" = "切换同应用窗口";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "显示桌面";
+"system.fullscreen" = "全屏切换";
+
+// 系统快捷键描述 - 截图
+"system.screenshot_full" = "截取整个屏幕";
+"system.screenshot_selection" = "截取选定区域";
+"system.screenshot_window" = "截取窗口";
+"system.screenshot_menu" = "截图和录屏工具";
+
+// 系统快捷键描述 - Spotlight
+"system.spotlight" = "Spotlight搜索";
+"system.finder_search" = "Finder搜索窗口";
+
+// 系统快捷键描述 - 辅助功能
+"system.voiceover" = "开启/关闭VoiceOver";
+"system.zoom" = "开启/关闭缩放";
+"system.invert_colors" = "反转颜色";
+"system.emoji" = "表情符号和符号";

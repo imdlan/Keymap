@@ -1,0 +1,401 @@
+// English Localization Strings
+
+// MARK: - Settings Window
+"settings.title" = "Settings";
+"settings.general" = "General";
+"settings.shortcuts" = "Shortcuts";
+"settings.global_mapping" = "Global Mapping";
+"settings.always_on_apps" = "Always-On Apps";
+"settings.data" = "Data";
+"settings.advanced" = "Advanced";
+
+// MARK: - General Settings
+"settings.launch_at_login" = "Launch at Login";
+"settings.launch_at_login.description" = "Keymap will start automatically when you log in";
+"settings.show_in_dock" = "Show in Dock";
+"settings.show_in_dock.description" = "Display app icon in Dock";
+"settings.language" = "Language";
+"settings.language.system" = "Follow System";
+"settings.language.simplified_chinese" = "Simplified Chinese";
+
+// MARK: - Shortcuts Settings
+"settings.double_press_threshold" = "Double-Press %@ Threshold";
+"settings.double_press_threshold.description" = "Adjust double-press sensitivity (lower is more sensitive)";
+"settings.trigger_key" = "Trigger Shortcut";
+"settings.trigger_key.description" = "Select how to trigger shortcut panel";
+"settings.trigger_key.double_cmd" = "Double Cmd";
+"settings.trigger_key.double_option" = "Double Option";
+"settings.trigger_key.double_control" = "Double Control";
+"settings.panel_auto_close" = "Panel Auto-Close Delay";
+"settings.panel_auto_close.description" = "Set to 0 to disable auto-close";
+"settings.enable_realtime_detection" = "Enable Real-time Conflict Detection";
+"settings.enable_realtime_detection.description" = "Detect conflicts when using shortcuts";
+"settings.show_conflict_notifications" = "Show Conflict Notifications";
+"settings.show_conflict_notifications.description" = "Show system notifications when conflicts detected";
+"settings.enable_usage_tracking" = "Enable Usage Statistics Tracking";
+"settings.enable_usage_tracking.description" = "Track shortcut usage for conflict analysis";
+
+// MARK: - Always-On Apps
+"settings.always_on_apps.title" = "Always-On Apps";
+"settings.always_on_apps.scanning" = "Scanning for always-on apps...";
+"settings.always_on_apps.empty" = "No always-on apps detected";
+"settings.always_on_apps.empty.hint" = "Click refresh button to scan system for always-on apps";
+"settings.always_on_apps.mark_manually" = "Mark Manually";
+
+// MARK: - Global Mapping
+"settings.global_mapping.title" = "Shortcut Remapping";
+"settings.enable_global_remapping" = "Enable Global Shortcut Remapping";
+"settings.enable_global_remapping.description" = "All remapping rules will take effect when enabled";
+"settings.global_mapping.empty" = "No remapping rules";
+"settings.global_mapping.empty.hint" = "Click 'Add Remapping Rule' button above to create new rule";
+"settings.global_mapping.rule_count" = "%d remapping rules total";
+"settings.global_mapping.clear_all" = "Clear All";
+"settings.global_mapping.confirm_clear" = "Are you sure you want to clear all remapping rules? This action cannot be undone.";
+"settings.global_mapping.add_rule" = "Add Remapping Rule";
+"settings.global_mapping.edit_rule" = "Edit Remapping Rule";
+"settings.global_mapping.source" = "Source Shortcut";
+"settings.global_mapping.target" = "Target Shortcut";
+"settings.global_mapping.scope" = "Application Scope";
+"settings.global_mapping.scope.global" = "Global";
+"settings.global_mapping.source.description" = "This shortcut will be remapped when pressed";
+"settings.global_mapping.target.description" = "Will be mapped to this shortcut";
+"settings.global_mapping.scope.description" = "Select which application(s) this remapping rule applies to";
+"settings.global_mapping.scope.readonly" = "Application scope cannot be modified";
+"settings.global_mapping.add.title" = "Add Remapping Rule";
+"settings.global_mapping.add.subtitle" = "Customize shortcut remapping, map source key to target key";
+"settings.global_mapping.edit.title" = "Edit Remapping Rule";
+"settings.global_mapping.edit.subtitle" = "Modify shortcut remapping rule, adjust source or target key";
+
+// MARK: - Data Settings
+"settings.cache_duration" = "Cache Duration";
+"settings.cache_duration.description" = "Cache validity period for shortcut extraction results";
+"settings.max_cached_apps" = "Max Cached Apps";
+"settings.max_cached_apps.description" = "Maximum number of apps to cache in memory";
+"settings.clear_cache" = "Clear Cache";
+"settings.clear_usage_records" = "Clear Usage Records";
+"settings.clear_all_data" = "Clear All Data";
+"settings.clear_warning" = "Clear operation cannot be undone, proceed with caution";
+"settings.export_remapping_rules" = "Export Remapping Rules";
+"settings.import_remapping_rules" = "Import Remapping Rules";
+"settings.export_settings" = "Export Settings";
+"settings.export_settings.description" = "Can backup and use on other devices";
+"settings.database_size" = "Database Size:";
+"settings.usage_records_count" = "Usage Records:";
+"settings.shortcuts_used_count" = "Shortcuts Used:";
+
+// MARK: - Advanced Settings
+"settings.log_level" = "Log Level";
+"settings.log_level.description" = "Set application log output level";
+"settings.enable_recording_mode" = "Enable Shortcut Recording Mode";
+"settings.enable_recording_mode.description" = "Allow recording shortcuts (experimental feature)";
+
+// MARK: - About
+"settings.about.description" = "A shortcut conflict detection and management tool for macOS";
+"settings.about.version" = "Version:";
+"settings.about.system_requirements" = "System Requirements:";
+
+// MARK: - Shortcut Panel
+"panel.title" = "Shortcut Panel";
+"panel.search_placeholder" = "Search shortcuts...";
+"panel.close_hint" = "Press ESC to close";
+"panel.conflict_shortcuts" = "Conflicting Shortcuts";
+"panel.common_shortcuts" = "Common Shortcuts";
+"panel.loading" = "Loading...";
+"panel.statistics" = "Statistics";
+"panel.settings" = "Settings";
+
+// MARK: - Conflict Details
+"conflict.severity" = "Severity";
+"conflict.type" = "Conflict Type";
+"conflict.conflicting_app" = "Conflicting App";
+"conflict.suggestions" = "Suggestions";
+
+// MARK: - Remapping Dialog
+"remapping.title" = "Remap Shortcut";
+"remapping.description" = "Map shortcut to another combination, only effective in current app";
+"remapping.current_shortcut" = "Current Shortcut";
+"remapping.new_shortcut" = "New Shortcut";
+"remapping.hint" = "Tip: Use ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + letter/number";
+"remapping.reset" = "Reset";
+
+// MARK: - Menu Bar
+"menu.show_panel" = "Show Shortcut Panel";
+"menu.statistics" = "Statistics";
+"menu.settings" = "Settings...";
+"menu.about" = "About Keymap";
+"menu.quit" = "Quit Keymap";
+"menu.permission_warning" = "⚠️ Accessibility Permission Required";
+"menu.permission_tooltip" = "Click to open System Settings to grant permission";
+
+// MARK: - Categories
+"category.file" = "File";
+"category.edit" = "Edit";
+"category.view" = "View";
+"category.window" = "Window";
+"category.system" = "System";
+"category.navigation" = "Navigation";
+"category.other" = "Other";
+
+// MARK: - Conflict Types
+"conflict.type.system" = "System";
+"conflict.type.application" = "Application";
+"conflict.type.global" = "Global";
+"conflict.type.functional" = "Functional";
+
+// MARK: - Conflict Severity
+"conflict.severity.high" = "High";
+"conflict.severity.medium" = "Medium";
+"conflict.severity.low" = "Low";
+
+// MARK: - Usage Context
+"usage.context.normal" = "Normal";
+"usage.context.conflict" = "Conflict";
+"usage.context.remapped" = "Remapped";
+
+// MARK: - Resolution Strategy
+"resolution.strategy.disable" = "Disable";
+"resolution.strategy.remap" = "Remap";
+"resolution.strategy.ignore" = "Ignore";
+"resolution.strategy.manual" = "Manual";
+
+// MARK: - Notifications
+"notification.permission.title" = "Permission Required";
+"notification.permission.message" = "Please grant Keymap accessibility permission in System Settings";
+"notification.permission.message.dock" = "Please grant Keymap accessibility permission in System Settings to use";
+"notification.conflict.title" = "Shortcut Conflict Detected";
+"notification.conflict.system" = "conflicts with system shortcut";
+"notification.conflict.global" = "conflicts with %@";
+"notification.conflict.application" = "duplicate definition in application";
+"notification.conflict.functional" = "functional conflict";
+"notification.conflict.multiple" = ", total %d conflicts";
+"notification.conflict.view_details" = "View Details";
+"notification.remapping.success.title" = "Remapping Successful";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - Statistics Window
+"statistics.title" = "Statistics";
+"statistics.overview" = "Overview";
+"statistics.total_usage" = "Total Usage";
+"statistics.conflicts" = "Conflicts";
+"statistics.efficiency_score" = "Efficiency Score";
+"statistics.active_apps" = "Active Apps";
+"statistics.refresh" = "Refresh";
+"statistics.export" = "Export";
+"statistics.top_shortcuts" = "Usage Frequency Ranking (Top 10)";
+"statistics.no_data" = "No data available";
+"statistics.usage_trend" = "Usage Trend";
+"statistics.tracking_disabled" = "Usage statistics tracking needs to be enabled";
+"statistics.tracking_hint_1" = "Make sure 'Usage Statistics Tracking' is enabled in settings";
+"statistics.tracking_hint_2" = "After using shortcuts, system will automatically record usage data";
+"statistics.tracking_hint_3" = "Data will start showing in trend chart from next day";
+"statistics.high_conflict_shortcuts" = "High Conflict Shortcuts";
+"statistics.no_conflicts" = "Awesome! No conflicts currently";
+"statistics.optimization_suggestions" = "Optimization Suggestions";
+"statistics.no_suggestions" = "No suggestions";
+
+// MARK: - Common Actions
+"action.save" = "Save";
+"action.cancel" = "Cancel";
+"action.delete" = "Delete";
+"action.reset" = "Reset";
+"action.confirm" = "Confirm";
+"action.export" = "Export";
+"action.import" = "Import";
+"action.refresh" = "Refresh";
+"action.add" = "Add";
+"action.record" = "Record";
+"action.recording" = "Recording...";
+
+// MARK: - Time Units
+"time.seconds" = "seconds";
+"time.hours" = "hours";
+
+// MARK: - Common Phrases
+"common.loading" = "Loading...";
+"common.empty" = "Empty";
+"common.total" = "Total";
+"common.count" = "Count";
+"common.shortcuts_count" = "%d shortcuts";
+"common.hours_count" = "%d hours";
+"common.apps_count" = "%d apps";
+
+// MARK: - Common Phrases (Supplementary)
+"common.cancel" = "Cancel";
+"common.save" = "Save";
+"common.export_success" = "Export Successful";
+"common.add_failed" = "Add Failed";
+"common.seconds_format" = "%.2f seconds";
+"common.seconds" = "%d seconds";
+"settings.never" = "Never";
+"settings.calculating" = "Calculating...";
+
+// MARK: - Settings Section Titles
+"settings.section.app_behavior" = "App Behavior";
+"settings.section.shortcut_settings" = "Shortcut Settings";
+"settings.section.always_on_apps" = "Always-On Apps";
+"settings.section.global_mapping" = "Global Shortcut Mapping";
+"settings.section.data_management" = "Data Management";
+"settings.section.advanced_settings" = "Advanced Settings";
+
+// MARK: - Language Display Names (for dropdown)
+"settings.language.system_display" = "Follow System";
+"settings.language.simplified_chinese_display" = "Simplified Chinese";
+"settings.language.english_display" = "English";
+
+// MARK: - Trigger Key Display Names (for dropdown)
+"settings.trigger_key.double_cmd_display" = "Double Cmd";
+"settings.trigger_key.double_option_display" = "Double Option";
+"settings.trigger_key.double_control_display" = "Double Control";
+
+// MARK: - Mapping Rules
+"settings.clear_all" = "Clear All";
+"settings.add_mapping" = "Add Mapping";
+"settings.edit_mapping" = "Edit Mapping";
+"settings.mapping.add_failed" = "Cannot add mapping rule, please check if the rule is valid";
+"settings.mapping.cleared" = "All mapping rules cleared";
+"settings.mapping.rules_saved" = "Remapping rules saved";
+"settings.settings_saved" = "Settings saved";
+
+// MARK: - Window Titles
+"window.settings" = "Settings";
+"window.statistics" = "Statistics";
+
+// MARK: - Statistics Window
+"statistics.title" = "Statistics";
+"statistics.period.today" = "Today";
+"statistics.period.week" = "Past 7 Days";
+"statistics.period.month" = "Past 30 Days";
+"statistics.period.all" = "All Time";
+
+// MARK: - Statistics Card Titles
+"statistics.card.total_usage" = "Total Usage";
+"statistics.card.conflict_count" = "Conflicts";
+"statistics.card.efficiency_rate" = "Conflict-Free Rate";
+"statistics.card.active_apps" = "Active Apps";
+
+// MARK: - Statistics Count Units
+"statistics.times" = "times";
+"statistics.count_times" = "%d times";
+
+// MARK: - Statistics Suggestions (with formatting)
+"statistics.suggestion.remapping_enabled" = "You have created %d shortcut remappings, good at customizing workflows";
+"statistics.suggestion.usage_concentrated" = "%.0f%% of your operations are concentrated in the top 5 shortcuts, you can explore more shortcuts to improve efficiency";
+"statistics.suggestion.high_conflicts" = "Detected %d conflicts, it is recommended to resolve high-priority conflicts to avoid misoperations";
+"statistics.suggestion.some_conflicts" = "Found %d conflicts, it is recommended to handle them in time to avoid misoperations";
+"statistics.suggestion.conflict_rate_high" = "Current shortcut conflict rate is %.1f%%, it is recommended to optimize shortcut configuration to reduce conflicts";
+"statistics.suggestion.efficiency_excellent" = "Your shortcut conflict-free rate is as high as %.1f%%, all operations are executed smoothly, keep up the good habits!";
+"statistics.suggestion.continuing_usage" = "Continue exploring shortcut features, currently used %d times";
+"statistics.suggestion.power_user" = "You have used shortcuts %d times, you are a shortcut master!";
+"statistics.suggestion.multi_app_user" = "You have used shortcuts in %d apps, good at using tools to improve efficiency";
+"statistics.suggestion.explore_more_apps" = "You mainly use shortcuts in %d apps, you can try to explore shortcut features in more commonly used apps";
+
+// MARK: - Buttons (Supplementary)
+"button.view_details" = "View Details";
+
+// MARK: - Menu Bar
+"menu.show_panel_with_key" = "Show Shortcut Panel (%@)";
+"menu.about_keymap" = "About Keymap";
+"menu.quit_keymap" = "Quit Keymap";
+
+// Settings Tab Titles
+"settings.tab.general" = "General";
+"settings.tab.conflictResolution" = "Detection";
+"settings.tab.data" = "Data";
+"settings.tab.about" = "About";
+
+// Settings Section Headers
+"settings.section.detection" = "Detection Settings";
+"settings.section.cache" = "Cache Settings";
+"settings.section.cleanup" = "Clean Up Old Data";
+"settings.section.export_import" = "Export/Import";
+"settings.section.database_info" = "Database Information";
+
+// About Page
+"about.version" = "Version";
+"about.system_requirements" = "System Requirements";
+
+// Recording
+"recording.stop" = "Stop";
+"recording.record" = "Record";
+"recording.placeholder_recording" = "Press a shortcut...";
+"recording.placeholder_example" = "e.g: ⌘T";
+"recording.placeholder_example_shift" = "e.g: ⇧⌘T";
+
+// Language Settings
+"settings.language.description" = "Switch application interface language";
+"settings.language.system_display" = "Follow System";
+"settings.language.simplified_chinese_display" = "Simplified Chinese";
+
+// Database Info Labels
+"database.size" = "Database Size";
+"database.usage_records" = "Usage Records";
+"database.shortcuts_used" = "Shortcuts Used";
+
+// Trigger Key Display Names
+"settings.trigger_key.double_cmd_display" = "Double ⌘";
+"settings.trigger_key.double_option_display" = "Double ⌥";
+"settings.trigger_key.double_control_display" = "Double ⌃";
+
+// Statistics Suggestions (Missing Suggestions)
+"statistics.suggestion.no_remapping" = "You haven't used shortcut remapping yet. You can remap less-used shortcuts to more convenient combinations";
+"statistics.suggestion.diverse_usage" = "You're good at using diverse shortcut combinations with balanced usage distribution";
+"statistics.suggestion.start_using" = "Start using shortcuts to boost your productivity! Keymap will automatically track and analyze your usage habits";
+
+// Application Scope Display Name
+"scope.global_app" = "Global";
+
+// Application Activation Policy Descriptions
+"activation_policy.regular" = "Regular App";
+"activation_policy.accessory" = "Background App";
+"activation_policy.prohibited" = "Helper Process";
+"activation_policy.unknown" = "Unknown";
+
+// Shortcut Panel
+"panel.search_shortcuts_placeholder" = "Search shortcuts...";
+"panel.common_shortcuts_title" = "Common Shortcuts";
+
+// Keymap Shortcut Descriptions
+"keymap.shortcut.show_panel" = "Show Shortcut Panel";
+"keymap.shortcut.statistics" = "Statistics";
+"keymap.shortcut.settings" = "Settings";
+"keymap.shortcut.quit" = "Quit Keymap";
+
+// System Shortcut Descriptions - General
+"system.quit_app" = "Quit Application";
+"system.close_window" = "Close Window";
+"system.hide_app" = "Hide Current Application";
+"system.hide_others" = "Hide Other Applications";
+"system.minimize_window" = "Minimize Window";
+"system.new_window" = "New Window/Document";
+"system.save" = "Save";
+"system.print" = "Print";
+"system.undo" = "Undo";
+"system.redo" = "Redo";
+"system.cut" = "Cut";
+"system.copy" = "Copy";
+"system.paste" = "Paste";
+"system.select_all" = "Select All";
+"system.find" = "Find";
+
+// System Shortcut Descriptions - Window Management
+"system.app_switcher" = "Switch Applications";
+"system.window_switcher" = "Switch Windows in Same Application";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "Show Desktop";
+"system.fullscreen" = "Toggle Fullscreen";
+
+// System Shortcut Descriptions - Screenshot
+"system.screenshot_full" = "Capture Entire Screen";
+"system.screenshot_selection" = "Capture Selected Area";
+"system.screenshot_window" = "Capture Window";
+"system.screenshot_menu" = "Screenshot and Screen Recording Tools";
+
+// System Shortcut Descriptions - Spotlight
+"system.spotlight" = "Spotlight Search";
+"system.finder_search" = "Finder Search Window";
+
+// System Shortcut Descriptions - Accessibility
+"system.voiceover" = "Turn VoiceOver On/Off";
+"system.zoom" = "Turn Zoom On/Off";
+"system.invert_colors" = "Invert Colors";
+"system.emoji" = "Emoji and Symbols";

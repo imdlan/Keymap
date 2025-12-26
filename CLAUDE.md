@@ -992,3 +992,235 @@ enableRecordingMode: Bool = false
 - Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift
 - Keymap/UI/Views/Statistics/StatisticsWindow.swift
 
+
+### 2025-12-25 - 双语支持完整实现（阶段 1 完成）
+
+**功能实现**:
+- ✅ 创建双语本地化资源（英文 + 简体中文）
+- ✅ 217 条完整本地化字符串
+- ✅ 枚举类型国际化重构（4个枚举，21个枚举值）
+- ✅ 数据库枚举值自动迁移（中文 → 英文）
+- ✅ UI 代码完整本地化（4个主要文件）
+- ✅ 编译通过，无错误
+
+**新增文件**:
+- `Keymap/Utilities/LocalizationManager.swift` - 本地化管理器
+- `Keymap/Data/Migrations/EnumMigration.swift` - 数据库迁移脚本
+- `Keymap/Resources/Localizations/en.lproj/Localizable.strings` - 英文本地化（217条）
+- `Keymap/Resources/Localizations/zh-Hans.lproj/Localizable.strings` - 简体中文本地化（217条）
+
+**枚举重构**:
+1. **ShortcutCategory** (7个值): 文件/编辑/视图/窗口/系统/导航/其他
+   - rawValue: 中文 → 英文（如 "文件" → "file"）
+   - 新增 `displayName` 属性返回本地化字符串
+2. **ConflictType** (4个值): 系统级/应用级/全局/功能
+3. **ConflictSeverity** (3个值): 低/中/高
+4. **UsageContext** (3个值): 正常/冲突/重映射
+
+**数据库迁移**:
+- 自动检测中文枚举值并迁移到英文
+- 支持三张表迁移：shortcuts、conflicts、usage_records
+- 安全机制：事务保护、自动备份、失败回滚
+- 统计功能：显示迁移前后的记录数
+
+**本地化覆盖**:
+- 设置窗口（80+ 字符串）
+- 快捷键面板（40+ 字符串）
+- 菜单栏（20+ 字符串）
+- 统计窗口（30+ 字符串）
+- 通知消息（20+ 字符串）
+- 冲突详情（15+ 字符串）
+- 通用操作（12+ 字符串）
+
+**本地化键命名规范**:
+- `settings.*` - 设置相关
+- `panel.*` - 面板相关
+- `menu.*` - 菜单栏
+- `conflict.*` - 冲突相关
+- `notification.*` - 通知相关
+- `statistics.*` - 统计相关
+- `action.*` - 操作按钮
+- `category.*` - 快捷键分类
+- `common.*` - 通用短语
+
+**技术要点**:
+- 使用 String Extension `.localized()` 方法
+- 支持 `String(format:)` 进行字符串插值
+- `LocalizationManager` 提供便捷方法 `.localized(with:)`
+- 所有硬编码字符串替换为本地化键
+- 应用启动时自动执行数据库迁移
+
+**文件修改统计**:
+- 新增文件：4个
+- 修改文件：8个
+  - `ShortcutInfo.swift` - 枚举重构
+  - `ConflictInfo.swift` - 枚举重构
+  - `UsageRecord.swift` - 枚举重构
+  - `ConflictResolver.swift` - 枚举重构
+  - `SettingsWindow.swift` - 100+ 处本地化
+  - `ShortcutPanelView.swift` - 40+ 处本地化
+  - `AppDelegate.swift` - 20+ 处本地化 + 迁移集成
+  - `StatisticsWindow.swift` - 15+ 处本地化
+
+**编译结果**:
+- ✅ 编译成功（BUILD SUCCEEDED）
+- ⚠️ 3个PDF图标警告（已知限制，不影响功能）
+- ❌ 0个编译错误
+
+**下一步**:
+- 在设置面板添加语言切换功能（系统/英文/简体中文）
+- 实现应用重启后语言切换生效
+- 测试所有UI界面的本地化显示
+- 添加语言切换后的UI刷新逻辑
+
+### 2025-12-26 - 双语支持完善：修复所有残留中文文本 📝
+
+**问题发现**:
+- 🐛 用户测试发现多处界面仍显示中文硬编码文本
+- 🐛 系统快捷键（30个）未本地化
+- 🐛 设置面板多个板块存在中文文本
+
+**修复内容**:
+
+**1. 设置面板本地化修复**（SettingsWindow.swift）：
+- ✅ 修复"检测设置"板块标题（settings.section.detection）
+- ✅ 修复"缓存设置"板块标题（settings.section.cache）
+- ✅ 修复"清理旧数据"板块标题（settings.section.cleanup）
+- ✅ 修复"导出/导入"板块标题（settings.section.export_import）
+- ✅ 修复"数据库信息"板块标题（settings.section.database_info）
+- ✅ 修复数据库信息标签：database.size、database.usage_records、database.shortcuts_used
+- ✅ 修复关于页面标签：about.version、about.system_requirements
+- ✅ 修复录制按钮文本：recording.stop、recording.record
+- ✅ 修复输入框占位符：recording.placeholder_recording、recording.placeholder_example、recording.placeholder_example_shift
+- ✅ 修复"全局应用"显示：scope.global_app
+
+**2. 统计面板优化**（StatisticsWindow.swift）：
+- ✅ 修复时间周期标签宽度自适应（移除固定80px宽度）
+- ✅ 修复3个优化建议本地化（statistics.suggestion.*）
+
+**3. 长驻应用激活策略**（GlobalShortcutDatabase.swift）：
+- ✅ 修复激活策略描述：activation_policy.regular/accessory/prohibited/unknown
+
+**4. 快捷键面板优化**（ShortcutPanelView.swift）：
+- ✅ 修复搜索占位符：panel.search_shortcuts_placeholder
+- ✅ 修复列表标题：panel.common_shortcuts_title
+- ✅ 修复重映射对话框录制UI本地化
+
+**5. Keymap 快捷键本地化**（KeymapShortcutProvider.swift）：
+- ✅ 修复4个 Keymap 快捷键描述：
+  - keymap.shortcut.show_panel（显示快捷键面板）
+  - keymap.shortcut.statistics（统计分析）
+  - keymap.shortcut.settings（设置）
+  - keymap.shortcut.quit（退出 Keymap）
+
+**6. 系统快捷键完整本地化**（SystemShortcutProvider.swift）⭐：
+- ✅ 修复30个系统快捷键的硬编码中文描述
+- ✅ 分类覆盖：
+  - **通用操作**（15个）：退出、关闭、保存、撤销、剪切、复制、粘贴等
+  - **窗口管理**（5个）：切换应用、Mission Control、显示桌面等
+  - **截图工具**（4个）：全屏、区域、窗口、截图菜单
+  - **Spotlight**（2个）：Spotlight搜索、Finder搜索
+  - **辅助功能**（4个）：VoiceOver、缩放、反转颜色、Emoji
+
+**本地化键新增**（共50+条）：
+```
+// 设置板块标题
+settings.section.detection
+settings.section.cache
+settings.section.cleanup
+settings.section.export_import
+settings.section.database_info
+
+// 数据库信息
+database.size
+database.usage_records
+database.shortcuts_used
+
+// 录制UI
+recording.stop
+recording.record
+recording.placeholder_recording
+recording.placeholder_example
+recording.placeholder_example_shift
+
+// 应用范围
+scope.global_app
+
+// 激活策略
+activation_policy.regular
+activation_policy.accessory
+activation_policy.prohibited
+activation_policy.unknown
+
+// 快捷键面板
+panel.search_shortcuts_placeholder
+panel.common_shortcuts_title
+
+// Keymap快捷键
+keymap.shortcut.show_panel
+keymap.shortcut.statistics
+keymap.shortcut.settings
+keymap.shortcut.quit
+
+// 系统快捷键（30个）
+system.quit_app
+system.close_window
+system.app_switcher
+system.screenshot_full
+system.zoom
+// ... 等30个系统快捷键
+```
+
+**技术说明**：
+
+**快捷键来源机制** 🔍：
+1. **系统快捷键**（Keymap 硬编码提供）：
+   - 由 `SystemShortcutProvider` 和 `KeymapShortcutProvider` 提供
+   - 描述**根据 Keymap 语言设置**显示
+   - 完全支持本地化（中/英）
+
+2. **应用快捷键**（从应用菜单提取）：
+   - 通过 macOS Accessibility API 从应用菜单动态读取
+   - 描述**来自应用本身的菜单文本**
+   - 语言取决于应用的语言设置（如 VS Code 的界面语言）
+   - Keymap 只能"读取"而非"翻译"这些文本
+
+**示例**：
+- 用户设置 Keymap 为中文，VS Code 为英文时：
+  - ✅ 系统快捷键显示中文："⌘Q 退出应用"
+  - ℹ️ VS Code快捷键显示英文："⌘W Close Editor"（来自VS Code菜单）
+
+**修改文件**（9个）：
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+- Keymap/UI/Views/Statistics/StatisticsWindow.swift
+- Keymap/Core/Monitoring/GlobalShortcutDatabase.swift
+- Keymap/UI/Views/ShortcutPanel/ShortcutPanelView.swift
+- Keymap/Core/ShortcutExtraction/KeymapShortcutProvider.swift
+- Keymap/Core/ShortcutExtraction/SystemShortcutProvider.swift
+- Keymap/Resources/Localizations/zh-Hans.lproj/Localizable.strings
+- Keymap/Resources/Localizations/en.lproj/Localizable.strings
+- Keymap/App/AppDelegate.swift（添加 LocalizationManager 初始化）
+
+**本地化覆盖率**：
+- ✅ 设置窗口：100%（所有板块、标签、按钮）
+- ✅ 快捷键面板：100%（搜索、列表、对话框）
+- ✅ 统计窗口：100%（图表、建议、标签）
+- ✅ 系统快捷键：100%（30个系统快捷键）
+- ✅ Keymap快捷键：100%（4个应用快捷键）
+- ℹ️ 第三方应用快捷键：取决于应用自身语言设置
+
+**编译结果**：
+- ✅ 编译成功（BUILD SUCCEEDED）
+- ⚠️ 3个PDF图标警告（已知限制，不影响功能）
+
+**测试验证**：
+- ✅ 英文界面下所有 Keymap 提供的文本显示英文
+- ✅ 中文界面下所有 Keymap 提供的文本显示中文
+- ✅ 第三方应用快捷键正确反映应用菜单语言
+
+**下一步计划**：
+- 🌍 支持其他8种语言（日文、韩文、德文、法文、西班牙文、意大利文、俄文、葡萄牙文）
+- 📱 测试所有语言的UI显示效果
+- 🔄 完善语言切换后的实时UI刷新
+- 📦 合并到主分支并发布多语言版本
+

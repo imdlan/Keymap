@@ -36,7 +36,7 @@ class SettingsWindow: NSWindow {
     // MARK: - Setup
 
     private func setupWindow() {
-        title = "设置"
+        title = "window.settings".localized()
         center()
         isReleasedWhenClosed = false
 
@@ -79,6 +79,7 @@ struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme  // 检测深色/浅色模式
     @StateObject private var viewModel = SettingsViewModel()
     @State private var selectedTab: SettingsTab = .general
+    @State private var languageRefreshTrigger: UUID = UUID()  // 语言切换触发器
     
     // MARK: - Computed Properties
     
@@ -112,6 +113,11 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(width: 600, height: 500)
+        .id(languageRefreshTrigger)  // 使用 id 强制重绘
+        .onReceive(NotificationCenter.default.publisher(for: .languageChanged)) { _ in
+            // 收到语言切换通知，触发界面刷新
+            languageRefreshTrigger = UUID()
+        }
     }
 
     // MARK: - Sidebar
@@ -200,14 +206,14 @@ struct SettingsView: View {
                 // ===== 应用行为板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("应用行为")
+                        sectionHeader("settings.section.app_behavior".localized())
 
                         // 开机自动启动
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("开机自动启动")
+                                Text("settings.launch_at_login".localized())
                                     .font(.body)
-                                Text("应用将在系统启动时自动运行")
+                                Text("settings.launch_at_login.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -224,9 +230,9 @@ struct SettingsView: View {
                         // 在Dock显示图标
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("在Dock显示图标")
+                                Text("settings.show_in_dock".localized())
                                     .font(.body)
-                                Text("关闭后应用仅在菜单栏显示")
+                                Text("settings.show_in_dock.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -243,9 +249,9 @@ struct SettingsView: View {
                         // 语言选择
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("语言")
+                                Text("settings.language".localized())
                                     .font(.body)
-                                Text("选择应用界面语言")
+                                Text("settings.language.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -261,8 +267,8 @@ struct SettingsView: View {
                                     )
 
                                 Picker("", selection: $viewModel.selectedLanguage) {
-                                    Text("跟随系统").tag("system")
-                                    Text("简体中文").tag("zh-Hans")
+                                    Text("settings.language.system".localized()).tag("system")
+                                    Text("settings.language.simplified_chinese".localized()).tag("zh-Hans")
                                     Text("English").tag("en")
                                 }
                                 .pickerStyle(.menu)
@@ -271,8 +277,8 @@ struct SettingsView: View {
                                 .opacity(0.01)
 
                                 HStack {
-                                    Text(viewModel.selectedLanguage == "system" ? "跟随系统" :
-                                         viewModel.selectedLanguage == "zh-Hans" ? "简体中文" : "English")
+                                    Text(viewModel.selectedLanguage == "system" ? "settings.language.system_display".localized() :
+                                         viewModel.selectedLanguage == "zh-Hans" ? "settings.language.simplified_chinese_display".localized() : "English")
                                         .font(.body)
                                         .foregroundColor(.primary)
                                         .padding(.leading, 8)
@@ -292,21 +298,21 @@ struct SettingsView: View {
                 // ===== 快捷键设置板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("快捷键设置")
+                        sectionHeader("settings.section.shortcut_settings".localized())
 
                         // 双击阈值
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("双击\(triggerKeyDisplayName)阈值")
+                                Text("settings.double_press_threshold".localized(with: triggerKeyDisplayName))
                                 Spacer()
-                                Text(String(format: "%.2f 秒", viewModel.doubleCmdThreshold))
+                                Text(String(format: "common.seconds_format".localized(), viewModel.doubleCmdThreshold))
                                     .foregroundColor(.secondary)
                             }
 
                             Slider(value: $viewModel.doubleCmdThreshold, in: 0.1...1.0, step: 0.05)
                                 .accentColor(.blue)
 
-                            Text("调整双击\(triggerKeyDisplayName)键的灵敏度（越小越灵敏）")
+                            Text("settings.double_press_threshold.description".localized(with: triggerKeyDisplayName))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -314,9 +320,9 @@ struct SettingsView: View {
                         // 触发快捷键选择
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("触发快捷键")
+                                Text("settings.trigger_key".localized())
                                     .font(.body)
-                                Text("选择触发快捷键面板的方式")
+                                Text("settings.trigger_key.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -332,9 +338,9 @@ struct SettingsView: View {
                                     )
 
                                 Picker("", selection: $viewModel.triggerKey) {
-                                    Text("双击Cmd").tag("doubleCmd")
-                                    Text("双击Option").tag("doubleOption")
-                                    Text("双击Control").tag("doubleControl")
+                                    Text("settings.trigger_key.double_cmd".localized()).tag("doubleCmd")
+                                    Text("settings.trigger_key.double_option".localized()).tag("doubleOption")
+                                    Text("settings.trigger_key.double_control".localized()).tag("doubleControl")
                                 }
                                 .pickerStyle(.menu)
                                 .labelsHidden()
@@ -342,8 +348,8 @@ struct SettingsView: View {
                                 .opacity(0.01)
 
                                 HStack {
-                                    Text(viewModel.triggerKey == "doubleCmd" ? "双击Cmd" :
-                                         viewModel.triggerKey == "doubleOption" ? "双击Option" : "双击Control")
+                                    Text(viewModel.triggerKey == "doubleCmd" ? "settings.trigger_key.double_cmd_display".localized() :
+                                         viewModel.triggerKey == "doubleOption" ? "settings.trigger_key.double_option_display".localized() : "settings.trigger_key.double_control_display".localized())
                                         .font(.body)
                                         .foregroundColor(.primary)
                                         .padding(.leading, 8)
@@ -361,16 +367,16 @@ struct SettingsView: View {
                         // 面板自动关闭延迟
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("面板自动关闭延迟")
+                                Text("settings.panel_auto_close".localized())
                                 Spacer()
-                                Text(viewModel.panelAutoCloseDelay == 0 ? "从不" : "\(Int(viewModel.panelAutoCloseDelay)) 秒")
+                                Text(viewModel.panelAutoCloseDelay == 0 ? "settings.never".localized() : String(format: "common.seconds".localized(), Int(viewModel.panelAutoCloseDelay)))
                                     .foregroundColor(.secondary)
                             }
 
                             Slider(value: $viewModel.panelAutoCloseDelay, in: 0...30, step: 5)
                                 .accentColor(.blue)
 
-                            Text("设置为0则不自动关闭")
+                            Text("settings.panel_auto_close.description".localized())
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -391,14 +397,14 @@ struct SettingsView: View {
                 // ===== 检测设置板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("检测设置")
+                        sectionHeader("settings.section.detection".localized())
 
                         // 启用实时冲突检测
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("启用实时冲突检测")
+                                Text("settings.enable_realtime_detection".localized())
                                     .font(.body)
-                                Text("使用快捷键时实时检测冲突")
+                                Text("settings.enable_realtime_detection.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -412,9 +418,9 @@ struct SettingsView: View {
                         // 显示冲突通知
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("显示冲突通知")
+                                Text("settings.show_conflict_notifications".localized())
                                     .font(.body)
-                                Text("检测到冲突时显示系统通知")
+                                Text("settings.show_conflict_notifications.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -428,9 +434,9 @@ struct SettingsView: View {
                         // 启用使用统计追踪
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("启用使用统计追踪")
+                                Text("settings.enable_usage_tracking".localized())
                                     .font(.body)
-                                Text("记录快捷键使用情况，用于冲突分析")
+                                Text("settings.enable_usage_tracking.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -449,7 +455,7 @@ struct SettingsView: View {
                         // 标题行：包含标题、tips图标、刷新按钮
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 4) {
-                                Text("长驻应用")
+                                Text("settings.always_on_apps.title".localized())
                                     .font(.headline)
                                 
                                 Image(systemName: "info.circle")
@@ -480,7 +486,7 @@ struct SettingsView: View {
                             VStack(spacing: 12) {
                                 ProgressView()
                                     .scaleEffect(1.2)
-                                Text("正在扫描长驻应用...")
+                                Text("settings.always_on_apps.scanning".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -491,10 +497,10 @@ struct SettingsView: View {
                                 Image(systemName: "app.dashed")
                                     .font(.system(size: 48))
                                     .foregroundColor(.secondary)
-                                Text("暂未检测到长驻应用")
+                                Text("settings.always_on_apps.empty".localized())
                                     .font(.body)
                                     .foregroundColor(.secondary)
-                                Text("点击刷新按钮扫描系统中的长驻应用")
+                                Text("settings.always_on_apps.empty.hint".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -516,7 +522,7 @@ struct SettingsView: View {
                         // 标题行：包含标题、tips图标、添加按钮
                         VStack(alignment: .leading, spacing: 4) {
                             HStack(spacing: 4) {
-                                Text("快捷键重映射")
+                                Text("settings.global_mapping.title".localized())
                                     .font(.headline)
                                 
                                 Image(systemName: "info.circle")
@@ -545,9 +551,9 @@ struct SettingsView: View {
                         // 启用全局重映射开关
                         HStack(alignment: .center) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("启用全局快捷键重映射")
+                                Text("settings.enable_global_remapping".localized())
                                     .font(.body)
-                                Text("启用后所有重映射规则将生效")
+                                Text("settings.enable_global_remapping.description".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -564,10 +570,10 @@ struct SettingsView: View {
                                 Image(systemName: "arrow.left.arrow.right.circle")
                                     .font(.system(size: 48))
                                     .foregroundColor(.secondary)
-                                Text("暂无映射规则")
+                                Text("settings.global_mapping.empty".localized())
                                     .font(.body)
                                     .foregroundColor(.secondary)
-                                Text("点击上方「添加重映射规则」按钮创建新规则")
+                                Text("settings.global_mapping.empty.hint".localized())
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -592,7 +598,7 @@ struct SettingsView: View {
                                     Button(action: {
                                         viewModel.showClearAllAlert = true
                                     }) {
-                                        Text("清空所有")
+                                        Text("settings.global_mapping.clear_all".localized())
                                             .font(.body)
                                             .fontWeight(.medium)
                                             .padding(.horizontal, 16)
@@ -626,12 +632,12 @@ struct SettingsView: View {
             EditRemappingSheet(viewModel: viewModel, rule: rule)
         }
         .alert("确认清空", isPresented: $viewModel.showClearAllAlert) {
-            Button("取消", role: .cancel) {}
+            Button("common.cancel".localized(), role: .cancel) {}
             Button("清空", role: .destructive) {
                 viewModel.clearAllRemappings()
             }
         } message: {
-            Text("确定要清空所有映射规则吗？此操作不可恢复。")
+            Text("settings.global_mapping.confirm_clear".localized())
         }
         .onAppear {
             // 首次打开标签页时，快速加载长驻应用
@@ -747,7 +753,7 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                     
                     // 快捷键数量
-                    Text("\(app.shortcutCount) 个快捷键")
+                    Text("common.shortcuts_count".localized(with: app.shortcutCount))
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
@@ -792,14 +798,14 @@ struct SettingsView: View {
                 // ===== 缓存设置板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("缓存设置")
+                        sectionHeader("settings.section.cache".localized())
 
                         // 缓存时长
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("缓存时长")
+                                Text("settings.cache_duration".localized())
                                 Spacer()
-                                Text("\(viewModel.cacheDuration) 小时")
+                                Text("common.hours_count".localized(with: viewModel.cacheDuration))
                                     .foregroundColor(.secondary)
                             }
 
@@ -809,7 +815,7 @@ struct SettingsView: View {
                             ), in: 1...72, step: 1)
                             .accentColor(.blue)
 
-                            Text("快捷键提取结果的缓存有效期")
+                            Text("settings.cache_duration.description".localized())
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -817,9 +823,9 @@ struct SettingsView: View {
                         // 最大缓存应用数
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("最大缓存应用数")
+                                Text("settings.max_cached_apps".localized())
                                 Spacer()
-                                Text("\(viewModel.maxCachedApps) 个")
+                                Text("common.apps_count".localized(with: viewModel.maxCachedApps))
                                     .foregroundColor(.secondary)
                             }
 
@@ -829,7 +835,7 @@ struct SettingsView: View {
                             ), in: 10...100, step: 10)
                             .accentColor(.blue)
 
-                            Text("内存中最多缓存的应用数量")
+                            Text("settings.max_cached_apps.description".localized())
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -839,13 +845,13 @@ struct SettingsView: View {
                 // ===== 清理旧数据板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("清理旧数据")
+                        sectionHeader("settings.section.cleanup".localized())
 
                         HStack(spacing: 12) {
                             Button(action: {
                                 viewModel.clearCache()
                             }) {
-                                Text("清除缓存")
+                                Text("settings.clear_cache".localized())
                                     .font(.body)
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 16)
@@ -866,7 +872,7 @@ struct SettingsView: View {
                             Button(action: {
                                 viewModel.clearUsageRecords()
                             }) {
-                                Text("清除使用记录")
+                                Text("settings.clear_usage_records".localized())
                                     .font(.body)
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 16)
@@ -887,7 +893,7 @@ struct SettingsView: View {
                             Button(action: {
                                 viewModel.clearAllData()
                             }) {
-                                Text("清除所有数据")
+                                Text("settings.clear_all_data".localized())
                                     .font(.body)
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 16)
@@ -906,7 +912,7 @@ struct SettingsView: View {
                             .foregroundColor(.red)
                         }
 
-                        Text("清除操作不可恢复，请谨慎操作")
+                        Text("settings.clear_warning".localized())
                             .font(.caption)
                             .foregroundColor(.red)
                     }
@@ -915,13 +921,13 @@ struct SettingsView: View {
                 // ===== 导出/导入板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("导出/导入")
+                        sectionHeader("settings.section.export_import".localized())
 
                         HStack(spacing: 12) {
                             Button(action: {
                                 viewModel.exportRemappings()
                             }) {
-                                Text("导出重映射规则")
+                                Text("settings.export_remapping_rules".localized())
                                     .font(.body)
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 16)
@@ -942,7 +948,7 @@ struct SettingsView: View {
                             Button(action: {
                                 viewModel.importRemappings()
                             }) {
-                                Text("导入重映射规则")
+                                Text("settings.import_remapping_rules".localized())
                                     .font(.body)
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 16)
@@ -963,7 +969,7 @@ struct SettingsView: View {
                             Button(action: {
                                 viewModel.exportSettings()
                             }) {
-                                Text("导出设置")
+                                Text("settings.export_settings".localized())
                                     .font(.body)
                                     .fontWeight(.medium)
                                     .padding(.horizontal, 16)
@@ -978,7 +984,7 @@ struct SettingsView: View {
                             .foregroundColor(.white)
                         }
 
-                        Text("可以备份并在其他设备上使用")
+                        Text("settings.export_settings.description".localized())
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -987,22 +993,22 @@ struct SettingsView: View {
                 // ===== 数据库信息板块 =====
                 settingsSectionCard {
                     VStack(alignment: .leading, spacing: 16) {
-                        sectionHeader("数据库信息")
+                        sectionHeader("settings.section.database_info".localized())
 
                         HStack {
-                            Text("数据库大小:")
+                            Text("database.size".localized())
                             Text(viewModel.databaseSize)
                                 .foregroundColor(.secondary)
                         }
 
                         HStack {
-                            Text("使用记录数:")
+                            Text("database.usage_records".localized())
                             Text("\(viewModel.usageRecordsCount)")
                                 .foregroundColor(.secondary)
                         }
 
                         HStack {
-                            Text("已用快捷键:")
+                            Text("database.shortcuts_used".localized())
                             Text("\(viewModel.shortcutsCount)")
                                 .foregroundColor(.secondary)
                         }
@@ -1038,7 +1044,7 @@ struct SettingsView: View {
                         .font(.title2)
                         .fontWeight(.semibold)
 
-                    Text("一个适用于macOS平台的快捷键冲突检测与管理工具")
+                    Text("settings.about.description".localized())
                         .font(.body)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -1049,13 +1055,13 @@ struct SettingsView: View {
                 // 版本信息
                 VStack(spacing: 8) {
                     HStack {
-                        Text("版本:")
+                        Text("about.version".localized())
                             .foregroundColor(.secondary)
                         Text("1.0.0 (Build 1)")
                     }
 
                     HStack {
-                        Text("系统要求:")
+                        Text("about.system_requirements".localized())
                             .foregroundColor(.secondary)
                         Text("macOS 14.0+")
                     }
@@ -1086,10 +1092,10 @@ enum SettingsTab: CaseIterable {
 
     var title: String {
         switch self {
-        case .general: return "通用"
-        case .conflictResolution: return "检测"
-        case .data: return "数据"
-        case .about: return "关于"
+        case .general: return "settings.tab.general".localized()
+        case .conflictResolution: return "settings.tab.conflictResolution".localized()
+        case .data: return "settings.tab.data".localized()
+        case .about: return "settings.tab.about".localized()
         }
     }
 
@@ -1136,7 +1142,7 @@ class SettingsViewModel: ObservableObject {
     @Published var showClearAllAlert: Bool = false
 
     // 数据库信息
-    @Published var databaseSize: String = "计算中..."
+    @Published var databaseSize: String = "settings.calculating".localized()
     @Published var usageRecordsCount: Int = 0
     @Published var shortcutsCount: Int = 0
     
@@ -1197,7 +1203,7 @@ class SettingsViewModel: ObservableObject {
         alert.informativeText = "这将清除所有应用快捷键的缓存数据"
         alert.alertStyle = .warning
         alert.addButton(withTitle: "清除")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: "common.cancel".localized())
 
         if alert.runModal() == .alertFirstButtonReturn {
             // 清除缓存
@@ -1212,7 +1218,7 @@ class SettingsViewModel: ObservableObject {
         alert.informativeText = "这将删除所有快捷键使用统计数据"
         alert.alertStyle = .warning
         alert.addButton(withTitle: "清除")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: "common.cancel".localized())
 
         if alert.runModal() == .alertFirstButtonReturn {
             // 清除使用记录
@@ -1230,7 +1236,7 @@ class SettingsViewModel: ObservableObject {
         alert.informativeText = "这将删除所有数据，包括缓存、使用记录、重映射规则等。此操作不可恢复！"
         alert.alertStyle = .critical
         alert.addButton(withTitle: "清除")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: "common.cancel".localized())
 
         if alert.runModal() == .alertFirstButtonReturn {
             // 清除所有数据
@@ -1263,7 +1269,7 @@ class SettingsViewModel: ObservableObject {
 
             do {
                 try data.write(to: url)
-                self.showNotification(title: "导出成功", message: "重映射规则已保存")
+                self.showNotification(title: "common.export_success".localized(), message: "settings.mapping.rules_saved".localized())
             } catch {
                 self.showAlert(title: "导出失败", message: error.localizedDescription)
             }
@@ -1304,7 +1310,7 @@ class SettingsViewModel: ObservableObject {
             do {
                 let data = try JSONSerialization.data(withJSONObject: settingsData, options: .prettyPrinted)
                 try data.write(to: url)
-                self.showNotification(title: "导出成功", message: "设置已保存")
+                self.showNotification(title: "common.export_success".localized(), message: "settings.settings_saved".localized())
             } catch {
                 self.showAlert(title: "导出失败", message: error.localizedDescription)
             }
@@ -1317,7 +1323,7 @@ class SettingsViewModel: ObservableObject {
         alert.informativeText = "这将恢复所有设置为默认值"
         alert.alertStyle = .warning
         alert.addButton(withTitle: "重置")
-        alert.addButton(withTitle: "取消")
+        alert.addButton(withTitle: "common.cancel".localized())
 
         if alert.runModal() == .alertFirstButtonReturn {
             settings.resetToDefaults()
@@ -1448,6 +1454,16 @@ class SettingsViewModel: ObservableObject {
 
         $selectedLanguage.sink { newValue in
             self.settings.selectedLanguage = newValue
+
+            // 触发语言切换
+            if newValue == "system" {
+                // 获取系统语言
+                let systemLanguage = Locale.current.language.languageCode?.identifier ?? "en"
+                let targetLanguage = LocalizationManager.supportedLanguages.contains(systemLanguage) ? systemLanguage : "en"
+                LocalizationManager.shared.currentLanguage = targetLanguage
+            } else {
+                LocalizationManager.shared.currentLanguage = newValue
+            }
         }.store(in: &cancellables)
     }
 
@@ -1506,7 +1522,7 @@ class SettingsViewModel: ObservableObject {
             remappingRules = remappingManager.getAllRules()
             showNotification(title: "映射规则已添加", message: "\(rule.fromKey) → \(rule.toKey)")
         } else {
-            showAlert(title: "添加失败", message: "无法添加映射规则，请检查规则是否有效")
+            showAlert(title: "common.add_failed".localized(), message: "settings.mapping.add_failed".localized())
         }
     }
 
@@ -1519,12 +1535,12 @@ class SettingsViewModel: ObservableObject {
     func clearAllRemappings() {
         remappingManager.clearAllRemappings()
         remappingRules = []
-        showNotification(title: "已清空所有映射规则", message: "")
+        showNotification(title: "settings.mapping.cleared".localized(), message: "")
     }
 
     func getAppName(for bundleId: String) -> String {
         if bundleId == "*" {
-            return "全局应用"
+            return "scope.global_app".localized()
         }
 
         if let app = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == bundleId }) {
@@ -1571,11 +1587,11 @@ struct AddRemappingSheet: View {
         VStack(spacing: 20) {
             // 标题
             VStack(spacing: 4) {
-                Text("添加映射规则")
+                Text("settings.global_mapping.add.title".localized())
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("自定义快捷键重映射，将源键映射到目标键")
+                Text("settings.global_mapping.add.subtitle".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -1585,7 +1601,7 @@ struct AddRemappingSheet: View {
             VStack(alignment: .leading, spacing: 12) {
                 // 源快捷键
                 VStack(alignment: .leading, spacing: 8) {
-                Text("源快捷键")
+                Text("settings.global_mapping.source".localized())
                     .font(.body)
 
                 HStack(spacing: 8) {
@@ -1598,7 +1614,7 @@ struct AddRemappingSheet: View {
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                             )
 
-                        TextField(isRecordingFrom ? "请按下快捷键..." : "例如: ⌘T", text: $fromKey)
+                        TextField(isRecordingFrom ? "recording.placeholder_recording".localized() : "recording.placeholder_example".localized(), text: $fromKey)
                             .font(.body)
                             .fontWeight(.medium)
                             .textFieldStyle(.plain)
@@ -1619,7 +1635,7 @@ struct AddRemappingSheet: View {
                             HStack(spacing: 6) {
                                 Image(systemName: isRecordingFrom ? "stop.circle.fill" : "keyboard")
                                     .font(.body)
-                                Text(isRecordingFrom ? "停止" : "录制")
+                                Text(isRecordingFrom ? "recording.stop".localized() : "recording.record".localized())
                                     .font(.body)
                             }
                             .frame(height: 28)
@@ -1631,14 +1647,14 @@ struct AddRemappingSheet: View {
                         .buttonStyle(.plain)
                 }
 
-                Text("按下这个快捷键时将被重映射")
+                Text("settings.global_mapping.source.description".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
 
             // 目标快捷键
             VStack(alignment: .leading, spacing: 8) {
-                Text("目标快捷键")
+                Text("settings.global_mapping.target".localized())
                     .font(.body)
 
                 HStack(spacing: 8) {
@@ -1651,7 +1667,7 @@ struct AddRemappingSheet: View {
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                             )
 
-                        TextField(isRecordingTo ? "请按下快捷键..." : "例如: ⇧⌘T", text: $toKey)
+                        TextField(isRecordingTo ? "recording.placeholder_recording".localized() : "recording.placeholder_example_shift".localized(), text: $toKey)
                             .font(.body)
                             .fontWeight(.medium)
                             .textFieldStyle(.plain)
@@ -1672,7 +1688,7 @@ struct AddRemappingSheet: View {
                             HStack(spacing: 6) {
                                 Image(systemName: isRecordingTo ? "stop.circle.fill" : "keyboard")
                                     .font(.body)
-                                Text(isRecordingTo ? "停止" : "录制")
+                                Text(isRecordingTo ? "recording.stop".localized() : "recording.record".localized())
                                     .font(.body)
                             }
                             .frame(height: 28)
@@ -1684,14 +1700,14 @@ struct AddRemappingSheet: View {
                         .buttonStyle(.plain)
                 }
 
-                Text("将被映射为这个快捷键")
+                Text("settings.global_mapping.target.description".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
 
             // 应用范围
             VStack(alignment: .leading, spacing: 8) {
-                Text("应用范围")
+                Text("settings.global_mapping.scope".localized())
                     .font(.body)
 
                 ZStack {
@@ -1705,7 +1721,7 @@ struct AddRemappingSheet: View {
 
                     // Picker
                     Picker("", selection: $bundleId) {
-                        Text("全局应用").tag("*")
+                        Text("settings.global_mapping.scope.global".localized()).tag("*")
                         // 这里可以添加更多应用选项
                     }
                     .pickerStyle(.menu)
@@ -1715,7 +1731,7 @@ struct AddRemappingSheet: View {
 
                     // 显示内容
                     HStack {
-                        Text(bundleId == "*" ? "全局应用" : bundleId)
+                        Text(bundleId == "*" ? "scope.global_app".localized() : bundleId)
                             .font(.body)
                             .foregroundColor(.primary)
                             .padding(.leading, 8)
@@ -1729,7 +1745,7 @@ struct AddRemappingSheet: View {
                 }
                 .frame(height: 28)
 
-                Text("选择映射规则适用的应用")
+                Text("settings.global_mapping.scope.description".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -1754,7 +1770,7 @@ struct AddRemappingSheet: View {
                     stopRecordingTo()
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text("取消")
+                    Text("action.cancel".localized())
                         .font(.body)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
@@ -1775,7 +1791,7 @@ struct AddRemappingSheet: View {
                 Button(action: {
                     addRule()
                 }) {
-                    Text("添加")
+                    Text("action.add".localized())
                         .font(.body)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
@@ -1882,11 +1898,11 @@ struct EditRemappingSheet: View {
         VStack(spacing: 20) {
             // 标题
             VStack(spacing: 4) {
-                Text("编辑映射规则")
+                Text("settings.global_mapping.edit.title".localized())
                     .font(.title2)
                     .fontWeight(.semibold)
                 
-                Text("修改快捷键映射规则，调整源键或目标键")
+                Text("settings.global_mapping.edit.subtitle".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -1896,7 +1912,7 @@ struct EditRemappingSheet: View {
             VStack(alignment: .leading, spacing: 12) {
                 // 源快捷键
                 VStack(alignment: .leading, spacing: 8) {
-                Text("源快捷键")
+                Text("settings.global_mapping.source".localized())
                     .font(.body)
 
                 HStack(spacing: 8) {
@@ -1909,7 +1925,7 @@ struct EditRemappingSheet: View {
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                             )
 
-                        TextField(isRecordingFrom ? "请按下快捷键..." : "例如: ⌘T", text: $fromKey)
+                        TextField(isRecordingFrom ? "recording.placeholder_recording".localized() : "recording.placeholder_example".localized(), text: $fromKey)
                             .font(.body)
                             .fontWeight(.medium)
                             .textFieldStyle(.plain)
@@ -1930,7 +1946,7 @@ struct EditRemappingSheet: View {
                             HStack(spacing: 6) {
                                 Image(systemName: isRecordingFrom ? "stop.circle.fill" : "keyboard")
                                     .font(.body)
-                                Text(isRecordingFrom ? "停止" : "录制")
+                                Text(isRecordingFrom ? "recording.stop".localized() : "recording.record".localized())
                                     .font(.body)
                             }
                             .frame(height: 28)
@@ -1942,14 +1958,14 @@ struct EditRemappingSheet: View {
                         .buttonStyle(.plain)
                 }
 
-                Text("按下这个快捷键时将被重映射")
+                Text("settings.global_mapping.source.description".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
 
             // 目标快捷键
             VStack(alignment: .leading, spacing: 8) {
-                Text("目标快捷键")
+                Text("settings.global_mapping.target".localized())
                     .font(.body)
 
                 HStack(spacing: 8) {
@@ -1962,7 +1978,7 @@ struct EditRemappingSheet: View {
                                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                             )
 
-                        TextField(isRecordingTo ? "请按下快捷键..." : "例如: ⇧⌘T", text: $toKey)
+                        TextField(isRecordingTo ? "recording.placeholder_recording".localized() : "recording.placeholder_example_shift".localized(), text: $toKey)
                             .font(.body)
                             .fontWeight(.medium)
                             .textFieldStyle(.plain)
@@ -1983,7 +1999,7 @@ struct EditRemappingSheet: View {
                             HStack(spacing: 6) {
                                 Image(systemName: isRecordingTo ? "stop.circle.fill" : "keyboard")
                                     .font(.body)
-                                Text(isRecordingTo ? "停止" : "录制")
+                                Text(isRecordingTo ? "recording.stop".localized() : "recording.record".localized())
                                     .font(.body)
                             }
                             .frame(height: 28)
@@ -1995,14 +2011,14 @@ struct EditRemappingSheet: View {
                         .buttonStyle(.plain)
                 }
 
-                Text("将被映射为这个快捷键")
+                Text("settings.global_mapping.target.description".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
 
             // 应用范围（只读）
             VStack(alignment: .leading, spacing: 8) {
-                Text("应用范围")
+                Text("settings.global_mapping.scope".localized())
                     .font(.body)
                 Text(bundleId == "*" ? "全局应用" : viewModel.getAppName(for: bundleId))
                     .font(.body)
@@ -2012,7 +2028,7 @@ struct EditRemappingSheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(6)
-                Text("应用范围不可修改")
+                Text("settings.global_mapping.scope.readonly".localized())
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -2037,7 +2053,7 @@ struct EditRemappingSheet: View {
                     stopRecordingTo()
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text("取消")
+                    Text("action.cancel".localized())
                         .font(.body)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
@@ -2058,7 +2074,7 @@ struct EditRemappingSheet: View {
                 Button(action: {
                     saveChanges()
                 }) {
-                    Text("保存")
+                    Text("action.save".localized())
                         .font(.body)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)

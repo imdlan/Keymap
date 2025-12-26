@@ -8,9 +8,18 @@
 import Foundation
 
 enum UsageContext: String, Codable {
-    case normal = "正常"
-    case conflict = "冲突"
-    case remapped = "重映射"
+    case normal = "normal"
+    case conflict = "conflict"
+    case remapped = "remapped"
+
+    /// 本地化显示名称
+    var displayName: String {
+        switch self {
+        case .normal:   return "usage.context.normal".localized()
+        case .conflict: return "usage.context.conflict".localized()
+        case .remapped: return "usage.context.remapped".localized()
+        }
+    }
 }
 
 struct UsageRecord: Identifiable, Codable {

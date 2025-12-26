@@ -8,16 +8,35 @@
 import Foundation
 
 enum ConflictType: String, Codable {
-    case system = "系统级"
-    case application = "应用级"
-    case global = "全局"
-    case functional = "功能"
+    case system = "system"
+    case application = "application"
+    case global = "global"
+    case functional = "functional"
+
+    /// 本地化显示名称
+    var displayName: String {
+        switch self {
+        case .system:      return "conflict.type.system".localized()
+        case .application: return "conflict.type.application".localized()
+        case .global:      return "conflict.type.global".localized()
+        case .functional:  return "conflict.type.functional".localized()
+        }
+    }
 }
 
 enum ConflictSeverity: String, Codable {
-    case low = "低"
-    case medium = "中"
-    case high = "高"
+    case low = "low"
+    case medium = "medium"
+    case high = "high"
+
+    /// 本地化显示名称
+    var displayName: String {
+        switch self {
+        case .low:    return "conflict.severity.low".localized()
+        case .medium: return "conflict.severity.medium".localized()
+        case .high:   return "conflict.severity.high".localized()
+        }
+    }
 }
 
 struct ConflictInfo: Identifiable, Codable, Hashable {

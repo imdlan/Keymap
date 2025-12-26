@@ -25,7 +25,7 @@ class KeymapShortcutProvider {
             ShortcutInfo(
                 id: "keymap_show_panel",
                 keyCombination: "⌘⌘",
-                description: "显示快捷键面板",
+                description: "keymap.shortcut.show_panel".localized(),
                 application: "Keymap",
                 category: .other,
                 isCustom: false,
@@ -34,7 +34,7 @@ class KeymapShortcutProvider {
             ShortcutInfo(
                 id: "keymap_statistics",
                 keyCombination: "⌘D",
-                description: "统计分析",
+                description: "keymap.shortcut.statistics".localized(),
                 application: "Keymap",
                 category: .other,
                 isCustom: false,
@@ -43,7 +43,7 @@ class KeymapShortcutProvider {
             ShortcutInfo(
                 id: "keymap_settings",
                 keyCombination: "⌘,",
-                description: "设置",
+                description: "keymap.shortcut.settings".localized(),
                 application: "Keymap",
                 category: .other,
                 isCustom: false,
@@ -52,7 +52,7 @@ class KeymapShortcutProvider {
             ShortcutInfo(
                 id: "keymap_quit",
                 keyCombination: "⌘Q",
-                description: "退出 Keymap",
+                description: "keymap.shortcut.quit".localized(),
                 application: "Keymap",
                 category: .system,
                 isCustom: false,

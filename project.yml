@@ -4,7 +4,7 @@ options:
   bundleIdPrefix: com.yourcompany
   deploymentTarget:
     macOS: "14.0"
-  developmentLanguage: zh-Hans
+  developmentLanguage: en
 
 settings:
   base:
@@ -54,6 +54,7 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ASSETCATALOG_COMPILER_ASSET_CATALOG_PATH: Keymap/Resources/Assets.xcassets
         LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/../Frameworks
+        KNOWN_REGIONS: ["en", "zh-Hans", "Base"]
 
       debug:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG

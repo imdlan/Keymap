@@ -8,13 +8,26 @@
 import Foundation
 
 enum ShortcutCategory: String, Codable, CaseIterable {
-    case file = "文件"
-    case edit = "编辑"
-    case view = "视图"
-    case window = "窗口"
-    case system = "系统"
-    case navigation = "导航"
-    case other = "其他"
+    case file = "file"
+    case edit = "edit"
+    case view = "view"
+    case window = "window"
+    case system = "system"
+    case navigation = "navigation"
+    case other = "other"
+
+    /// 本地化显示名称
+    var displayName: String {
+        switch self {
+        case .file:       return "category.file".localized()
+        case .edit:       return "category.edit".localized()
+        case .view:       return "category.view".localized()
+        case .window:     return "category.window".localized()
+        case .system:     return "category.system".localized()
+        case .navigation: return "category.navigation".localized()
+        case .other:      return "category.other".localized()
+        }
+    }
 }
 
 struct ShortcutInfo: Identifiable, Codable, Hashable {
