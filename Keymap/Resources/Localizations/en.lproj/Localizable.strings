@@ -326,6 +326,10 @@
 "settings.language.system_display" = "Follow System";
 "settings.language.simplified_chinese_display" = "Simplified Chinese";
 
+// Shortcut Panel Settings
+"settings.show_system_shortcuts" = "Show System Shortcuts";
+"settings.show_system_shortcuts.description" = "Display macOS system shortcuts (⌘Q, ⌘Space, etc.) in shortcut panel";
+
 // Database Info Labels
 "database.size" = "Database Size";
 "database.usage_records" = "Usage Records";

@@ -214,6 +214,12 @@ class ShortcutPanelViewModel: ObservableObject {
 
     /// 合并应用快捷键和系统快捷键（带去重）
     private func mergeWithSystemShortcuts(_ appShortcuts: [ShortcutInfo]) -> [ShortcutInfo] {
+        // ✅ 检查是否显示系统快捷键
+        guard SettingsManager.shared.showSystemShortcuts else {
+            // 如果不显示系统快捷键，直接返回应用快捷键
+            return detectAndAssignConflicts(appShortcuts)
+        }
+        
         let systemShortcuts = systemProvider.getSystemShortcuts()
 
         // ✅ 去重：按 keyCombination 分组，应用快捷键优先

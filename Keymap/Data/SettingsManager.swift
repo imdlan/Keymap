@@ -37,6 +37,7 @@ class SettingsManager {
         static let panelAutoCloseDelay = "panelAutoCloseDelay"
         static let enableGlobalRemapping = "enableGlobalRemapping"
         static let selectedLanguage = "selectedLanguage"
+        static let showSystemShortcuts = "showSystemShortcuts"
     }
 
     // MARK: - Initialization
@@ -260,6 +261,24 @@ class SettingsManager {
         }
     }
 
+    /// 显示系统快捷键
+    var showSystemShortcuts: Bool {
+        get {
+            return defaults.object(forKey: Keys.showSystemShortcuts) as? Bool ?? true
+        }
+        set {
+            defaults.set(newValue, forKey: Keys.showSystemShortcuts)
+            print("⚙️ 显示系统快捷键: \(newValue ? "开启" : "关闭")")
+
+            // 发送通知
+            NotificationCenter.default.post(
+                name: .settingsChanged,
+                object: nil,
+                userInfo: ["key": Keys.showSystemShortcuts, "value": newValue]
+            )
+        }
+    }
+
     // MARK: - Methods
 
     /// 注册默认值
@@ -278,7 +297,8 @@ class SettingsManager {
             Keys.cleanupInterval: 90,
             Keys.panelAutoCloseDelay: 0,
             Keys.enableGlobalRemapping: false,
-            Keys.selectedLanguage: "system"
+            Keys.selectedLanguage: "system",
+            Keys.showSystemShortcuts: true
         ]
 
         self.defaults.register(defaults: defaults)
@@ -301,6 +321,7 @@ class SettingsManager {
         panelAutoCloseDelay = 0
         enableGlobalRemapping = false
         selectedLanguage = "system"
+        showSystemShortcuts = true
 
         print("🔄 所有设置已重置为默认值")
     }
@@ -321,7 +342,8 @@ class SettingsManager {
             Keys.cleanupInterval: cleanupInterval,
             Keys.panelAutoCloseDelay: panelAutoCloseDelay,
             Keys.enableGlobalRemapping: enableGlobalRemapping,
-            Keys.selectedLanguage: selectedLanguage
+            Keys.selectedLanguage: selectedLanguage,
+            Keys.showSystemShortcuts: showSystemShortcuts
         ]
     }
 
@@ -369,6 +391,9 @@ class SettingsManager {
         }
         if let language = settings[Keys.selectedLanguage] as? String {
             selectedLanguage = language
+        }
+        if let showSystem = settings[Keys.showSystemShortcuts] as? Bool {
+            showSystemShortcuts = showSystem
         }
 
         print("✅ 设置已导入")

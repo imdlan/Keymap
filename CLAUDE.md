@@ -1224,3 +1224,50 @@ system.zoom
 - 🔄 完善语言切换后的实时UI刷新
 - 📦 合并到主分支并发布多语言版本
 
+### 2025-12-26 下午 - 新增"显示系统快捷键"设置功能
+
+**新增功能**：
+- ✅ 在设置面板添加"显示系统快捷键"开关
+- ✅ 用户可选择是否在快捷键面板中显示 macOS 系统快捷键
+- ✅ 完整的中英双语支持
+- ✅ 设置持久化和导入/导出支持
+
+**实现细节**：
+- 配置键：`showSystemShortcuts`（默认值：`true`）
+- UI 位置：设置面板 → 快捷键 → 显示系统快捷键
+- 逻辑优化：关闭时直接跳过系统快捷键合并，提升性能
+- 设置实时生效，无需重启应用
+
+**本地化键**：
+```
+// 英文
+"settings.show_system_shortcuts" = "Show System Shortcuts";
+"settings.show_system_shortcuts.description" = "Display macOS system shortcuts (⌘Q, ⌘Space, etc.) in shortcut panel";
+
+// 中文
+"settings.show_system_shortcuts" = "显示系统快捷键";
+"settings.show_system_shortcuts.description" = "在快捷键面板中显示 macOS 系统快捷键（⌘Q、⌘Space 等）";
+```
+
+**使用场景**：
+- **开启状态**（默认）：快捷键面板显示应用快捷键 + 系统快捷键（30个），提供完整视图
+- **关闭状态**：快捷键面板仅显示应用自身快捷键，隐藏所有系统快捷键
+
+**技术实现**：
+- `SettingsManager` 添加配置项和持久化逻辑
+- `ShortcutPanelViewModel.mergeWithSystemShortcuts()` 根据设置动态显示/隐藏
+- `SettingsWindow` 添加 Toggle UI 和双向绑定
+- 支持设置导入/导出功能
+
+**修改文件**：
+- Keymap/Data/SettingsManager.swift
+- Keymap/Resources/Localizations/en.lproj/Localizable.strings
+- Keymap/Resources/Localizations/zh-Hans.lproj/Localizable.strings
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+- Keymap/UI/ViewModels/ShortcutPanelViewModel.swift
+
+**编译结果**：
+- ✅ 编译成功（BUILD SUCCEEDED）
+- ✅ 无错误无警告
+- ✅ 功能测试验证成功
+

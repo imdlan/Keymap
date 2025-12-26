@@ -688,7 +688,7 @@ Button("settings.save".localized()) {
 - ✅ 本地化217条字符串（设置、面板、菜单、通知）
 - ✅ 编译通过，无错误
 
-#### 2025-12-26 - 完善本地化覆盖
+#### 2025-12-26 上午 - 完善本地化覆盖
 - ✅ 修复设置面板残留中文（9个板块标题）
 - ✅ 修复统计面板优化建议（3条建议）
 - ✅ 修复长驻应用激活策略描述（4种策略）
@@ -710,6 +710,31 @@ Button("settings.save".localized()) {
 - 系统快捷键和 Keymap 快捷键由应用提供，完全支持本地化
 - 第三方应用快捷键通过 Accessibility API 从应用菜单提取，语言由应用决定
 - 用户可通过设置第三方应用的语言来统一界面语言
+
+#### 2025-12-26 下午 - 新增"显示系统快捷键"设置功能
+- ✅ 在设置面板添加"显示系统快捷键"开关
+- ✅ 用户可选择是否在快捷键面板中显示 macOS 系统快捷键
+- ✅ 添加中英双语本地化字符串（2条）
+- ✅ SettingsManager 添加 `showSystemShortcuts` 配置项
+- ✅ ShortcutPanelViewModel 根据设置动态显示/隐藏系统快捷键
+- ✅ 设置实时生效，无需重启应用
+- ✅ 支持设置导入/导出功能
+- ✅ 编译通过，功能测试验证成功
+
+**实现细节**：
+- 配置键：`showSystemShortcuts`（默认值：`true`）
+- UI 位置：设置面板 → 快捷键 → 显示系统快捷键
+- 逻辑优化：关闭时直接跳过系统快捷键合并，提升性能
+- 本地化键：
+  - `settings.show_system_shortcuts` = "显示系统快捷键" / "Show System Shortcuts"
+  - `settings.show_system_shortcuts.description` = 说明文字
+
+**修改文件**：
+- Keymap/Data/SettingsManager.swift
+- Keymap/Resources/Localizations/en.lproj/Localizable.strings
+- Keymap/Resources/Localizations/zh-Hans.lproj/Localizable.strings
+- Keymap/UI/Views/Settings/SettingsWindow.swift
+- Keymap/UI/ViewModels/ShortcutPanelViewModel.swift
 
 ### ⏳ 阶段 2：其他 8 种语言支持（待开始）
 

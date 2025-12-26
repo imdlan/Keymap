@@ -326,6 +326,10 @@
 "settings.language.system_display" = "跟随系统";
 "settings.language.simplified_chinese_display" = "简体中文";
 
+// Shortcut Panel Settings
+"settings.show_system_shortcuts" = "显示系统快捷键";
+"settings.show_system_shortcuts.description" = "在快捷键面板中显示 macOS 系统快捷键（⌘Q、⌘Space 等）";
+
 // Database Info Labels
 "database.size" = "数据库大小";
 "database.usage_records" = "使用记录数";

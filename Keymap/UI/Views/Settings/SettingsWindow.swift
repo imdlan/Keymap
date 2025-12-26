@@ -380,6 +380,22 @@ struct SettingsView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
+
+                        // 显示系统快捷键
+                        HStack(alignment: .center) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("settings.show_system_shortcuts".localized())
+                                    .font(.body)
+                                Text("settings.show_system_shortcuts.description".localized())
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            Toggle("", isOn: $viewModel.showSystemShortcuts)
+                                .toggleStyle(.switch)
+                        }
                     }
                 }
             }
@@ -1126,6 +1142,7 @@ class SettingsViewModel: ObservableObject {
     @Published var doubleCmdThreshold: Double = 0.3
     @Published var triggerKey: String = "doubleCmd"
     @Published var panelAutoCloseDelay: Double = 0
+    @Published var showSystemShortcuts: Bool = true
 
     // 数据设置
     @Published var cacheDuration: Int = 24
@@ -1401,6 +1418,7 @@ class SettingsViewModel: ObservableObject {
         cacheDuration = settings.cacheDuration
         maxCachedApps = settings.maxCachedApps
         panelAutoCloseDelay = settings.panelAutoCloseDelay
+        showSystemShortcuts = settings.showSystemShortcuts
         enableGlobalRemapping = settings.enableGlobalRemapping
         selectedLanguage = settings.selectedLanguage
 
@@ -1436,6 +1454,10 @@ class SettingsViewModel: ObservableObject {
 
         $panelAutoCloseDelay.sink { newValue in
             self.settings.panelAutoCloseDelay = newValue
+        }.store(in: &cancellables)
+
+        $showSystemShortcuts.sink { newValue in
+            self.settings.showSystemShortcuts = newValue
         }.store(in: &cancellables)
 
         // 数据设置
