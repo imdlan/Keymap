@@ -1073,7 +1073,7 @@ struct SettingsView: View {
                     HStack {
                         Text("about.version".localized())
                             .foregroundColor(.secondary)
-                        Text("1.0.0 (Build 1)")
+                        Text("Version 1.1.0 (2)")
                     }
 
                     HStack {

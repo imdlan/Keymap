@@ -1224,6 +1224,48 @@ system.zoom
 - 🔄 完善语言切换后的实时UI刷新
 - 📦 合并到主分支并发布多语言版本
 
+### 2025-12-26 下午 - 菜单国际化与版本号更新
+
+**菜单国际化支持**:
+- ✅ 应用菜单栏（左上角苹果菜单）支持语言切换
+- ✅ 状态栏图标弹出菜单支持语言切换
+- ✅ 添加语言切换通知监听（`.languageChanged`）
+- ✅ 切换语言后自动重建菜单，实时生效
+
+**版本号更新**:
+- ✅ 设置页面版本号更新：`1.0.0 (Build 1)` → `Version 1.1.0 (2)`
+- ✅ 与系统关于窗口版本号保持一致
+
+**系统关于窗口优化**:
+- ✅ 移除 Apache-2.0 license 文字描述
+- ✅ 简化版权信息为：`Copyright 2025 David Lan`
+- ✅ 保持简洁专业的视觉效果
+
+**技术实现**:
+- `AppDelegate.setupEmptyMenuBar()` - 创建苹果菜单并使用本地化键
+- `AppDelegate.setupMenuBar()` - 创建状态栏菜单并使用本地化键
+- `AppDelegate.updateMenusForLanguageChange()` - 监听 `.languageChanged` 通知并重建菜单
+- `Info.plist NSHumanReadableCopyright` - 控制系统关于窗口版权文本
+
+**用户体验提升**:
+- 切换语言后所有菜单立即更新，无需重启应用
+- 菜单文本完全本地化，支持中英双语
+- 关于窗口信息更加简洁专业
+
+**修改文件**:
+- Keymap/App/Info.plist（修改版权信息）
+- Keymap/UI/Views/Settings/SettingsWindow.swift（更新版本号显示）
+- Keymap/App/AppDelegate.swift（添加语言切换监听和菜单更新逻辑）
+
+**编译结果**:
+- ✅ 编译成功（BUILD SUCCEEDED）
+- ✅ 无错误无警告
+- ✅ 功能测试验证成功
+
+**Bug 修复**:
+- 🐛 修复 Xcode DerivedData 缓存导致的编译错误
+- 解决方案：手动清理缓存（⇧⌘K 或删除 DerivedData 文件夹）
+
 ### 2025-12-26 下午 - 新增"显示系统快捷键"设置功能
 
 **新增功能**：

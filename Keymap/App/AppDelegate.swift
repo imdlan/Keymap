@@ -134,7 +134,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             object: nil
         )
         
-        // 11. 监听显示指定应用快捷键的请求
+        // 11. 监听语言切换以更新菜单
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(updateMenusForLanguageChange),
+            name: .languageChanged,
+            object: nil
+        )
+        
+        // 12. 监听显示指定应用快捷键的请求
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleShowShortcutsForApp),
@@ -354,6 +362,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func updateMenuBarShortcut() {
         guard let menuItem = showPanelMenuItem else { return }
         updateMenuItemShortcutDisplay(menuItem)
+    }
+    
+    /// 更新菜单以响应语言切换
+    @objc private func updateMenusForLanguageChange() {
+        // 重新创建应用菜单
+        setupEmptyMenuBar()
+        
+        // 重新创建状态栏菜单
+        setupMenuBar()
     }
     
     /// 更新菜单项的快捷键显示
