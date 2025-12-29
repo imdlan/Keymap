@@ -198,6 +198,24 @@ struct SettingsView: View {
         }
     }
 
+    /// 获取语言显示名称
+    private func languageDisplayName(for code: String) -> String {
+        switch code {
+        case "system": return "settings.language.system_display".localized()
+        case "en": return "English"
+        case "zh-Hans": return "简体中文"
+        case "zh-Hant": return "繁體中文"
+        case "ja": return "日本語"
+        case "ko": return "한국어"
+        case "de": return "Deutsch"
+        case "fr": return "Français"
+        case "es": return "Español"
+        case "it": return "Italiano"
+        case "ru": return "Русский"
+        default: return code
+        }
+    }
+
     // MARK: - General Settings
 
     private var generalSettingsView: some View {
@@ -268,8 +286,16 @@ struct SettingsView: View {
 
                                 Picker("", selection: $viewModel.selectedLanguage) {
                                     Text("settings.language.system".localized()).tag("system")
-                                    Text("settings.language.simplified_chinese".localized()).tag("zh-Hans")
                                     Text("English").tag("en")
+                                    Text("简体中文").tag("zh-Hans")
+                                    Text("繁體中文").tag("zh-Hant")
+                                    Text("日本語").tag("ja")
+                                    Text("한국어").tag("ko")
+                                    Text("Deutsch").tag("de")
+                                    Text("Français").tag("fr")
+                                    Text("Español").tag("es")
+                                    Text("Italiano").tag("it")
+                                    Text("Русский").tag("ru")
                                 }
                                 .pickerStyle(.menu)
                                 .labelsHidden()
@@ -277,8 +303,7 @@ struct SettingsView: View {
                                 .opacity(0.01)
 
                                 HStack {
-                                    Text(viewModel.selectedLanguage == "system" ? "settings.language.system_display".localized() :
-                                         viewModel.selectedLanguage == "zh-Hans" ? "settings.language.simplified_chinese_display".localized() : "English")
+                                    Text(languageDisplayName(for: viewModel.selectedLanguage))
                                         .font(.body)
                                         .foregroundColor(.primary)
                                         .padding(.leading, 8)

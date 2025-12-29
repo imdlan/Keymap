@@ -1,0 +1,397 @@
+// Deutsche Lokalisierungszeichenfolgen
+
+// MARK: - Einstellungsfenster
+"settings.title" = "Einstellungen";
+"settings.general" = "Allgemein";
+"settings.shortcuts" = "Tastaturkurzbefehle";
+"settings.global_mapping" = "Globale Zuordnung";
+"settings.always_on_apps" = "Immer aktive Apps";
+"settings.data" = "Daten";
+"settings.advanced" = "Erweitert";
+
+// MARK: - Allgemeine Einstellungen
+"settings.launch_at_login" = "Bei Anmeldung starten";
+"settings.launch_at_login.description" = "Die App wird beim Systemstart automatisch gestartet";
+"settings.show_in_dock" = "Symbol im Dock anzeigen";
+"settings.show_in_dock.description" = "Bei Deaktivierung wird die App nur in der Menüleiste angezeigt";
+"settings.language" = "Sprache";
+"settings.language.system" = "System folgen";
+"settings.language.simplified_chinese" = "Vereinfachtes Chinesisch";
+
+// MARK: - Tastaturkurzbefehl-Einstellungen
+"settings.double_press_threshold" = "%@ Doppeltipp-Schwellenwert";
+"settings.double_press_threshold.description" = "Doppeltipp-Empfindlichkeit anpassen (kleiner = empfindlicher)";
+"settings.trigger_key" = "Auslöser-Kurzbefehl";
+"settings.trigger_key.description" = "Wählen Sie, wie das Kurzbefehl-Panel ausgelöst wird";
+"settings.trigger_key.double_cmd" = "Cmd Doppeltipp";
+"settings.trigger_key.double_option" = "Option Doppeltipp";
+"settings.trigger_key.double_control" = "Control Doppeltipp";
+"settings.panel_auto_close" = "Panel automatisch schließen Verzögerung";
+"settings.panel_auto_close.description" = "Auf 0 setzen, um automatisches Schließen zu deaktivieren";
+"settings.enable_realtime_detection" = "Echtzeit-Konflikterkennung aktivieren";
+"settings.enable_realtime_detection.description" = "Konflikte bei Verwendung von Kurzbefehlen in Echtzeit erkennen";
+"settings.show_conflict_notifications" = "Konflikt-Benachrichtigungen anzeigen";
+"settings.show_conflict_notifications.description" = "Systembenachrichtigungen bei erkannten Konflikten anzeigen";
+"settings.enable_usage_tracking" = "Nutzungsstatistik-Verfolgung aktivieren";
+"settings.enable_usage_tracking.description" = "Kurzbefehl-Nutzung für Konfliktanalyse aufzeichnen";
+
+// MARK: - Immer aktive Apps
+"settings.always_on_apps.title" = "Immer aktive Apps";
+"settings.always_on_apps.scanning" = "Suche nach immer aktiven Apps...";
+"settings.always_on_apps.empty" = "Keine immer aktiven Apps erkannt";
+"settings.always_on_apps.empty.hint" = "Klicken Sie auf Aktualisieren, um das System nach immer aktiven Apps zu durchsuchen";
+"settings.always_on_apps.mark_manually" = "Manuell markieren";
+
+// MARK: - Globale Zuordnung
+"settings.global_mapping.title" = "Kurzbefehl-Neuzuordnung";
+"settings.enable_global_remapping" = "Globale Kurzbefehl-Neuzuordnung aktivieren";
+"settings.enable_global_remapping.description" = "Alle Neuzuordnungsregeln werden bei Aktivierung angewendet";
+"settings.global_mapping.empty" = "Keine Zuordnungsregeln";
+"settings.global_mapping.empty.hint" = "Klicken Sie oben auf 'Neuzuordnungsregel hinzufügen', um eine neue Regel zu erstellen";
+"settings.global_mapping.rule_count" = "Insgesamt %d Zuordnungsregeln";
+"settings.global_mapping.clear_all" = "Alle löschen";
+"settings.global_mapping.confirm_clear" = "Möchten Sie wirklich alle Zuordnungsregeln löschen? Diese Aktion kann nicht rückgängig gemacht werden.";
+"settings.global_mapping.add_rule" = "Neuzuordnungsregel hinzufügen";
+"settings.global_mapping.edit_rule" = "Neuzuordnungsregel bearbeiten";
+"settings.global_mapping.source" = "Quell-Kurzbefehl";
+"settings.global_mapping.target" = "Ziel-Kurzbefehl";
+"settings.global_mapping.scope" = "App-Bereich";
+"settings.global_mapping.scope.global" = "Global";
+"settings.global_mapping.source.description" = "Dieser Kurzbefehl wird beim Drücken neu zugeordnet";
+"settings.global_mapping.target.description" = "Wird diesem Kurzbefehl zugeordnet";
+"settings.global_mapping.scope.description" = "Wählen Sie die Apps, für die diese Zuordnungsregel gilt";
+"settings.global_mapping.scope.readonly" = "App-Bereich kann nicht geändert werden";
+"settings.global_mapping.add.title" = "Zuordnungsregel hinzufügen";
+"settings.global_mapping.add.subtitle" = "Benutzerdefinierte Kurzbefehl-Neuzuordnung, Quelltaste zu Zieltaste zuordnen";
+"settings.global_mapping.edit.title" = "Zuordnungsregel bearbeiten";
+"settings.global_mapping.edit.subtitle" = "Kurzbefehl-Zuordnungsregel ändern, Quell- oder Zieltaste anpassen";
+
+// MARK: - Dateneinstellungen
+"settings.cache_duration" = "Cache-Dauer";
+"settings.cache_duration.description" = "Cache-Gültigkeitsdauer für Kurzbefehl-Extraktionsergebnisse";
+"settings.max_cached_apps" = "Max. gecachte Apps";
+"settings.max_cached_apps.description" = "Maximale Anzahl der im Speicher gecachten Apps";
+"settings.clear_cache" = "Cache löschen";
+"settings.clear_usage_records" = "Nutzungsaufzeichnungen löschen";
+"settings.clear_all_data" = "Alle Daten löschen";
+"settings.clear_warning" = "Löschvorgänge können nicht rückgängig gemacht werden. Bitte mit Vorsicht vorgehen";
+"settings.export_remapping_rules" = "Neuzuordnungsregeln exportieren";
+"settings.import_remapping_rules" = "Neuzuordnungsregeln importieren";
+"settings.export_settings" = "Einstellungen exportieren";
+"settings.export_settings.description" = "Kann gesichert und auf anderen Geräten verwendet werden";
+"settings.database_size" = "Datenbankgröße:";
+"settings.usage_records_count" = "Nutzungsaufzeichnungen:";
+"settings.shortcuts_used_count" = "Verwendete Kurzbefehle:";
+
+// MARK: - Erweiterte Einstellungen
+"settings.log_level" = "Protokollebene";
+"settings.log_level.description" = "App-Protokollausgabeebene festlegen";
+"settings.enable_recording_mode" = "Kurzbefehl-Aufnahmemodus aktivieren";
+"settings.enable_recording_mode.description" = "Kurzbefehl-Aufnahme erlauben (experimentelle Funktion)";
+
+// MARK: - Über
+"settings.about.description" = "Kurzbefehl-Konflikterkennung und -Verwaltungstool für macOS";
+"settings.about.version" = "Version:";
+"settings.about.system_requirements" = "Systemanforderungen:";
+
+// MARK: - Kurzbefehl-Panel
+"panel.title" = "Kurzbefehl-Panel";
+"panel.search_placeholder" = "Kurzbefehle suchen...";
+"panel.close_hint" = "ESC drücken zum Schließen";
+"panel.conflict_shortcuts" = "Konflikt-Kurzbefehle";
+"panel.common_shortcuts" = "Häufige Kurzbefehle";
+"panel.loading" = "Laden...";
+"panel.statistics" = "Statistiken";
+"panel.settings" = "Einstellungen";
+
+// MARK: - Konfliktdetails
+"conflict.severity" = "Schweregrad";
+"conflict.type" = "Konflikttyp";
+"conflict.conflicting_app" = "Konflikt-App";
+"conflict.suggestions" = "Vorschläge";
+
+// MARK: - Neuzuordnungsdialog
+"remapping.title" = "Kurzbefehl neu zuordnen";
+"remapping.description" = "Kurzbefehl einer anderen Kombination zuordnen, nur in der aktuellen App wirksam";
+"remapping.current_shortcut" = "Aktueller Kurzbefehl";
+"remapping.new_shortcut" = "Neuer Kurzbefehl";
+"remapping.hint" = "Tipp: Verwenden Sie ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + Buchstabe/Zahl";
+"remapping.reset" = "Zurücksetzen";
+
+// MARK: - Menüleiste
+"menu.show_panel" = "Kurzbefehl-Panel anzeigen";
+"menu.statistics" = "Statistikanalyse";
+"menu.settings" = "Einstellungen...";
+"menu.about" = "Über Keymap";
+"menu.quit" = "Keymap beenden";
+"menu.permission_warning" = "⚠️ Bedienungshilfen-Berechtigung erforderlich";
+"menu.permission_tooltip" = "Klicken, um Systemeinstellungen zu öffnen und Berechtigung zu erteilen";
+
+// MARK: - Kategorien
+"category.file" = "Datei";
+"category.edit" = "Bearbeiten";
+"category.view" = "Ansicht";
+"category.window" = "Fenster";
+"category.system" = "System";
+"category.navigation" = "Navigation";
+"category.other" = "Sonstiges";
+
+// MARK: - Konflikttypen
+"conflict.type.system" = "Systemebene";
+"conflict.type.application" = "App-Ebene";
+"conflict.type.global" = "Global";
+"conflict.type.functional" = "Funktional";
+
+// MARK: - Konfliktschweregrad
+"conflict.severity.high" = "Hoch";
+"conflict.severity.medium" = "Mittel";
+"conflict.severity.low" = "Niedrig";
+
+// MARK: - Nutzungskontext
+"usage.context.normal" = "Normal";
+"usage.context.conflict" = "Konflikt";
+"usage.context.remapped" = "Neu zugeordnet";
+
+// MARK: - Lösungsstrategie
+"resolution.strategy.disable" = "Deaktivieren";
+"resolution.strategy.remap" = "Neu zuordnen";
+"resolution.strategy.ignore" = "Ignorieren";
+"resolution.strategy.manual" = "Manuell behandeln";
+
+// MARK: - Benachrichtigungen
+"notification.permission.title" = "Berechtigung erforderlich";
+"notification.permission.message" = "Bitte gewähren Sie Keymap die Bedienungshilfen-Berechtigung in den Systemeinstellungen";
+"notification.permission.message.dock" = "Bitte gewähren Sie Keymap die Bedienungshilfen-Berechtigung in den Systemeinstellungen, um es zu verwenden";
+"notification.conflict.title" = "Kurzbefehl-Konflikt erkannt";
+"notification.conflict.system" = "Konflikt mit System-Kurzbefehl";
+"notification.conflict.global" = "Konflikt mit %@";
+"notification.conflict.application" = "Doppelte Definition in der App";
+"notification.conflict.functional" = "Funktionaler Konflikt";
+"notification.conflict.multiple" = ", insgesamt %d Konflikte";
+"notification.conflict.view_details" = "Details anzeigen";
+"notification.remapping.success.title" = "Neuzuordnung erfolgreich";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - Statistikfenster
+"statistics.title" = "Statistikanalyse";
+"statistics.overview" = "Übersicht";
+"statistics.total_usage" = "Gesamtnutzung";
+"statistics.conflicts" = "Konflikte";
+"statistics.efficiency_score" = "Konfliktfreie Rate";
+"statistics.active_apps" = "Aktive Apps";
+"statistics.refresh" = "Aktualisieren";
+"statistics.export" = "Exportieren";
+"statistics.top_shortcuts" = "Nutzungshäufigkeit-Ranking (Top 10)";
+"statistics.no_data" = "Keine Daten verfügbar";
+"statistics.usage_trend" = "Nutzungstrend";
+"statistics.tracking_disabled" = "Nutzungsstatistik-Verfolgung muss aktiviert werden";
+"statistics.tracking_hint_1" = "Stellen Sie sicher, dass 'Nutzungsstatistik-Verfolgung' in den Einstellungen aktiviert ist";
+"statistics.tracking_hint_2" = "Nach der Verwendung von Kurzbefehlen zeichnet das System automatisch Nutzungsdaten auf";
+"statistics.tracking_hint_3" = "Daten werden ab dem nächsten Tag im Trenddiagramm angezeigt";
+"statistics.high_conflict_shortcuts" = "Kurzbefehle mit hohem Konflikt";
+"statistics.no_conflicts" = "Großartig! Derzeit keine Konflikte";
+"statistics.optimization_suggestions" = "Optimierungsvorschläge";
+"statistics.no_suggestions" = "Keine Vorschläge";
+
+// MARK: - Allgemeine Aktionen
+"action.save" = "Speichern";
+"action.cancel" = "Abbrechen";
+"action.delete" = "Löschen";
+"action.reset" = "Zurücksetzen";
+"action.confirm" = "Bestätigen";
+"action.export" = "Exportieren";
+"action.import" = "Importieren";
+"action.refresh" = "Aktualisieren";
+"action.add" = "Hinzufügen";
+"action.record" = "Aufnehmen";
+"action.recording" = "Aufnahme läuft...";
+
+// MARK: - Zeiteinheiten
+"time.seconds" = "Sekunden";
+"time.hours" = "Stunden";
+
+// MARK: - Allgemeine Phrasen
+"common.loading" = "Laden...";
+"common.empty" = "Leer";
+"common.total" = "Gesamt";
+"common.count" = "Anzahl";
+"common.shortcuts_count" = "%d Kurzbefehle";
+"common.hours_count" = "%d Stunden";
+"common.apps_count" = "%d Apps";
+
+// MARK: - Allgemeine Phrasen (Ergänzung)
+"common.cancel" = "Abbrechen";
+"common.save" = "Speichern";
+"common.export_success" = "Export erfolgreich";
+"common.add_failed" = "Hinzufügen fehlgeschlagen";
+"common.seconds_format" = "%.2f Sekunden";
+"common.seconds" = "%d Sekunden";
+"settings.never" = "Nie";
+"settings.calculating" = "Berechnen...";
+
+// MARK: - Einstellungsabschnitt-Titel
+"settings.section.app_behavior" = "App-Verhalten";
+"settings.section.shortcut_settings" = "Kurzbefehl-Einstellungen";
+"settings.section.always_on_apps" = "Immer aktive Apps";
+"settings.section.global_mapping" = "Globale Kurzbefehl-Zuordnung";
+"settings.section.data_management" = "Datenverwaltung";
+"settings.section.advanced_settings" = "Erweiterte Einstellungen";
+
+// MARK: - Sprach-Anzeigenamen (für Dropdown)
+"settings.language.system_display" = "System folgen";
+"settings.language.simplified_chinese_display" = "Vereinfachtes Chinesisch";
+"settings.language.english_display" = "English";
+
+// MARK: - Auslöser-Tasten Anzeigenamen (für Dropdown)
+"settings.trigger_key.double_cmd_display" = "⌘ Doppeltipp";
+"settings.trigger_key.double_option_display" = "⌥ Doppeltipp";
+"settings.trigger_key.double_control_display" = "⌃ Doppeltipp";
+
+// MARK: - Zuordnungsregeln
+"settings.clear_all" = "Alle löschen";
+"settings.add_mapping" = "Zuordnung hinzufügen";
+"settings.edit_mapping" = "Zuordnung bearbeiten";
+"settings.mapping.add_failed" = "Zuordnungsregel kann nicht hinzugefügt werden. Bitte überprüfen Sie, ob die Regel gültig ist";
+"settings.mapping.cleared" = "Alle Zuordnungsregeln wurden gelöscht";
+"settings.mapping.rules_saved" = "Neuzuordnungsregeln gespeichert";
+"settings.settings_saved" = "Einstellungen gespeichert";
+
+// MARK: - Fenstertitel
+"window.settings" = "Einstellungen";
+"window.statistics" = "Statistikanalyse";
+
+// MARK: - Statistikfenster
+"statistics.period.today" = "Heute";
+"statistics.period.week" = "Letzte 7 Tage";
+"statistics.period.month" = "Letzte 30 Tage";
+"statistics.period.all" = "Alle";
+
+// MARK: - Statistik-Kartentitel
+"statistics.card.total_usage" = "Gesamtnutzung";
+"statistics.card.conflict_count" = "Konflikte";
+"statistics.card.efficiency_rate" = "Konfliktfreie Rate";
+"statistics.card.active_apps" = "Aktive Apps";
+
+// MARK: - Statistik-Mengeneinheiten
+"statistics.times" = "Mal";
+"statistics.count_times" = "%d Mal";
+
+// MARK: - Statistik-Vorschläge
+"statistics.suggestion.remapping_enabled" = "Sie haben %d Kurzbefehl-Neuzuordnungen erstellt, gut im Anpassen von Workflows";
+"statistics.suggestion.usage_concentrated" = "%.0f%% Ihrer Operationen konzentrieren sich auf die Top-5-Kurzbefehle. Sie können mehr Kurzbefehle erkunden, um die Effizienz zu steigern";
+"statistics.suggestion.high_conflicts" = "%d Konflikte erkannt. Es wird empfohlen, Konflikte mit hoher Priorität zu lösen, um Fehlbedienungen zu vermeiden";
+"statistics.suggestion.some_conflicts" = "%d Konflikte gefunden. Es wird empfohlen, diese zeitnah zu behandeln, um Fehlbedienungen zu vermeiden";
+"statistics.suggestion.conflict_rate_high" = "Die aktuelle Kurzbefehl-Konfliktrate beträgt %.1f%%. Es wird empfohlen, die Kurzbefehl-Konfiguration zu optimieren, um Konflikte zu reduzieren";
+"statistics.suggestion.efficiency_excellent" = "Ihre konfliktfreie Kurzbefehl-Rate liegt bei hohen %.1f%%, alle Operationen werden reibungslos ausgeführt. Behalten Sie Ihre guten Gewohnheiten bei!";
+"statistics.suggestion.continuing_usage" = "Erkunden Sie weiterhin Kurzbefehl-Funktionen, derzeit %d Mal verwendet";
+"statistics.suggestion.power_user" = "Sie haben Kurzbefehle %d Mal verwendet, Sie sind ein Kurzbefehl-Meister!";
+"statistics.suggestion.multi_app_user" = "Sie haben Kurzbefehle in %d Apps verwendet, gut im Nutzen von Tools zur Effizienzsteigerung";
+"statistics.suggestion.explore_more_apps" = "Sie verwenden Kurzbefehle hauptsächlich in %d Apps. Sie können versuchen, Kurzbefehl-Funktionen in mehr häufig verwendeten Apps zu erkunden";
+
+// MARK: - Schaltflächen (Ergänzung)
+"button.view_details" = "Details anzeigen";
+
+// MARK: - Menüleiste
+"menu.show_panel_with_key" = "Kurzbefehl-Panel anzeigen (%@)";
+"menu.about_keymap" = "Über Keymap";
+"menu.quit_keymap" = "Keymap beenden";
+
+// MARK: - Einstellungs-Tab-Titel
+"settings.tab.general" = "Allgemein";
+"settings.tab.conflictResolution" = "Erkennung";
+"settings.tab.data" = "Daten";
+"settings.tab.about" = "Über";
+
+// MARK: - Einstellungsabschnitt-Header
+"settings.section.detection" = "Erkennungseinstellungen";
+"settings.section.cache" = "Cache-Einstellungen";
+"settings.section.cleanup" = "Alte Daten löschen";
+"settings.section.export_import" = "Export/Import";
+"settings.section.database_info" = "Datenbankinformationen";
+
+// MARK: - Über-Seite
+"about.version" = "Version";
+"about.system_requirements" = "Systemanforderungen";
+
+// MARK: - Aufnahme
+"recording.stop" = "Stopp";
+"recording.record" = "Aufnehmen";
+"recording.placeholder_recording" = "Drücken Sie einen Kurzbefehl...";
+"recording.placeholder_example" = "z.B.: ⌘T";
+"recording.placeholder_example_shift" = "z.B.: ⇧⌘T";
+
+// MARK: - Spracheinstellungen
+"settings.language.description" = "App-Oberflächensprache wechseln";
+
+// MARK: - Kurzbefehl-Panel-Einstellungen
+"settings.show_system_shortcuts" = "System-Kurzbefehle anzeigen";
+"settings.show_system_shortcuts.description" = "macOS System-Kurzbefehle (⌘Q, ⌘Space, usw.) im Kurzbefehl-Panel anzeigen";
+
+// MARK: - Datenbank-Info-Labels
+"database.size" = "Datenbankgröße";
+"database.usage_records" = "Nutzungsaufzeichnungen";
+"database.shortcuts_used" = "Verwendete Kurzbefehle";
+
+// MARK: - Statistik-Vorschläge (Ergänzung)
+"statistics.suggestion.no_remapping" = "Sie haben die Kurzbefehl-Neuzuordnungsfunktion noch nicht verwendet. Sie können weniger verwendete Kurzbefehle auf bequemere Kombinationen neu zuordnen";
+"statistics.suggestion.diverse_usage" = "Sie nutzen vielfältige Kurzbefehl-Kombinationen gut mit ausgewogener Nutzungsverteilung";
+"statistics.suggestion.start_using" = "Beginnen Sie mit der Verwendung von Kurzbefehlen, um Ihre Produktivität zu steigern! Keymap wird Ihre Nutzungsgewohnheiten automatisch aufzeichnen und analysieren";
+
+// MARK: - App-Bereich-Anzeigename
+"scope.global_app" = "Global";
+
+// MARK: - App-Aktivierungsrichtlinie-Beschreibungen
+"activation_policy.regular" = "Normale App";
+"activation_policy.accessory" = "Hintergrund-App";
+"activation_policy.prohibited" = "Hilfsprozess";
+"activation_policy.unknown" = "Unbekannt";
+
+// MARK: - Kurzbefehl-Panel
+"panel.search_shortcuts_placeholder" = "Kurzbefehle suchen...";
+"panel.common_shortcuts_title" = "Häufige Kurzbefehle";
+
+// MARK: - Keymap-Kurzbefehl-Beschreibungen
+"keymap.shortcut.show_panel" = "Kurzbefehl-Panel anzeigen";
+"keymap.shortcut.statistics" = "Statistikanalyse";
+"keymap.shortcut.settings" = "Einstellungen";
+"keymap.shortcut.quit" = "Keymap beenden";
+
+// MARK: - System-Kurzbefehl-Beschreibungen - Allgemein
+"system.quit_app" = "App beenden";
+"system.close_window" = "Fenster schließen";
+"system.hide_app" = "Aktuelle App ausblenden";
+"system.hide_others" = "Andere Apps ausblenden";
+"system.minimize_window" = "Fenster minimieren";
+"system.new_window" = "Neues Fenster/Dokument";
+"system.save" = "Speichern";
+"system.print" = "Drucken";
+"system.undo" = "Widerrufen";
+"system.redo" = "Wiederholen";
+"system.cut" = "Ausschneiden";
+"system.copy" = "Kopieren";
+"system.paste" = "Einfügen";
+"system.select_all" = "Alles auswählen";
+"system.find" = "Suchen";
+
+// MARK: - System-Kurzbefehl-Beschreibungen - Fensterverwaltung
+"system.app_switcher" = "Apps wechseln";
+"system.window_switcher" = "Fenster der gleichen App wechseln";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "Schreibtisch anzeigen";
+"system.fullscreen" = "Vollbild umschalten";
+
+// MARK: - System-Kurzbefehl-Beschreibungen - Bildschirmfoto
+"system.screenshot_full" = "Gesamten Bildschirm aufnehmen";
+"system.screenshot_selection" = "Ausgewählten Bereich aufnehmen";
+"system.screenshot_window" = "Fenster aufnehmen";
+"system.screenshot_menu" = "Bildschirmfoto- und Aufnahmetools";
+
+// MARK: - System-Kurzbefehl-Beschreibungen - Spotlight
+"system.spotlight" = "Spotlight-Suche";
+"system.finder_search" = "Finder-Suchfenster";
+
+// MARK: - System-Kurzbefehl-Beschreibungen - Bedienungshilfen
+"system.voiceover" = "VoiceOver ein/ausschalten";
+"system.zoom" = "Zoom ein/ausschalten";
+"system.invert_colors" = "Farben umkehren";
+"system.emoji" = "Emoji und Symbole";

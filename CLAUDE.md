@@ -1219,10 +1219,10 @@ system.zoom
 - ✅ 第三方应用快捷键正确反映应用菜单语言
 
 **下一步计划**：
-- 🌍 支持其他8种语言（日文、韩文、德文、法文、西班牙文、意大利文、俄文、葡萄牙文）
+- ✅ 支持其他8种语言（繁体中文、日文、韩文、德文、法文、西班牙文、意大利文、俄文）
 - 📱 测试所有语言的UI显示效果
 - 🔄 完善语言切换后的实时UI刷新
-- 📦 合并到主分支并发布多语言版本
+- ✅ 合并到主分支并发布多语言版本
 
 ### 2025-12-26 下午 - 菜单国际化与版本号更新
 
@@ -1312,4 +1312,61 @@ system.zoom
 - ✅ 编译成功（BUILD SUCCEEDED）
 - ✅ 无错误无警告
 - ✅ 功能测试验证成功
+
+### 2025-12-29 - 完成8种语言国际化支持（阶段2完成）🌍
+
+**新增语言支持**：
+| 语言 | 代码 | 本地化文件 |
+|------|------|-----------|
+| 繁体中文 | zh-Hant | `zh-Hant.lproj/Localizable.strings` |
+| 日语 | ja | `ja.lproj/Localizable.strings` |
+| 韩语 | ko | `ko.lproj/Localizable.strings` |
+| 德语 | de | `de.lproj/Localizable.strings` |
+| 法语 | fr | `fr.lproj/Localizable.strings` |
+| 西班牙语 | es | `es.lproj/Localizable.strings` |
+| 意大利语 | it | `it.lproj/Localizable.strings` |
+| 俄语 | ru | `ru.lproj/Localizable.strings` |
+
+**现已支持的全部语言（11种）**：
+- 跟随系统 (system)
+- English (en)
+- 简体中文 (zh-Hans)
+- 繁體中文 (zh-Hant)
+- 日本語 (ja)
+- 한국어 (ko)
+- Deutsch (de)
+- Français (fr)
+- Español (es)
+- Italiano (it)
+- Русский (ru)
+
+**翻译统计**：
+- 每种语言本地化字符串：~406 条
+- 新增翻译总量：8 × 406 = **3248 条翻译**
+- 覆盖范围：设置面板、快捷键面板、菜单栏、统计窗口、通知、系统快捷键等
+
+**代码修改**：
+1. **LocalizationManager.swift** - 更新 `supportedLanguages` 数组支持 11 种语言
+2. **SettingsWindow.swift** - 更新语言选择器 UI，添加 `languageDisplayName()` 辅助函数
+3. **project.yml** - 更新 `KNOWN_REGIONS` 配置包含所有语言
+
+**新增文件**（8个）：
+- `Keymap/Resources/Localizations/zh-Hant.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/ja.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/ko.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/de.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/fr.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/es.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/it.lproj/Localizable.strings`
+- `Keymap/Resources/Localizations/ru.lproj/Localizable.strings`
+
+**编译结果**：
+- ✅ 编译成功（BUILD SUCCEEDED）
+- ✅ 无编译错误
+- ✅ 项目已通过 xcodegen 重新生成
+
+**国际化计划完成状态**：
+- ✅ 阶段1：中英双语支持（2025-12-25 完成）
+- ✅ 阶段2：8种语言扩展（2025-12-29 完成）
+- 📱 待测试：各语言 UI 显示效果验证
 

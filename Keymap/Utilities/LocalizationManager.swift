@@ -35,7 +35,8 @@ class LocalizationManager: ObservableObject {
 
     /// 支持的语言列表
     static let supportedLanguages = [
-        "system", "en", "zh-Hans"
+        "system", "en", "zh-Hans", "zh-Hant",
+        "ja", "ko", "de", "fr", "es", "it", "ru"
     ]
 
     // MARK: - Initialization

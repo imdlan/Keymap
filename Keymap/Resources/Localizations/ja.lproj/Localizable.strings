@@ -1,0 +1,397 @@
+// 日本語ローカライズ文字列
+
+// MARK: - 設定ウィンドウ
+"settings.title" = "設定";
+"settings.general" = "一般";
+"settings.shortcuts" = "ショートカット";
+"settings.global_mapping" = "グローバルマッピング";
+"settings.always_on_apps" = "常駐アプリ";
+"settings.data" = "データ";
+"settings.advanced" = "詳細";
+
+// MARK: - 一般設定
+"settings.launch_at_login" = "ログイン時に起動";
+"settings.launch_at_login.description" = "システム起動時にアプリを自動的に起動します";
+"settings.show_in_dock" = "Dock にアイコンを表示";
+"settings.show_in_dock.description" = "オフにするとメニューバーのみに表示されます";
+"settings.language" = "言語";
+"settings.language.system" = "システムに従う";
+"settings.language.simplified_chinese" = "簡体字中国語";
+
+// MARK: - ショートカット設定
+"settings.double_press_threshold" = "%@ダブルタップのしきい値";
+"settings.double_press_threshold.description" = "ダブルタップの感度を調整（小さいほど敏感）";
+"settings.trigger_key" = "トリガーショートカット";
+"settings.trigger_key.description" = "ショートカットパネルを起動する方法を選択";
+"settings.trigger_key.double_cmd" = "Cmd ダブルタップ";
+"settings.trigger_key.double_option" = "Option ダブルタップ";
+"settings.trigger_key.double_control" = "Control ダブルタップ";
+"settings.panel_auto_close" = "パネル自動クローズ遅延";
+"settings.panel_auto_close.description" = "0に設定すると自動クローズを無効にします";
+"settings.enable_realtime_detection" = "リアルタイム競合検出を有効にする";
+"settings.enable_realtime_detection.description" = "ショートカット使用時に競合をリアルタイムで検出";
+"settings.show_conflict_notifications" = "競合通知を表示";
+"settings.show_conflict_notifications.description" = "競合検出時にシステム通知を表示";
+"settings.enable_usage_tracking" = "使用統計の追跡を有効にする";
+"settings.enable_usage_tracking.description" = "ショートカットの使用状況を記録し、競合分析に使用";
+
+// MARK: - 常駐アプリ
+"settings.always_on_apps.title" = "常駐アプリ";
+"settings.always_on_apps.scanning" = "常駐アプリをスキャン中...";
+"settings.always_on_apps.empty" = "常駐アプリが検出されませんでした";
+"settings.always_on_apps.empty.hint" = "更新ボタンをクリックしてシステムの常駐アプリをスキャン";
+"settings.always_on_apps.mark_manually" = "手動でマーク";
+
+// MARK: - グローバルマッピング
+"settings.global_mapping.title" = "ショートカットリマップ";
+"settings.enable_global_remapping" = "グローバルショートカットリマップを有効にする";
+"settings.enable_global_remapping.description" = "有効にするとすべてのリマップルールが適用されます";
+"settings.global_mapping.empty" = "マッピングルールがありません";
+"settings.global_mapping.empty.hint" = "上の「リマップルールを追加」ボタンをクリックして新しいルールを作成";
+"settings.global_mapping.rule_count" = "合計 %d 件のマッピングルール";
+"settings.global_mapping.clear_all" = "すべてクリア";
+"settings.global_mapping.confirm_clear" = "すべてのマッピングルールをクリアしてもよろしいですか？この操作は元に戻せません。";
+"settings.global_mapping.add_rule" = "リマップルールを追加";
+"settings.global_mapping.edit_rule" = "リマップルールを編集";
+"settings.global_mapping.source" = "変換元ショートカット";
+"settings.global_mapping.target" = "変換先ショートカット";
+"settings.global_mapping.scope" = "アプリケーション範囲";
+"settings.global_mapping.scope.global" = "グローバル";
+"settings.global_mapping.source.description" = "このショートカットを押すとリマップされます";
+"settings.global_mapping.target.description" = "このショートカットにマップされます";
+"settings.global_mapping.scope.description" = "マッピングルールを適用するアプリを選択";
+"settings.global_mapping.scope.readonly" = "アプリケーション範囲は変更できません";
+"settings.global_mapping.add.title" = "マッピングルールを追加";
+"settings.global_mapping.add.subtitle" = "カスタムショートカットリマップ、ソースキーをターゲットキーにマップ";
+"settings.global_mapping.edit.title" = "マッピングルールを編集";
+"settings.global_mapping.edit.subtitle" = "ショートカットマッピングルールを変更、ソースキーまたはターゲットキーを調整";
+
+// MARK: - データ設定
+"settings.cache_duration" = "キャッシュ期間";
+"settings.cache_duration.description" = "ショートカット抽出結果のキャッシュ有効期間";
+"settings.max_cached_apps" = "最大キャッシュアプリ数";
+"settings.max_cached_apps.description" = "メモリにキャッシュするアプリの最大数";
+"settings.clear_cache" = "キャッシュをクリア";
+"settings.clear_usage_records" = "使用記録をクリア";
+"settings.clear_all_data" = "すべてのデータをクリア";
+"settings.clear_warning" = "クリア操作は元に戻せません。慎重に操作してください";
+"settings.export_remapping_rules" = "リマップルールをエクスポート";
+"settings.import_remapping_rules" = "リマップルールをインポート";
+"settings.export_settings" = "設定をエクスポート";
+"settings.export_settings.description" = "バックアップして他のデバイスで使用できます";
+"settings.database_size" = "データベースサイズ：";
+"settings.usage_records_count" = "使用記録数：";
+"settings.shortcuts_used_count" = "使用済みショートカット：";
+
+// MARK: - 詳細設定
+"settings.log_level" = "ログレベル";
+"settings.log_level.description" = "アプリのログ出力レベルを設定";
+"settings.enable_recording_mode" = "ショートカット記録モードを有効にする";
+"settings.enable_recording_mode.description" = "ショートカットの記録を許可（実験的機能）";
+
+// MARK: - 情報
+"settings.about.description" = "macOS 用ショートカット競合検出および管理ツール";
+"settings.about.version" = "バージョン：";
+"settings.about.system_requirements" = "システム要件：";
+
+// MARK: - ショートカットパネル
+"panel.title" = "ショートカットパネル";
+"panel.search_placeholder" = "ショートカットを検索...";
+"panel.close_hint" = "ESC キーで閉じる";
+"panel.conflict_shortcuts" = "競合ショートカット";
+"panel.common_shortcuts" = "よく使うショートカット";
+"panel.loading" = "読み込み中...";
+"panel.statistics" = "統計";
+"panel.settings" = "設定";
+
+// MARK: - 競合詳細
+"conflict.severity" = "重大度";
+"conflict.type" = "競合タイプ";
+"conflict.conflicting_app" = "競合アプリ";
+"conflict.suggestions" = "提案";
+
+// MARK: - リマップダイアログ
+"remapping.title" = "ショートカットをリマップ";
+"remapping.description" = "ショートカットを別の組み合わせにマップします。現在のアプリでのみ有効";
+"remapping.current_shortcut" = "現在のショートカット";
+"remapping.new_shortcut" = "新しいショートカット";
+"remapping.hint" = "ヒント：⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + 文字/数字を使用";
+"remapping.reset" = "リセット";
+
+// MARK: - メニューバー
+"menu.show_panel" = "ショートカットパネルを表示";
+"menu.statistics" = "統計分析";
+"menu.settings" = "設定...";
+"menu.about" = "Keymap について";
+"menu.quit" = "Keymap を終了";
+"menu.permission_warning" = "⚠️ アクセシビリティ権限が必要です";
+"menu.permission_tooltip" = "クリックしてシステム設定を開き、権限を付与";
+
+// MARK: - カテゴリ
+"category.file" = "ファイル";
+"category.edit" = "編集";
+"category.view" = "表示";
+"category.window" = "ウィンドウ";
+"category.system" = "システム";
+"category.navigation" = "ナビゲーション";
+"category.other" = "その他";
+
+// MARK: - 競合タイプ
+"conflict.type.system" = "システムレベル";
+"conflict.type.application" = "アプリレベル";
+"conflict.type.global" = "グローバル";
+"conflict.type.functional" = "機能";
+
+// MARK: - 競合重大度
+"conflict.severity.high" = "高";
+"conflict.severity.medium" = "中";
+"conflict.severity.low" = "低";
+
+// MARK: - 使用コンテキスト
+"usage.context.normal" = "通常";
+"usage.context.conflict" = "競合";
+"usage.context.remapped" = "リマップ済み";
+
+// MARK: - 解決策
+"resolution.strategy.disable" = "無効にする";
+"resolution.strategy.remap" = "リマップ";
+"resolution.strategy.ignore" = "無視";
+"resolution.strategy.manual" = "手動処理";
+
+// MARK: - 通知
+"notification.permission.title" = "権限が必要です";
+"notification.permission.message" = "システム設定で Keymap にアクセシビリティ権限を付与してください";
+"notification.permission.message.dock" = "使用するにはシステム設定で Keymap にアクセシビリティ権限を付与してください";
+"notification.conflict.title" = "ショートカット競合を検出";
+"notification.conflict.system" = "システムショートカットと競合";
+"notification.conflict.global" = "%@ と競合";
+"notification.conflict.application" = "アプリ内で重複定義";
+"notification.conflict.functional" = "機能競合";
+"notification.conflict.multiple" = "、合計 %d 件の競合";
+"notification.conflict.view_details" = "詳細を表示";
+"notification.remapping.success.title" = "リマップ成功";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - 統計ウィンドウ
+"statistics.title" = "統計分析";
+"statistics.overview" = "概要";
+"statistics.total_usage" = "総使用回数";
+"statistics.conflicts" = "競合回数";
+"statistics.efficiency_score" = "競合なし率";
+"statistics.active_apps" = "アクティブアプリ";
+"statistics.refresh" = "更新";
+"statistics.export" = "エクスポート";
+"statistics.top_shortcuts" = "使用頻度ランキング（上位10件）";
+"statistics.no_data" = "データがありません";
+"statistics.usage_trend" = "使用傾向";
+"statistics.tracking_disabled" = "使用統計の追跡を有効にする必要があります";
+"statistics.tracking_hint_1" = "設定で「使用統計の追跡」機能が有効になっていることを確認";
+"statistics.tracking_hint_2" = "ショートカット使用後、システムが自動的に使用データを記録";
+"statistics.tracking_hint_3" = "データは翌日から傾向グラフに表示されます";
+"statistics.high_conflict_shortcuts" = "高競合ショートカット";
+"statistics.no_conflicts" = "素晴らしい！現在競合はありません";
+"statistics.optimization_suggestions" = "最適化の提案";
+"statistics.no_suggestions" = "提案はありません";
+
+// MARK: - 共通アクション
+"action.save" = "保存";
+"action.cancel" = "キャンセル";
+"action.delete" = "削除";
+"action.reset" = "リセット";
+"action.confirm" = "確認";
+"action.export" = "エクスポート";
+"action.import" = "インポート";
+"action.refresh" = "更新";
+"action.add" = "追加";
+"action.record" = "記録";
+"action.recording" = "記録中...";
+
+// MARK: - 時間単位
+"time.seconds" = "秒";
+"time.hours" = "時間";
+
+// MARK: - 共通フレーズ
+"common.loading" = "読み込み中...";
+"common.empty" = "空";
+"common.total" = "合計";
+"common.count" = "件数";
+"common.shortcuts_count" = "%d 件のショートカット";
+"common.hours_count" = "%d 時間";
+"common.apps_count" = "%d 件";
+
+// MARK: - 共通フレーズ（補足）
+"common.cancel" = "キャンセル";
+"common.save" = "保存";
+"common.export_success" = "エクスポート成功";
+"common.add_failed" = "追加失敗";
+"common.seconds_format" = "%.2f 秒";
+"common.seconds" = "%d 秒";
+"settings.never" = "しない";
+"settings.calculating" = "計算中...";
+
+// MARK: - 設定セクションタイトル
+"settings.section.app_behavior" = "アプリの動作";
+"settings.section.shortcut_settings" = "ショートカット設定";
+"settings.section.always_on_apps" = "常駐アプリ";
+"settings.section.global_mapping" = "グローバルショートカットマッピング";
+"settings.section.data_management" = "データ管理";
+"settings.section.advanced_settings" = "詳細設定";
+
+// MARK: - 言語表示名（ドロップダウン用）
+"settings.language.system_display" = "システムに従う";
+"settings.language.simplified_chinese_display" = "簡体字中国語";
+"settings.language.english_display" = "English";
+
+// MARK: - トリガーキー表示名（ドロップダウン用）
+"settings.trigger_key.double_cmd_display" = "⌘ ダブルタップ";
+"settings.trigger_key.double_option_display" = "⌥ ダブルタップ";
+"settings.trigger_key.double_control_display" = "⌃ ダブルタップ";
+
+// MARK: - マッピングルール
+"settings.clear_all" = "すべてクリア";
+"settings.add_mapping" = "マッピングを追加";
+"settings.edit_mapping" = "マッピングを編集";
+"settings.mapping.add_failed" = "マッピングルールを追加できません。ルールが有効か確認してください";
+"settings.mapping.cleared" = "すべてのマッピングルールをクリアしました";
+"settings.mapping.rules_saved" = "リマップルールを保存しました";
+"settings.settings_saved" = "設定を保存しました";
+
+// MARK: - ウィンドウタイトル
+"window.settings" = "設定";
+"window.statistics" = "統計分析";
+
+// MARK: - 統計ウィンドウ
+"statistics.period.today" = "今日";
+"statistics.period.week" = "過去7日間";
+"statistics.period.month" = "過去30日間";
+"statistics.period.all" = "すべて";
+
+// MARK: - 統計カードタイトル
+"statistics.card.total_usage" = "総使用回数";
+"statistics.card.conflict_count" = "競合回数";
+"statistics.card.efficiency_rate" = "競合なし率";
+"statistics.card.active_apps" = "アクティブアプリ";
+
+// MARK: - 統計数量単位
+"statistics.times" = "回";
+"statistics.count_times" = "%d 回";
+
+// MARK: - 統計提案
+"statistics.suggestion.remapping_enabled" = "%d 件のショートカットリマップを作成しました。ワークフローのカスタマイズが得意ですね";
+"statistics.suggestion.usage_concentrated" = "操作の %.0f%% が上位5つのショートカットに集中しています。効率を上げるためにより多くのショートカットを探索してみてください";
+"statistics.suggestion.high_conflicts" = "%d 件の競合が検出されました。誤操作を避けるため、優先度の高い競合を解決することをお勧めします";
+"statistics.suggestion.some_conflicts" = "%d 件の競合が見つかりました。誤操作を避けるため、早めに対処することをお勧めします";
+"statistics.suggestion.conflict_rate_high" = "現在のショートカット競合率は %.1f%% です。競合を減らすためにショートカット設定を最適化することをお勧めします";
+"statistics.suggestion.efficiency_excellent" = "ショートカットの競合なし率は %.1f%% と高く、すべての操作がスムーズに実行されています。良い習慣を続けてください！";
+"statistics.suggestion.continuing_usage" = "ショートカット機能を引き続き探索してください。現在 %d 回使用しています";
+"statistics.suggestion.power_user" = "ショートカットを %d 回使用しています。ショートカットマスターですね！";
+"statistics.suggestion.multi_app_user" = "%d 個のアプリでショートカットを使用しています。ツールを活用して効率を上げるのが得意ですね";
+"statistics.suggestion.explore_more_apps" = "主に %d 個のアプリでショートカットを使用しています。より多くのよく使うアプリでショートカット機能を探索してみてください";
+
+// MARK: - ボタン（補足）
+"button.view_details" = "詳細を表示";
+
+// MARK: - メニューバー
+"menu.show_panel_with_key" = "ショートカットパネルを表示（%@）";
+"menu.about_keymap" = "Keymap について";
+"menu.quit_keymap" = "Keymap を終了";
+
+// MARK: - 設定タブタイトル
+"settings.tab.general" = "一般";
+"settings.tab.conflictResolution" = "検出";
+"settings.tab.data" = "データ";
+"settings.tab.about" = "情報";
+
+// MARK: - 設定セクションヘッダー
+"settings.section.detection" = "検出設定";
+"settings.section.cache" = "キャッシュ設定";
+"settings.section.cleanup" = "古いデータをクリア";
+"settings.section.export_import" = "エクスポート/インポート";
+"settings.section.database_info" = "データベース情報";
+
+// MARK: - 情報ページ
+"about.version" = "バージョン";
+"about.system_requirements" = "システム要件";
+
+// MARK: - 記録
+"recording.stop" = "停止";
+"recording.record" = "記録";
+"recording.placeholder_recording" = "ショートカットを押してください...";
+"recording.placeholder_example" = "例：⌘T";
+"recording.placeholder_example_shift" = "例：⇧⌘T";
+
+// MARK: - 言語設定
+"settings.language.description" = "アプリのインターフェース言語を切り替え";
+
+// MARK: - ショートカットパネル設定
+"settings.show_system_shortcuts" = "システムショートカットを表示";
+"settings.show_system_shortcuts.description" = "ショートカットパネルに macOS システムショートカット（⌘Q、⌘Space など）を表示";
+
+// MARK: - データベース情報ラベル
+"database.size" = "データベースサイズ";
+"database.usage_records" = "使用記録数";
+"database.shortcuts_used" = "使用済みショートカット";
+
+// MARK: - 統計提案（補足）
+"statistics.suggestion.no_remapping" = "ショートカットリマップ機能をまだ使用していません。あまり使わないショートカットをより使いやすい組み合わせにリマップできます";
+"statistics.suggestion.diverse_usage" = "多様なショートカットの組み合わせを使いこなしており、使用分布がバランスよく取れています";
+"statistics.suggestion.start_using" = "ショートカットを使って作業効率を上げましょう！Keymap が自動的に使用習慣を記録・分析します";
+
+// MARK: - アプリケーション範囲表示名
+"scope.global_app" = "グローバル";
+
+// MARK: - アプリ起動ポリシー説明
+"activation_policy.regular" = "通常アプリ";
+"activation_policy.accessory" = "バックグラウンドアプリ";
+"activation_policy.prohibited" = "ヘルパープロセス";
+"activation_policy.unknown" = "不明";
+
+// MARK: - ショートカットパネル
+"panel.search_shortcuts_placeholder" = "ショートカットを検索...";
+"panel.common_shortcuts_title" = "よく使うショートカット";
+
+// MARK: - Keymap ショートカット説明
+"keymap.shortcut.show_panel" = "ショートカットパネルを表示";
+"keymap.shortcut.statistics" = "統計分析";
+"keymap.shortcut.settings" = "設定";
+"keymap.shortcut.quit" = "Keymap を終了";
+
+// MARK: - システムショートカット説明 - 一般
+"system.quit_app" = "アプリを終了";
+"system.close_window" = "ウィンドウを閉じる";
+"system.hide_app" = "現在のアプリを隠す";
+"system.hide_others" = "他のアプリを隠す";
+"system.minimize_window" = "ウィンドウを最小化";
+"system.new_window" = "新規ウィンドウ/書類";
+"system.save" = "保存";
+"system.print" = "印刷";
+"system.undo" = "取り消し";
+"system.redo" = "やり直し";
+"system.cut" = "カット";
+"system.copy" = "コピー";
+"system.paste" = "ペースト";
+"system.select_all" = "すべて選択";
+"system.find" = "検索";
+
+// MARK: - システムショートカット説明 - ウィンドウ管理
+"system.app_switcher" = "アプリを切り替え";
+"system.window_switcher" = "同じアプリのウィンドウを切り替え";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "デスクトップを表示";
+"system.fullscreen" = "フルスクリーン切り替え";
+
+// MARK: - システムショートカット説明 - スクリーンショット
+"system.screenshot_full" = "画面全体をキャプチャ";
+"system.screenshot_selection" = "選択範囲をキャプチャ";
+"system.screenshot_window" = "ウィンドウをキャプチャ";
+"system.screenshot_menu" = "スクリーンショットと画面収録ツール";
+
+// MARK: - システムショートカット説明 - Spotlight
+"system.spotlight" = "Spotlight 検索";
+"system.finder_search" = "Finder 検索ウィンドウ";
+
+// MARK: - システムショートカット説明 - アクセシビリティ
+"system.voiceover" = "VoiceOver のオン/オフ";
+"system.zoom" = "ズームのオン/オフ";
+"system.invert_colors" = "色を反転";
+"system.emoji" = "絵文字と記号";

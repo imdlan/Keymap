@@ -54,7 +54,7 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         ASSETCATALOG_COMPILER_ASSET_CATALOG_PATH: Keymap/Resources/Assets.xcassets
         LD_RUNPATH_SEARCH_PATHS: $(inherited) @executable_path/../Frameworks
-        KNOWN_REGIONS: ["en", "zh-Hans", "Base"]
+        KNOWN_REGIONS: ["en", "zh-Hans", "zh-Hant", "ja", "ko", "de", "fr", "es", "it", "ru", "Base"]
 
       debug:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG

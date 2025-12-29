@@ -1,0 +1,397 @@
+// Stringhe di localizzazione italiana
+
+// MARK: - Finestra impostazioni
+"settings.title" = "Impostazioni";
+"settings.general" = "Generali";
+"settings.shortcuts" = "Scorciatoie da tastiera";
+"settings.global_mapping" = "Mappatura globale";
+"settings.always_on_apps" = "App sempre attive";
+"settings.data" = "Dati";
+"settings.advanced" = "Avanzate";
+
+// MARK: - Impostazioni generali
+"settings.launch_at_login" = "Avvia al login";
+"settings.launch_at_login.description" = "L'app si avvierà automaticamente all'avvio del sistema";
+"settings.show_in_dock" = "Mostra icona nel Dock";
+"settings.show_in_dock.description" = "Se disattivato, l'app apparirà solo nella barra dei menu";
+"settings.language" = "Lingua";
+"settings.language.system" = "Segui il sistema";
+"settings.language.simplified_chinese" = "Cinese semplificato";
+
+// MARK: - Impostazioni scorciatoie
+"settings.double_press_threshold" = "Soglia doppio tocco %@";
+"settings.double_press_threshold.description" = "Regola la sensibilità del doppio tocco (più piccolo = più sensibile)";
+"settings.trigger_key" = "Scorciatoia di attivazione";
+"settings.trigger_key.description" = "Scegli come attivare il pannello scorciatoie";
+"settings.trigger_key.double_cmd" = "Doppio tocco Cmd";
+"settings.trigger_key.double_option" = "Doppio tocco Option";
+"settings.trigger_key.double_control" = "Doppio tocco Control";
+"settings.panel_auto_close" = "Ritardo chiusura automatica pannello";
+"settings.panel_auto_close.description" = "Imposta a 0 per disabilitare la chiusura automatica";
+"settings.enable_realtime_detection" = "Abilita rilevamento conflitti in tempo reale";
+"settings.enable_realtime_detection.description" = "Rileva conflitti durante l'uso delle scorciatoie";
+"settings.show_conflict_notifications" = "Mostra notifiche conflitti";
+"settings.show_conflict_notifications.description" = "Mostra notifiche di sistema quando vengono rilevati conflitti";
+"settings.enable_usage_tracking" = "Abilita tracciamento statistiche utilizzo";
+"settings.enable_usage_tracking.description" = "Registra l'uso delle scorciatoie per l'analisi dei conflitti";
+
+// MARK: - App sempre attive
+"settings.always_on_apps.title" = "App sempre attive";
+"settings.always_on_apps.scanning" = "Ricerca app sempre attive...";
+"settings.always_on_apps.empty" = "Nessuna app sempre attiva rilevata";
+"settings.always_on_apps.empty.hint" = "Clicca su aggiorna per cercare le app sempre attive del sistema";
+"settings.always_on_apps.mark_manually" = "Segna manualmente";
+
+// MARK: - Mappatura globale
+"settings.global_mapping.title" = "Rimappatura scorciatoie";
+"settings.enable_global_remapping" = "Abilita rimappatura globale scorciatoie";
+"settings.enable_global_remapping.description" = "Tutte le regole di rimappatura saranno applicate se abilitato";
+"settings.global_mapping.empty" = "Nessuna regola di mappatura";
+"settings.global_mapping.empty.hint" = "Clicca su 'Aggiungi regola di rimappatura' sopra per creare una nuova regola";
+"settings.global_mapping.rule_count" = "%d regole di mappatura in totale";
+"settings.global_mapping.clear_all" = "Cancella tutto";
+"settings.global_mapping.confirm_clear" = "Sei sicuro di voler cancellare tutte le regole di mappatura? Questa azione non può essere annullata.";
+"settings.global_mapping.add_rule" = "Aggiungi regola di rimappatura";
+"settings.global_mapping.edit_rule" = "Modifica regola di rimappatura";
+"settings.global_mapping.source" = "Scorciatoia sorgente";
+"settings.global_mapping.target" = "Scorciatoia destinazione";
+"settings.global_mapping.scope" = "Ambito applicazione";
+"settings.global_mapping.scope.global" = "Globale";
+"settings.global_mapping.source.description" = "Questa scorciatoia sarà rimappata quando premuta";
+"settings.global_mapping.target.description" = "Sarà mappata a questa scorciatoia";
+"settings.global_mapping.scope.description" = "Seleziona le app a cui si applica questa regola";
+"settings.global_mapping.scope.readonly" = "L'ambito dell'applicazione non può essere modificato";
+"settings.global_mapping.add.title" = "Aggiungi regola di mappatura";
+"settings.global_mapping.add.subtitle" = "Rimappatura personalizzata, mappa il tasto sorgente al tasto destinazione";
+"settings.global_mapping.edit.title" = "Modifica regola di mappatura";
+"settings.global_mapping.edit.subtitle" = "Modifica la regola di mappatura, regola il tasto sorgente o destinazione";
+
+// MARK: - Impostazioni dati
+"settings.cache_duration" = "Durata cache";
+"settings.cache_duration.description" = "Periodo di validità della cache per i risultati di estrazione scorciatoie";
+"settings.max_cached_apps" = "Massimo app in cache";
+"settings.max_cached_apps.description" = "Numero massimo di app da memorizzare nella cache";
+"settings.clear_cache" = "Cancella cache";
+"settings.clear_usage_records" = "Cancella registri utilizzo";
+"settings.clear_all_data" = "Cancella tutti i dati";
+"settings.clear_warning" = "Le operazioni di cancellazione non possono essere annullate. Procedi con cautela";
+"settings.export_remapping_rules" = "Esporta regole di rimappatura";
+"settings.import_remapping_rules" = "Importa regole di rimappatura";
+"settings.export_settings" = "Esporta impostazioni";
+"settings.export_settings.description" = "Può essere salvato e usato su altri dispositivi";
+"settings.database_size" = "Dimensione database:";
+"settings.usage_records_count" = "Registri utilizzo:";
+"settings.shortcuts_used_count" = "Scorciatoie usate:";
+
+// MARK: - Impostazioni avanzate
+"settings.log_level" = "Livello registro";
+"settings.log_level.description" = "Imposta il livello di output del registro dell'app";
+"settings.enable_recording_mode" = "Abilita modalità registrazione scorciatoie";
+"settings.enable_recording_mode.description" = "Permetti la registrazione delle scorciatoie (funzione sperimentale)";
+
+// MARK: - Informazioni
+"settings.about.description" = "Strumento di rilevamento e gestione dei conflitti di scorciatoie da tastiera per macOS";
+"settings.about.version" = "Versione:";
+"settings.about.system_requirements" = "Requisiti di sistema:";
+
+// MARK: - Pannello scorciatoie
+"panel.title" = "Pannello scorciatoie";
+"panel.search_placeholder" = "Cerca scorciatoie...";
+"panel.close_hint" = "Premi Esc per chiudere";
+"panel.conflict_shortcuts" = "Scorciatoie in conflitto";
+"panel.common_shortcuts" = "Scorciatoie comuni";
+"panel.loading" = "Caricamento...";
+"panel.statistics" = "Statistiche";
+"panel.settings" = "Impostazioni";
+
+// MARK: - Dettagli conflitto
+"conflict.severity" = "Gravità";
+"conflict.type" = "Tipo di conflitto";
+"conflict.conflicting_app" = "App in conflitto";
+"conflict.suggestions" = "Suggerimenti";
+
+// MARK: - Dialogo rimappatura
+"remapping.title" = "Rimappa scorciatoia";
+"remapping.description" = "Mappa la scorciatoia a un'altra combinazione, efficace solo nell'app corrente";
+"remapping.current_shortcut" = "Scorciatoia attuale";
+"remapping.new_shortcut" = "Nuova scorciatoia";
+"remapping.hint" = "Suggerimento: Usa ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + lettera/numero";
+"remapping.reset" = "Ripristina";
+
+// MARK: - Barra dei menu
+"menu.show_panel" = "Mostra pannello scorciatoie";
+"menu.statistics" = "Analisi statistiche";
+"menu.settings" = "Impostazioni...";
+"menu.about" = "Informazioni su Keymap";
+"menu.quit" = "Esci da Keymap";
+"menu.permission_warning" = "⚠️ Richiesto permesso accessibilità";
+"menu.permission_tooltip" = "Clicca per aprire Impostazioni di Sistema e concedere il permesso";
+
+// MARK: - Categorie
+"category.file" = "File";
+"category.edit" = "Modifica";
+"category.view" = "Vista";
+"category.window" = "Finestra";
+"category.system" = "Sistema";
+"category.navigation" = "Navigazione";
+"category.other" = "Altro";
+
+// MARK: - Tipi di conflitto
+"conflict.type.system" = "Livello sistema";
+"conflict.type.application" = "Livello applicazione";
+"conflict.type.global" = "Globale";
+"conflict.type.functional" = "Funzionale";
+
+// MARK: - Gravità conflitto
+"conflict.severity.high" = "Alta";
+"conflict.severity.medium" = "Media";
+"conflict.severity.low" = "Bassa";
+
+// MARK: - Contesto di utilizzo
+"usage.context.normal" = "Normale";
+"usage.context.conflict" = "Conflitto";
+"usage.context.remapped" = "Rimappato";
+
+// MARK: - Strategia di risoluzione
+"resolution.strategy.disable" = "Disabilita";
+"resolution.strategy.remap" = "Rimappa";
+"resolution.strategy.ignore" = "Ignora";
+"resolution.strategy.manual" = "Gestione manuale";
+
+// MARK: - Notifiche
+"notification.permission.title" = "Permesso richiesto";
+"notification.permission.message" = "Per favore concedi a Keymap il permesso di accessibilità nelle Impostazioni di Sistema";
+"notification.permission.message.dock" = "Per favore concedi a Keymap il permesso di accessibilità nelle Impostazioni di Sistema per usarlo";
+"notification.conflict.title" = "Conflitto scorciatoia rilevato";
+"notification.conflict.system" = "Conflitto con scorciatoia di sistema";
+"notification.conflict.global" = "Conflitto con %@";
+"notification.conflict.application" = "Definizione duplicata nell'app";
+"notification.conflict.functional" = "Conflitto funzionale";
+"notification.conflict.multiple" = ", %d conflitti in totale";
+"notification.conflict.view_details" = "Vedi dettagli";
+"notification.remapping.success.title" = "Rimappatura riuscita";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - Finestra statistiche
+"statistics.title" = "Analisi statistiche";
+"statistics.overview" = "Panoramica";
+"statistics.total_usage" = "Utilizzo totale";
+"statistics.conflicts" = "Conflitti";
+"statistics.efficiency_score" = "Tasso senza conflitti";
+"statistics.active_apps" = "App attive";
+"statistics.refresh" = "Aggiorna";
+"statistics.export" = "Esporta";
+"statistics.top_shortcuts" = "Classifica frequenza utilizzo (Top 10)";
+"statistics.no_data" = "Nessun dato disponibile";
+"statistics.usage_trend" = "Tendenza utilizzo";
+"statistics.tracking_disabled" = "Il tracciamento delle statistiche di utilizzo deve essere abilitato";
+"statistics.tracking_hint_1" = "Assicurati che 'Tracciamento statistiche utilizzo' sia abilitato nelle impostazioni";
+"statistics.tracking_hint_2" = "Dopo l'uso delle scorciatoie, il sistema registrerà automaticamente i dati di utilizzo";
+"statistics.tracking_hint_3" = "I dati appariranno nel grafico delle tendenze a partire dal giorno successivo";
+"statistics.high_conflict_shortcuts" = "Scorciatoie con alto conflitto";
+"statistics.no_conflicts" = "Ottimo! Nessun conflitto attualmente";
+"statistics.optimization_suggestions" = "Suggerimenti di ottimizzazione";
+"statistics.no_suggestions" = "Nessun suggerimento";
+
+// MARK: - Azioni comuni
+"action.save" = "Salva";
+"action.cancel" = "Annulla";
+"action.delete" = "Elimina";
+"action.reset" = "Ripristina";
+"action.confirm" = "Conferma";
+"action.export" = "Esporta";
+"action.import" = "Importa";
+"action.refresh" = "Aggiorna";
+"action.add" = "Aggiungi";
+"action.record" = "Registra";
+"action.recording" = "Registrazione...";
+
+// MARK: - Unità di tempo
+"time.seconds" = "secondi";
+"time.hours" = "ore";
+
+// MARK: - Frasi comuni
+"common.loading" = "Caricamento...";
+"common.empty" = "Vuoto";
+"common.total" = "Totale";
+"common.count" = "Conteggio";
+"common.shortcuts_count" = "%d scorciatoie";
+"common.hours_count" = "%d ore";
+"common.apps_count" = "%d app";
+
+// MARK: - Frasi comuni (supplemento)
+"common.cancel" = "Annulla";
+"common.save" = "Salva";
+"common.export_success" = "Esportazione riuscita";
+"common.add_failed" = "Aggiunta fallita";
+"common.seconds_format" = "%.2f secondi";
+"common.seconds" = "%d secondi";
+"settings.never" = "Mai";
+"settings.calculating" = "Calcolo in corso...";
+
+// MARK: - Titoli sezioni impostazioni
+"settings.section.app_behavior" = "Comportamento app";
+"settings.section.shortcut_settings" = "Impostazioni scorciatoie";
+"settings.section.always_on_apps" = "App sempre attive";
+"settings.section.global_mapping" = "Mappatura globale scorciatoie";
+"settings.section.data_management" = "Gestione dati";
+"settings.section.advanced_settings" = "Impostazioni avanzate";
+
+// MARK: - Nomi visualizzazione lingue (per menu a tendina)
+"settings.language.system_display" = "Segui il sistema";
+"settings.language.simplified_chinese_display" = "Cinese semplificato";
+"settings.language.english_display" = "English";
+
+// MARK: - Nomi visualizzazione tasti di attivazione (per menu a tendina)
+"settings.trigger_key.double_cmd_display" = "Doppio tocco ⌘";
+"settings.trigger_key.double_option_display" = "Doppio tocco ⌥";
+"settings.trigger_key.double_control_display" = "Doppio tocco ⌃";
+
+// MARK: - Regole di mappatura
+"settings.clear_all" = "Cancella tutto";
+"settings.add_mapping" = "Aggiungi mappatura";
+"settings.edit_mapping" = "Modifica mappatura";
+"settings.mapping.add_failed" = "Impossibile aggiungere la regola di mappatura. Verifica se la regola è valida";
+"settings.mapping.cleared" = "Tutte le regole di mappatura sono state cancellate";
+"settings.mapping.rules_saved" = "Regole di rimappatura salvate";
+"settings.settings_saved" = "Impostazioni salvate";
+
+// MARK: - Titoli finestre
+"window.settings" = "Impostazioni";
+"window.statistics" = "Analisi statistiche";
+
+// MARK: - Finestra statistiche
+"statistics.period.today" = "Oggi";
+"statistics.period.week" = "Ultimi 7 giorni";
+"statistics.period.month" = "Ultimi 30 giorni";
+"statistics.period.all" = "Tutto";
+
+// MARK: - Titoli schede statistiche
+"statistics.card.total_usage" = "Utilizzo totale";
+"statistics.card.conflict_count" = "Conflitti";
+"statistics.card.efficiency_rate" = "Tasso senza conflitti";
+"statistics.card.active_apps" = "App attive";
+
+// MARK: - Unità quantità statistiche
+"statistics.times" = "volte";
+"statistics.count_times" = "%d volte";
+
+// MARK: - Suggerimenti statistiche
+"statistics.suggestion.remapping_enabled" = "Hai creato %d rimappature di scorciatoie, sei bravo a personalizzare i flussi di lavoro";
+"statistics.suggestion.usage_concentrated" = "Il %.0f%% delle tue operazioni è concentrato nelle prime 5 scorciatoie. Puoi esplorare più scorciatoie per migliorare l'efficienza";
+"statistics.suggestion.high_conflicts" = "Rilevati %d conflitti. Si consiglia di risolvere i conflitti ad alta priorità per evitare errori";
+"statistics.suggestion.some_conflicts" = "Trovati %d conflitti. Si consiglia di gestirli tempestivamente per evitare errori";
+"statistics.suggestion.conflict_rate_high" = "L'attuale tasso di conflitto delle scorciatoie è %.1f%%. Si consiglia di ottimizzare la configurazione per ridurre i conflitti";
+"statistics.suggestion.efficiency_excellent" = "Il tuo tasso senza conflitti è del %.1f%%, tutte le operazioni vengono eseguite senza problemi. Continua così!";
+"statistics.suggestion.continuing_usage" = "Continua a esplorare le funzioni delle scorciatoie, attualmente usato %d volte";
+"statistics.suggestion.power_user" = "Hai usato le scorciatoie %d volte, sei un maestro delle scorciatoie!";
+"statistics.suggestion.multi_app_user" = "Hai usato scorciatoie in %d app, sei bravo a usare gli strumenti per migliorare l'efficienza";
+"statistics.suggestion.explore_more_apps" = "Usi scorciatoie principalmente in %d app. Puoi provare a esplorare le funzioni delle scorciatoie in più app di uso frequente";
+
+// MARK: - Pulsanti (supplemento)
+"button.view_details" = "Vedi dettagli";
+
+// MARK: - Barra dei menu
+"menu.show_panel_with_key" = "Mostra pannello scorciatoie (%@)";
+"menu.about_keymap" = "Informazioni su Keymap";
+"menu.quit_keymap" = "Esci da Keymap";
+
+// MARK: - Titoli schede impostazioni
+"settings.tab.general" = "Generali";
+"settings.tab.conflictResolution" = "Rilevamento";
+"settings.tab.data" = "Dati";
+"settings.tab.about" = "Info";
+
+// MARK: - Intestazioni sezioni impostazioni
+"settings.section.detection" = "Impostazioni rilevamento";
+"settings.section.cache" = "Impostazioni cache";
+"settings.section.cleanup" = "Cancella vecchi dati";
+"settings.section.export_import" = "Esporta/Importa";
+"settings.section.database_info" = "Informazioni database";
+
+// MARK: - Pagina Informazioni
+"about.version" = "Versione";
+"about.system_requirements" = "Requisiti di sistema";
+
+// MARK: - Registrazione
+"recording.stop" = "Ferma";
+"recording.record" = "Registra";
+"recording.placeholder_recording" = "Premi una scorciatoia...";
+"recording.placeholder_example" = "Es: ⌘T";
+"recording.placeholder_example_shift" = "Es: ⇧⌘T";
+
+// MARK: - Impostazioni lingua
+"settings.language.description" = "Cambia la lingua dell'interfaccia dell'app";
+
+// MARK: - Impostazioni pannello scorciatoie
+"settings.show_system_shortcuts" = "Mostra scorciatoie di sistema";
+"settings.show_system_shortcuts.description" = "Mostra le scorciatoie di sistema macOS (⌘Q, ⌘Space, ecc.) nel pannello";
+
+// MARK: - Etichette informazioni database
+"database.size" = "Dimensione database";
+"database.usage_records" = "Registri utilizzo";
+"database.shortcuts_used" = "Scorciatoie usate";
+
+// MARK: - Suggerimenti statistiche (supplemento)
+"statistics.suggestion.no_remapping" = "Non hai ancora usato la funzione di rimappatura. Puoi rimappare le scorciatoie poco usate a combinazioni più comode";
+"statistics.suggestion.diverse_usage" = "Usi bene combinazioni di scorciatoie diverse con una distribuzione equilibrata";
+"statistics.suggestion.start_using" = "Inizia a usare le scorciatoie per aumentare la tua produttività! Keymap registrerà e analizzerà automaticamente le tue abitudini di utilizzo";
+
+// MARK: - Nome visualizzazione ambito app
+"scope.global_app" = "Globale";
+
+// MARK: - Descrizioni politica attivazione app
+"activation_policy.regular" = "App normale";
+"activation_policy.accessory" = "App in background";
+"activation_policy.prohibited" = "Processo ausiliario";
+"activation_policy.unknown" = "Sconosciuto";
+
+// MARK: - Pannello scorciatoie
+"panel.search_shortcuts_placeholder" = "Cerca scorciatoie...";
+"panel.common_shortcuts_title" = "Scorciatoie comuni";
+
+// MARK: - Descrizioni scorciatoie Keymap
+"keymap.shortcut.show_panel" = "Mostra pannello scorciatoie";
+"keymap.shortcut.statistics" = "Analisi statistiche";
+"keymap.shortcut.settings" = "Impostazioni";
+"keymap.shortcut.quit" = "Esci da Keymap";
+
+// MARK: - Descrizioni scorciatoie di sistema - Generali
+"system.quit_app" = "Esci dall'applicazione";
+"system.close_window" = "Chiudi finestra";
+"system.hide_app" = "Nascondi l'app corrente";
+"system.hide_others" = "Nascondi altre app";
+"system.minimize_window" = "Riduci a icona finestra";
+"system.new_window" = "Nuova finestra/documento";
+"system.save" = "Salva";
+"system.print" = "Stampa";
+"system.undo" = "Annulla";
+"system.redo" = "Ripristina";
+"system.cut" = "Taglia";
+"system.copy" = "Copia";
+"system.paste" = "Incolla";
+"system.select_all" = "Seleziona tutto";
+"system.find" = "Trova";
+
+// MARK: - Descrizioni scorciatoie di sistema - Gestione finestre
+"system.app_switcher" = "Cambia app";
+"system.window_switcher" = "Cambia finestre della stessa app";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "Mostra scrivania";
+"system.fullscreen" = "Passa a schermo intero";
+
+// MARK: - Descrizioni scorciatoie di sistema - Screenshot
+"system.screenshot_full" = "Cattura schermo intero";
+"system.screenshot_selection" = "Cattura area selezionata";
+"system.screenshot_window" = "Cattura finestra";
+"system.screenshot_menu" = "Strumenti screenshot e registrazione schermo";
+
+// MARK: - Descrizioni scorciatoie di sistema - Spotlight
+"system.spotlight" = "Ricerca Spotlight";
+"system.finder_search" = "Finestra ricerca Finder";
+
+// MARK: - Descrizioni scorciatoie di sistema - Accessibilità
+"system.voiceover" = "Attiva/disattiva VoiceOver";
+"system.zoom" = "Attiva/disattiva zoom";
+"system.invert_colors" = "Inverti colori";
+"system.emoji" = "Emoji e simboli";

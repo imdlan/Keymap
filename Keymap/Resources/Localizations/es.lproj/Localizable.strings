@@ -1,0 +1,397 @@
+// Cadenas de localización en español
+
+// MARK: - Ventana de configuración
+"settings.title" = "Configuración";
+"settings.general" = "General";
+"settings.shortcuts" = "Atajos de teclado";
+"settings.global_mapping" = "Mapeo global";
+"settings.always_on_apps" = "Apps permanentes";
+"settings.data" = "Datos";
+"settings.advanced" = "Avanzado";
+
+// MARK: - Configuración general
+"settings.launch_at_login" = "Iniciar al arrancar";
+"settings.launch_at_login.description" = "La app se iniciará automáticamente al arrancar el sistema";
+"settings.show_in_dock" = "Mostrar icono en el Dock";
+"settings.show_in_dock.description" = "Si está desactivado, la app solo aparecerá en la barra de menús";
+"settings.language" = "Idioma";
+"settings.language.system" = "Seguir el sistema";
+"settings.language.simplified_chinese" = "Chino simplificado";
+
+// MARK: - Configuración de atajos
+"settings.double_press_threshold" = "Umbral de doble pulsación %@";
+"settings.double_press_threshold.description" = "Ajustar sensibilidad de doble pulsación (menor = más sensible)";
+"settings.trigger_key" = "Atajo de activación";
+"settings.trigger_key.description" = "Elegir cómo activar el panel de atajos";
+"settings.trigger_key.double_cmd" = "Doble pulsación Cmd";
+"settings.trigger_key.double_option" = "Doble pulsación Option";
+"settings.trigger_key.double_control" = "Doble pulsación Control";
+"settings.panel_auto_close" = "Retardo de cierre automático del panel";
+"settings.panel_auto_close.description" = "Establecer a 0 para desactivar el cierre automático";
+"settings.enable_realtime_detection" = "Activar detección de conflictos en tiempo real";
+"settings.enable_realtime_detection.description" = "Detectar conflictos al usar atajos";
+"settings.show_conflict_notifications" = "Mostrar notificaciones de conflictos";
+"settings.show_conflict_notifications.description" = "Mostrar notificaciones del sistema cuando se detecten conflictos";
+"settings.enable_usage_tracking" = "Activar seguimiento de estadísticas de uso";
+"settings.enable_usage_tracking.description" = "Registrar uso de atajos para análisis de conflictos";
+
+// MARK: - Apps permanentes
+"settings.always_on_apps.title" = "Apps permanentes";
+"settings.always_on_apps.scanning" = "Buscando apps permanentes...";
+"settings.always_on_apps.empty" = "No se detectaron apps permanentes";
+"settings.always_on_apps.empty.hint" = "Haz clic en actualizar para buscar apps permanentes del sistema";
+"settings.always_on_apps.mark_manually" = "Marcar manualmente";
+
+// MARK: - Mapeo global
+"settings.global_mapping.title" = "Reasignación de atajos";
+"settings.enable_global_remapping" = "Activar reasignación global de atajos";
+"settings.enable_global_remapping.description" = "Todas las reglas de reasignación se aplicarán si está activado";
+"settings.global_mapping.empty" = "Sin reglas de mapeo";
+"settings.global_mapping.empty.hint" = "Haz clic en 'Añadir regla de reasignación' arriba para crear una nueva regla";
+"settings.global_mapping.rule_count" = "%d reglas de mapeo en total";
+"settings.global_mapping.clear_all" = "Borrar todo";
+"settings.global_mapping.confirm_clear" = "¿Seguro que quieres borrar todas las reglas de mapeo? Esta acción no se puede deshacer.";
+"settings.global_mapping.add_rule" = "Añadir regla de reasignación";
+"settings.global_mapping.edit_rule" = "Editar regla de reasignación";
+"settings.global_mapping.source" = "Atajo de origen";
+"settings.global_mapping.target" = "Atajo de destino";
+"settings.global_mapping.scope" = "Ámbito de aplicación";
+"settings.global_mapping.scope.global" = "Global";
+"settings.global_mapping.source.description" = "Este atajo será reasignado cuando se pulse";
+"settings.global_mapping.target.description" = "Se mapeará a este atajo";
+"settings.global_mapping.scope.description" = "Seleccionar las apps a las que se aplica esta regla";
+"settings.global_mapping.scope.readonly" = "El ámbito de aplicación no se puede modificar";
+"settings.global_mapping.add.title" = "Añadir regla de mapeo";
+"settings.global_mapping.add.subtitle" = "Reasignación personalizada, mapear tecla origen a tecla destino";
+"settings.global_mapping.edit.title" = "Editar regla de mapeo";
+"settings.global_mapping.edit.subtitle" = "Modificar regla de mapeo, ajustar tecla origen o destino";
+
+// MARK: - Configuración de datos
+"settings.cache_duration" = "Duración de la caché";
+"settings.cache_duration.description" = "Período de validez de la caché para resultados de extracción de atajos";
+"settings.max_cached_apps" = "Máximo de apps en caché";
+"settings.max_cached_apps.description" = "Número máximo de apps a almacenar en memoria";
+"settings.clear_cache" = "Borrar caché";
+"settings.clear_usage_records" = "Borrar registros de uso";
+"settings.clear_all_data" = "Borrar todos los datos";
+"settings.clear_warning" = "Las operaciones de borrado no se pueden deshacer. Procede con precaución";
+"settings.export_remapping_rules" = "Exportar reglas de reasignación";
+"settings.import_remapping_rules" = "Importar reglas de reasignación";
+"settings.export_settings" = "Exportar configuración";
+"settings.export_settings.description" = "Se puede respaldar y usar en otros dispositivos";
+"settings.database_size" = "Tamaño de la base de datos:";
+"settings.usage_records_count" = "Registros de uso:";
+"settings.shortcuts_used_count" = "Atajos usados:";
+
+// MARK: - Configuración avanzada
+"settings.log_level" = "Nivel de registro";
+"settings.log_level.description" = "Establecer nivel de salida de registro de la app";
+"settings.enable_recording_mode" = "Activar modo de grabación de atajos";
+"settings.enable_recording_mode.description" = "Permitir grabación de atajos (función experimental)";
+
+// MARK: - Acerca de
+"settings.about.description" = "Herramienta de detección y gestión de conflictos de atajos de teclado para macOS";
+"settings.about.version" = "Versión:";
+"settings.about.system_requirements" = "Requisitos del sistema:";
+
+// MARK: - Panel de atajos
+"panel.title" = "Panel de atajos";
+"panel.search_placeholder" = "Buscar atajos...";
+"panel.close_hint" = "Pulsa Esc para cerrar";
+"panel.conflict_shortcuts" = "Atajos en conflicto";
+"panel.common_shortcuts" = "Atajos comunes";
+"panel.loading" = "Cargando...";
+"panel.statistics" = "Estadísticas";
+"panel.settings" = "Configuración";
+
+// MARK: - Detalles del conflicto
+"conflict.severity" = "Gravedad";
+"conflict.type" = "Tipo de conflicto";
+"conflict.conflicting_app" = "App en conflicto";
+"conflict.suggestions" = "Sugerencias";
+
+// MARK: - Diálogo de reasignación
+"remapping.title" = "Reasignar atajo";
+"remapping.description" = "Mapear atajo a otra combinación, solo efectivo en la app actual";
+"remapping.current_shortcut" = "Atajo actual";
+"remapping.new_shortcut" = "Nuevo atajo";
+"remapping.hint" = "Consejo: Usa ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + letra/número";
+"remapping.reset" = "Restablecer";
+
+// MARK: - Barra de menús
+"menu.show_panel" = "Mostrar panel de atajos";
+"menu.statistics" = "Análisis estadístico";
+"menu.settings" = "Configuración...";
+"menu.about" = "Acerca de Keymap";
+"menu.quit" = "Salir de Keymap";
+"menu.permission_warning" = "⚠️ Se requiere permiso de accesibilidad";
+"menu.permission_tooltip" = "Haz clic para abrir Configuración del Sistema y otorgar permiso";
+
+// MARK: - Categorías
+"category.file" = "Archivo";
+"category.edit" = "Edición";
+"category.view" = "Vista";
+"category.window" = "Ventana";
+"category.system" = "Sistema";
+"category.navigation" = "Navegación";
+"category.other" = "Otros";
+
+// MARK: - Tipos de conflicto
+"conflict.type.system" = "Nivel de sistema";
+"conflict.type.application" = "Nivel de aplicación";
+"conflict.type.global" = "Global";
+"conflict.type.functional" = "Funcional";
+
+// MARK: - Gravedad del conflicto
+"conflict.severity.high" = "Alta";
+"conflict.severity.medium" = "Media";
+"conflict.severity.low" = "Baja";
+
+// MARK: - Contexto de uso
+"usage.context.normal" = "Normal";
+"usage.context.conflict" = "Conflicto";
+"usage.context.remapped" = "Reasignado";
+
+// MARK: - Estrategia de resolución
+"resolution.strategy.disable" = "Desactivar";
+"resolution.strategy.remap" = "Reasignar";
+"resolution.strategy.ignore" = "Ignorar";
+"resolution.strategy.manual" = "Tratamiento manual";
+
+// MARK: - Notificaciones
+"notification.permission.title" = "Permiso requerido";
+"notification.permission.message" = "Por favor, otorga a Keymap el permiso de accesibilidad en Configuración del Sistema";
+"notification.permission.message.dock" = "Por favor, otorga a Keymap el permiso de accesibilidad en Configuración del Sistema para usarlo";
+"notification.conflict.title" = "Conflicto de atajo detectado";
+"notification.conflict.system" = "Conflicto con atajo del sistema";
+"notification.conflict.global" = "Conflicto con %@";
+"notification.conflict.application" = "Definición duplicada en la app";
+"notification.conflict.functional" = "Conflicto funcional";
+"notification.conflict.multiple" = ", %d conflictos en total";
+"notification.conflict.view_details" = "Ver detalles";
+"notification.remapping.success.title" = "Reasignación exitosa";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - Ventana de estadísticas
+"statistics.title" = "Análisis estadístico";
+"statistics.overview" = "Resumen";
+"statistics.total_usage" = "Uso total";
+"statistics.conflicts" = "Conflictos";
+"statistics.efficiency_score" = "Tasa sin conflictos";
+"statistics.active_apps" = "Apps activas";
+"statistics.refresh" = "Actualizar";
+"statistics.export" = "Exportar";
+"statistics.top_shortcuts" = "Ranking de frecuencia de uso (Top 10)";
+"statistics.no_data" = "Sin datos disponibles";
+"statistics.usage_trend" = "Tendencia de uso";
+"statistics.tracking_disabled" = "El seguimiento de estadísticas de uso debe estar activado";
+"statistics.tracking_hint_1" = "Asegúrate de que 'Seguimiento de estadísticas de uso' esté activado en configuración";
+"statistics.tracking_hint_2" = "Después de usar atajos, el sistema registrará automáticamente los datos de uso";
+"statistics.tracking_hint_3" = "Los datos aparecerán en el gráfico de tendencias a partir del día siguiente";
+"statistics.high_conflict_shortcuts" = "Atajos con alto conflicto";
+"statistics.no_conflicts" = "¡Excelente! No hay conflictos actualmente";
+"statistics.optimization_suggestions" = "Sugerencias de optimización";
+"statistics.no_suggestions" = "Sin sugerencias";
+
+// MARK: - Acciones comunes
+"action.save" = "Guardar";
+"action.cancel" = "Cancelar";
+"action.delete" = "Eliminar";
+"action.reset" = "Restablecer";
+"action.confirm" = "Confirmar";
+"action.export" = "Exportar";
+"action.import" = "Importar";
+"action.refresh" = "Actualizar";
+"action.add" = "Añadir";
+"action.record" = "Grabar";
+"action.recording" = "Grabando...";
+
+// MARK: - Unidades de tiempo
+"time.seconds" = "segundos";
+"time.hours" = "horas";
+
+// MARK: - Frases comunes
+"common.loading" = "Cargando...";
+"common.empty" = "Vacío";
+"common.total" = "Total";
+"common.count" = "Cantidad";
+"common.shortcuts_count" = "%d atajos";
+"common.hours_count" = "%d horas";
+"common.apps_count" = "%d apps";
+
+// MARK: - Frases comunes (suplemento)
+"common.cancel" = "Cancelar";
+"common.save" = "Guardar";
+"common.export_success" = "Exportación exitosa";
+"common.add_failed" = "Error al añadir";
+"common.seconds_format" = "%.2f segundos";
+"common.seconds" = "%d segundos";
+"settings.never" = "Nunca";
+"settings.calculating" = "Calculando...";
+
+// MARK: - Títulos de secciones de configuración
+"settings.section.app_behavior" = "Comportamiento de la app";
+"settings.section.shortcut_settings" = "Configuración de atajos";
+"settings.section.always_on_apps" = "Apps permanentes";
+"settings.section.global_mapping" = "Mapeo global de atajos";
+"settings.section.data_management" = "Gestión de datos";
+"settings.section.advanced_settings" = "Configuración avanzada";
+
+// MARK: - Nombres de idiomas (para menú desplegable)
+"settings.language.system_display" = "Seguir el sistema";
+"settings.language.simplified_chinese_display" = "Chino simplificado";
+"settings.language.english_display" = "English";
+
+// MARK: - Nombres de teclas de activación (para menú desplegable)
+"settings.trigger_key.double_cmd_display" = "Doble pulsación ⌘";
+"settings.trigger_key.double_option_display" = "Doble pulsación ⌥";
+"settings.trigger_key.double_control_display" = "Doble pulsación ⌃";
+
+// MARK: - Reglas de mapeo
+"settings.clear_all" = "Borrar todo";
+"settings.add_mapping" = "Añadir mapeo";
+"settings.edit_mapping" = "Editar mapeo";
+"settings.mapping.add_failed" = "No se puede añadir la regla de mapeo. Verifica si la regla es válida";
+"settings.mapping.cleared" = "Todas las reglas de mapeo han sido borradas";
+"settings.mapping.rules_saved" = "Reglas de reasignación guardadas";
+"settings.settings_saved" = "Configuración guardada";
+
+// MARK: - Títulos de ventanas
+"window.settings" = "Configuración";
+"window.statistics" = "Análisis estadístico";
+
+// MARK: - Ventana de estadísticas
+"statistics.period.today" = "Hoy";
+"statistics.period.week" = "Últimos 7 días";
+"statistics.period.month" = "Últimos 30 días";
+"statistics.period.all" = "Todo";
+
+// MARK: - Títulos de tarjetas de estadísticas
+"statistics.card.total_usage" = "Uso total";
+"statistics.card.conflict_count" = "Conflictos";
+"statistics.card.efficiency_rate" = "Tasa sin conflictos";
+"statistics.card.active_apps" = "Apps activas";
+
+// MARK: - Unidades de cantidad de estadísticas
+"statistics.times" = "veces";
+"statistics.count_times" = "%d veces";
+
+// MARK: - Sugerencias de estadísticas
+"statistics.suggestion.remapping_enabled" = "Has creado %d reasignaciones de atajos, eres bueno personalizando flujos de trabajo";
+"statistics.suggestion.usage_concentrated" = "El %.0f%% de tus operaciones se concentran en los 5 atajos principales. Puedes explorar más atajos para mejorar la eficiencia";
+"statistics.suggestion.high_conflicts" = "Se detectaron %d conflictos. Se recomienda resolver los conflictos de alta prioridad para evitar errores";
+"statistics.suggestion.some_conflicts" = "Se encontraron %d conflictos. Se recomienda tratarlos pronto para evitar errores";
+"statistics.suggestion.conflict_rate_high" = "La tasa actual de conflictos de atajos es %.1f%%. Se recomienda optimizar la configuración para reducir conflictos";
+"statistics.suggestion.efficiency_excellent" = "Tu tasa sin conflictos es del %.1f%%, todas las operaciones se ejecutan sin problemas. ¡Sigue así!";
+"statistics.suggestion.continuing_usage" = "Sigue explorando las funciones de atajos, actualmente usado %d veces";
+"statistics.suggestion.power_user" = "Has usado atajos %d veces, ¡eres un maestro de los atajos!";
+"statistics.suggestion.multi_app_user" = "Has usado atajos en %d apps, eres bueno usando herramientas para mejorar la eficiencia";
+"statistics.suggestion.explore_more_apps" = "Usas atajos principalmente en %d apps. Puedes intentar explorar funciones de atajos en más apps de uso frecuente";
+
+// MARK: - Botones (suplemento)
+"button.view_details" = "Ver detalles";
+
+// MARK: - Barra de menús
+"menu.show_panel_with_key" = "Mostrar panel de atajos (%@)";
+"menu.about_keymap" = "Acerca de Keymap";
+"menu.quit_keymap" = "Salir de Keymap";
+
+// MARK: - Títulos de pestañas de configuración
+"settings.tab.general" = "General";
+"settings.tab.conflictResolution" = "Detección";
+"settings.tab.data" = "Datos";
+"settings.tab.about" = "Acerca de";
+
+// MARK: - Encabezados de secciones de configuración
+"settings.section.detection" = "Configuración de detección";
+"settings.section.cache" = "Configuración de caché";
+"settings.section.cleanup" = "Borrar datos antiguos";
+"settings.section.export_import" = "Exportar/Importar";
+"settings.section.database_info" = "Información de la base de datos";
+
+// MARK: - Página Acerca de
+"about.version" = "Versión";
+"about.system_requirements" = "Requisitos del sistema";
+
+// MARK: - Grabación
+"recording.stop" = "Parar";
+"recording.record" = "Grabar";
+"recording.placeholder_recording" = "Pulsa un atajo...";
+"recording.placeholder_example" = "Ej: ⌘T";
+"recording.placeholder_example_shift" = "Ej: ⇧⌘T";
+
+// MARK: - Configuración de idioma
+"settings.language.description" = "Cambiar idioma de la interfaz de la app";
+
+// MARK: - Configuración del panel de atajos
+"settings.show_system_shortcuts" = "Mostrar atajos del sistema";
+"settings.show_system_shortcuts.description" = "Mostrar atajos del sistema macOS (⌘Q, ⌘Space, etc.) en el panel";
+
+// MARK: - Etiquetas de información de base de datos
+"database.size" = "Tamaño de la base de datos";
+"database.usage_records" = "Registros de uso";
+"database.shortcuts_used" = "Atajos usados";
+
+// MARK: - Sugerencias de estadísticas (suplemento)
+"statistics.suggestion.no_remapping" = "Aún no has usado la función de reasignación. Puedes reasignar atajos poco usados a combinaciones más cómodas";
+"statistics.suggestion.diverse_usage" = "Usas bien combinaciones de atajos diversas con una distribución equilibrada";
+"statistics.suggestion.start_using" = "¡Empieza a usar atajos para aumentar tu productividad! Keymap registrará y analizará automáticamente tus hábitos de uso";
+
+// MARK: - Nombre de ámbito de aplicación
+"scope.global_app" = "Global";
+
+// MARK: - Descripciones de política de activación de app
+"activation_policy.regular" = "App normal";
+"activation_policy.accessory" = "App en segundo plano";
+"activation_policy.prohibited" = "Proceso auxiliar";
+"activation_policy.unknown" = "Desconocido";
+
+// MARK: - Panel de atajos
+"panel.search_shortcuts_placeholder" = "Buscar atajos...";
+"panel.common_shortcuts_title" = "Atajos comunes";
+
+// MARK: - Descripciones de atajos de Keymap
+"keymap.shortcut.show_panel" = "Mostrar panel de atajos";
+"keymap.shortcut.statistics" = "Análisis estadístico";
+"keymap.shortcut.settings" = "Configuración";
+"keymap.shortcut.quit" = "Salir de Keymap";
+
+// MARK: - Descripciones de atajos del sistema - General
+"system.quit_app" = "Salir de la aplicación";
+"system.close_window" = "Cerrar ventana";
+"system.hide_app" = "Ocultar la app actual";
+"system.hide_others" = "Ocultar otras apps";
+"system.minimize_window" = "Minimizar ventana";
+"system.new_window" = "Nueva ventana/documento";
+"system.save" = "Guardar";
+"system.print" = "Imprimir";
+"system.undo" = "Deshacer";
+"system.redo" = "Rehacer";
+"system.cut" = "Cortar";
+"system.copy" = "Copiar";
+"system.paste" = "Pegar";
+"system.select_all" = "Seleccionar todo";
+"system.find" = "Buscar";
+
+// MARK: - Descripciones de atajos del sistema - Gestión de ventanas
+"system.app_switcher" = "Cambiar entre apps";
+"system.window_switcher" = "Cambiar entre ventanas de la misma app";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "Mostrar escritorio";
+"system.fullscreen" = "Alternar pantalla completa";
+
+// MARK: - Descripciones de atajos del sistema - Captura de pantalla
+"system.screenshot_full" = "Capturar pantalla completa";
+"system.screenshot_selection" = "Capturar área seleccionada";
+"system.screenshot_window" = "Capturar ventana";
+"system.screenshot_menu" = "Herramientas de captura y grabación de pantalla";
+
+// MARK: - Descripciones de atajos del sistema - Spotlight
+"system.spotlight" = "Búsqueda de Spotlight";
+"system.finder_search" = "Ventana de búsqueda de Finder";
+
+// MARK: - Descripciones de atajos del sistema - Accesibilidad
+"system.voiceover" = "Activar/desactivar VoiceOver";
+"system.zoom" = "Activar/desactivar zoom";
+"system.invert_colors" = "Invertir colores";
+"system.emoji" = "Emoji y símbolos";

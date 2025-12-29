@@ -1,0 +1,397 @@
+// Строки локализации на русском языке
+
+// MARK: - Окно настроек
+"settings.title" = "Настройки";
+"settings.general" = "Основные";
+"settings.shortcuts" = "Сочетания клавиш";
+"settings.global_mapping" = "Глобальное сопоставление";
+"settings.always_on_apps" = "Постоянные приложения";
+"settings.data" = "Данные";
+"settings.advanced" = "Расширенные";
+
+// MARK: - Основные настройки
+"settings.launch_at_login" = "Запускать при входе";
+"settings.launch_at_login.description" = "Приложение будет запускаться автоматически при старте системы";
+"settings.show_in_dock" = "Показывать значок в Dock";
+"settings.show_in_dock.description" = "Если отключено, приложение будет отображаться только в строке меню";
+"settings.language" = "Язык";
+"settings.language.system" = "Системный";
+"settings.language.simplified_chinese" = "Упрощённый китайский";
+
+// MARK: - Настройки сочетаний клавиш
+"settings.double_press_threshold" = "Порог двойного нажатия %@";
+"settings.double_press_threshold.description" = "Настройка чувствительности двойного нажатия (меньше = чувствительнее)";
+"settings.trigger_key" = "Сочетание для активации";
+"settings.trigger_key.description" = "Выберите способ активации панели сочетаний";
+"settings.trigger_key.double_cmd" = "Двойное нажатие Cmd";
+"settings.trigger_key.double_option" = "Двойное нажатие Option";
+"settings.trigger_key.double_control" = "Двойное нажатие Control";
+"settings.panel_auto_close" = "Задержка автозакрытия панели";
+"settings.panel_auto_close.description" = "Установите 0 для отключения автозакрытия";
+"settings.enable_realtime_detection" = "Включить обнаружение конфликтов в реальном времени";
+"settings.enable_realtime_detection.description" = "Обнаруживать конфликты при использовании сочетаний";
+"settings.show_conflict_notifications" = "Показывать уведомления о конфликтах";
+"settings.show_conflict_notifications.description" = "Показывать системные уведомления при обнаружении конфликтов";
+"settings.enable_usage_tracking" = "Включить отслеживание статистики использования";
+"settings.enable_usage_tracking.description" = "Записывать использование сочетаний для анализа конфликтов";
+
+// MARK: - Постоянные приложения
+"settings.always_on_apps.title" = "Постоянные приложения";
+"settings.always_on_apps.scanning" = "Поиск постоянных приложений...";
+"settings.always_on_apps.empty" = "Постоянные приложения не обнаружены";
+"settings.always_on_apps.empty.hint" = "Нажмите обновить для поиска постоянных приложений системы";
+"settings.always_on_apps.mark_manually" = "Отметить вручную";
+
+// MARK: - Глобальное сопоставление
+"settings.global_mapping.title" = "Переназначение сочетаний";
+"settings.enable_global_remapping" = "Включить глобальное переназначение сочетаний";
+"settings.enable_global_remapping.description" = "Все правила переназначения будут применены при включении";
+"settings.global_mapping.empty" = "Нет правил сопоставления";
+"settings.global_mapping.empty.hint" = "Нажмите «Добавить правило переназначения» выше для создания нового правила";
+"settings.global_mapping.rule_count" = "Всего %d правил сопоставления";
+"settings.global_mapping.clear_all" = "Очистить всё";
+"settings.global_mapping.confirm_clear" = "Вы уверены, что хотите очистить все правила сопоставления? Это действие нельзя отменить.";
+"settings.global_mapping.add_rule" = "Добавить правило переназначения";
+"settings.global_mapping.edit_rule" = "Редактировать правило переназначения";
+"settings.global_mapping.source" = "Исходное сочетание";
+"settings.global_mapping.target" = "Целевое сочетание";
+"settings.global_mapping.scope" = "Область применения";
+"settings.global_mapping.scope.global" = "Глобально";
+"settings.global_mapping.source.description" = "Это сочетание будет переназначено при нажатии";
+"settings.global_mapping.target.description" = "Будет сопоставлено с этим сочетанием";
+"settings.global_mapping.scope.description" = "Выберите приложения, к которым применяется это правило";
+"settings.global_mapping.scope.readonly" = "Область применения нельзя изменить";
+"settings.global_mapping.add.title" = "Добавить правило сопоставления";
+"settings.global_mapping.add.subtitle" = "Пользовательское переназначение, сопоставить исходную клавишу с целевой";
+"settings.global_mapping.edit.title" = "Редактировать правило сопоставления";
+"settings.global_mapping.edit.subtitle" = "Изменить правило сопоставления, настроить исходную или целевую клавишу";
+
+// MARK: - Настройки данных
+"settings.cache_duration" = "Срок действия кэша";
+"settings.cache_duration.description" = "Период действия кэша для результатов извлечения сочетаний";
+"settings.max_cached_apps" = "Макс. приложений в кэше";
+"settings.max_cached_apps.description" = "Максимальное количество приложений для кэширования в памяти";
+"settings.clear_cache" = "Очистить кэш";
+"settings.clear_usage_records" = "Очистить записи использования";
+"settings.clear_all_data" = "Очистить все данные";
+"settings.clear_warning" = "Операции очистки нельзя отменить. Действуйте осторожно";
+"settings.export_remapping_rules" = "Экспорт правил переназначения";
+"settings.import_remapping_rules" = "Импорт правил переназначения";
+"settings.export_settings" = "Экспорт настроек";
+"settings.export_settings.description" = "Можно сохранить и использовать на других устройствах";
+"settings.database_size" = "Размер базы данных:";
+"settings.usage_records_count" = "Записей использования:";
+"settings.shortcuts_used_count" = "Использованных сочетаний:";
+
+// MARK: - Расширенные настройки
+"settings.log_level" = "Уровень журнала";
+"settings.log_level.description" = "Установить уровень вывода журнала приложения";
+"settings.enable_recording_mode" = "Включить режим записи сочетаний";
+"settings.enable_recording_mode.description" = "Разрешить запись сочетаний (экспериментальная функция)";
+
+// MARK: - О программе
+"settings.about.description" = "Инструмент обнаружения и управления конфликтами сочетаний клавиш для macOS";
+"settings.about.version" = "Версия:";
+"settings.about.system_requirements" = "Системные требования:";
+
+// MARK: - Панель сочетаний
+"panel.title" = "Панель сочетаний";
+"panel.search_placeholder" = "Поиск сочетаний...";
+"panel.close_hint" = "Нажмите Esc для закрытия";
+"panel.conflict_shortcuts" = "Конфликтующие сочетания";
+"panel.common_shortcuts" = "Часто используемые сочетания";
+"panel.loading" = "Загрузка...";
+"panel.statistics" = "Статистика";
+"panel.settings" = "Настройки";
+
+// MARK: - Детали конфликта
+"conflict.severity" = "Серьёзность";
+"conflict.type" = "Тип конфликта";
+"conflict.conflicting_app" = "Конфликтующее приложение";
+"conflict.suggestions" = "Предложения";
+
+// MARK: - Диалог переназначения
+"remapping.title" = "Переназначить сочетание";
+"remapping.description" = "Сопоставить сочетание с другой комбинацией, действует только в текущем приложении";
+"remapping.current_shortcut" = "Текущее сочетание";
+"remapping.new_shortcut" = "Новое сочетание";
+"remapping.hint" = "Подсказка: Используйте ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + буква/цифра";
+"remapping.reset" = "Сбросить";
+
+// MARK: - Строка меню
+"menu.show_panel" = "Показать панель сочетаний";
+"menu.statistics" = "Статистический анализ";
+"menu.settings" = "Настройки...";
+"menu.about" = "О программе Keymap";
+"menu.quit" = "Завершить Keymap";
+"menu.permission_warning" = "⚠️ Требуется разрешение универсального доступа";
+"menu.permission_tooltip" = "Нажмите, чтобы открыть Системные настройки и предоставить разрешение";
+
+// MARK: - Категории
+"category.file" = "Файл";
+"category.edit" = "Редактирование";
+"category.view" = "Вид";
+"category.window" = "Окно";
+"category.system" = "Система";
+"category.navigation" = "Навигация";
+"category.other" = "Другое";
+
+// MARK: - Типы конфликтов
+"conflict.type.system" = "Системный уровень";
+"conflict.type.application" = "Уровень приложения";
+"conflict.type.global" = "Глобальный";
+"conflict.type.functional" = "Функциональный";
+
+// MARK: - Серьёзность конфликта
+"conflict.severity.high" = "Высокая";
+"conflict.severity.medium" = "Средняя";
+"conflict.severity.low" = "Низкая";
+
+// MARK: - Контекст использования
+"usage.context.normal" = "Обычный";
+"usage.context.conflict" = "Конфликт";
+"usage.context.remapped" = "Переназначено";
+
+// MARK: - Стратегия разрешения
+"resolution.strategy.disable" = "Отключить";
+"resolution.strategy.remap" = "Переназначить";
+"resolution.strategy.ignore" = "Игнорировать";
+"resolution.strategy.manual" = "Вручную";
+
+// MARK: - Уведомления
+"notification.permission.title" = "Требуется разрешение";
+"notification.permission.message" = "Пожалуйста, предоставьте Keymap разрешение универсального доступа в Системных настройках";
+"notification.permission.message.dock" = "Пожалуйста, предоставьте Keymap разрешение универсального доступа в Системных настройках для использования";
+"notification.conflict.title" = "Обнаружен конфликт сочетаний";
+"notification.conflict.system" = "Конфликт с системным сочетанием";
+"notification.conflict.global" = "Конфликт с %@";
+"notification.conflict.application" = "Дублирование в приложении";
+"notification.conflict.functional" = "Функциональный конфликт";
+"notification.conflict.multiple" = ", всего %d конфликтов";
+"notification.conflict.view_details" = "Подробнее";
+"notification.remapping.success.title" = "Переназначение выполнено";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - Окно статистики
+"statistics.title" = "Статистический анализ";
+"statistics.overview" = "Обзор";
+"statistics.total_usage" = "Всего использований";
+"statistics.conflicts" = "Конфликты";
+"statistics.efficiency_score" = "Уровень без конфликтов";
+"statistics.active_apps" = "Активные приложения";
+"statistics.refresh" = "Обновить";
+"statistics.export" = "Экспорт";
+"statistics.top_shortcuts" = "Рейтинг частоты использования (Топ 10)";
+"statistics.no_data" = "Нет данных";
+"statistics.usage_trend" = "Тенденция использования";
+"statistics.tracking_disabled" = "Необходимо включить отслеживание статистики использования";
+"statistics.tracking_hint_1" = "Убедитесь, что «Отслеживание статистики использования» включено в настройках";
+"statistics.tracking_hint_2" = "После использования сочетаний система автоматически запишет данные";
+"statistics.tracking_hint_3" = "Данные появятся в графике тенденций на следующий день";
+"statistics.high_conflict_shortcuts" = "Сочетания с высоким уровнем конфликтов";
+"statistics.no_conflicts" = "Отлично! Конфликтов нет";
+"statistics.optimization_suggestions" = "Предложения по оптимизации";
+"statistics.no_suggestions" = "Нет предложений";
+
+// MARK: - Общие действия
+"action.save" = "Сохранить";
+"action.cancel" = "Отмена";
+"action.delete" = "Удалить";
+"action.reset" = "Сбросить";
+"action.confirm" = "Подтвердить";
+"action.export" = "Экспорт";
+"action.import" = "Импорт";
+"action.refresh" = "Обновить";
+"action.add" = "Добавить";
+"action.record" = "Записать";
+"action.recording" = "Запись...";
+
+// MARK: - Единицы времени
+"time.seconds" = "секунд";
+"time.hours" = "часов";
+
+// MARK: - Общие фразы
+"common.loading" = "Загрузка...";
+"common.empty" = "Пусто";
+"common.total" = "Всего";
+"common.count" = "Количество";
+"common.shortcuts_count" = "%d сочетаний";
+"common.hours_count" = "%d часов";
+"common.apps_count" = "%d прил.";
+
+// MARK: - Общие фразы (дополнительно)
+"common.cancel" = "Отмена";
+"common.save" = "Сохранить";
+"common.export_success" = "Экспорт выполнен";
+"common.add_failed" = "Ошибка добавления";
+"common.seconds_format" = "%.2f сек.";
+"common.seconds" = "%d сек.";
+"settings.never" = "Никогда";
+"settings.calculating" = "Расчёт...";
+
+// MARK: - Заголовки разделов настроек
+"settings.section.app_behavior" = "Поведение приложения";
+"settings.section.shortcut_settings" = "Настройки сочетаний";
+"settings.section.always_on_apps" = "Постоянные приложения";
+"settings.section.global_mapping" = "Глобальное сопоставление сочетаний";
+"settings.section.data_management" = "Управление данными";
+"settings.section.advanced_settings" = "Расширенные настройки";
+
+// MARK: - Отображаемые названия языков (для выпадающего списка)
+"settings.language.system_display" = "Системный";
+"settings.language.simplified_chinese_display" = "Упрощённый китайский";
+"settings.language.english_display" = "English";
+
+// MARK: - Отображаемые названия клавиш активации (для выпадающего списка)
+"settings.trigger_key.double_cmd_display" = "Двойное нажатие ⌘";
+"settings.trigger_key.double_option_display" = "Двойное нажатие ⌥";
+"settings.trigger_key.double_control_display" = "Двойное нажатие ⌃";
+
+// MARK: - Правила сопоставления
+"settings.clear_all" = "Очистить всё";
+"settings.add_mapping" = "Добавить сопоставление";
+"settings.edit_mapping" = "Редактировать сопоставление";
+"settings.mapping.add_failed" = "Невозможно добавить правило сопоставления. Проверьте правильность правила";
+"settings.mapping.cleared" = "Все правила сопоставления очищены";
+"settings.mapping.rules_saved" = "Правила переназначения сохранены";
+"settings.settings_saved" = "Настройки сохранены";
+
+// MARK: - Заголовки окон
+"window.settings" = "Настройки";
+"window.statistics" = "Статистический анализ";
+
+// MARK: - Окно статистики
+"statistics.period.today" = "Сегодня";
+"statistics.period.week" = "Последние 7 дней";
+"statistics.period.month" = "Последние 30 дней";
+"statistics.period.all" = "Всё время";
+
+// MARK: - Заголовки карточек статистики
+"statistics.card.total_usage" = "Всего использований";
+"statistics.card.conflict_count" = "Конфликты";
+"statistics.card.efficiency_rate" = "Уровень без конфликтов";
+"statistics.card.active_apps" = "Активные приложения";
+
+// MARK: - Единицы количества статистики
+"statistics.times" = "раз";
+"statistics.count_times" = "%d раз";
+
+// MARK: - Предложения статистики
+"statistics.suggestion.remapping_enabled" = "Вы создали %d переназначений сочетаний, отлично настраиваете рабочие процессы";
+"statistics.suggestion.usage_concentrated" = "%.0f%% ваших операций сосредоточены на 5 основных сочетаниях. Изучите больше сочетаний для повышения эффективности";
+"statistics.suggestion.high_conflicts" = "Обнаружено %d конфликтов. Рекомендуется разрешить приоритетные конфликты для избежания ошибок";
+"statistics.suggestion.some_conflicts" = "Найдено %d конфликтов. Рекомендуется обработать их для избежания ошибок";
+"statistics.suggestion.conflict_rate_high" = "Текущий уровень конфликтов сочетаний %.1f%%. Рекомендуется оптимизировать конфигурацию для уменьшения конфликтов";
+"statistics.suggestion.efficiency_excellent" = "Ваш уровень без конфликтов %.1f%%, все операции выполняются гладко. Продолжайте в том же духе!";
+"statistics.suggestion.continuing_usage" = "Продолжайте изучать функции сочетаний, использовано %d раз";
+"statistics.suggestion.power_user" = "Вы использовали сочетания %d раз, вы мастер сочетаний!";
+"statistics.suggestion.multi_app_user" = "Вы использовали сочетания в %d приложениях, умеете использовать инструменты для повышения эффективности";
+"statistics.suggestion.explore_more_apps" = "Вы используете сочетания в основном в %d приложениях. Попробуйте изучить сочетания в большем количестве часто используемых приложений";
+
+// MARK: - Кнопки (дополнительно)
+"button.view_details" = "Подробнее";
+
+// MARK: - Строка меню
+"menu.show_panel_with_key" = "Показать панель сочетаний (%@)";
+"menu.about_keymap" = "О программе Keymap";
+"menu.quit_keymap" = "Завершить Keymap";
+
+// MARK: - Заголовки вкладок настроек
+"settings.tab.general" = "Основные";
+"settings.tab.conflictResolution" = "Обнаружение";
+"settings.tab.data" = "Данные";
+"settings.tab.about" = "О программе";
+
+// MARK: - Заголовки разделов настроек
+"settings.section.detection" = "Настройки обнаружения";
+"settings.section.cache" = "Настройки кэша";
+"settings.section.cleanup" = "Очистить старые данные";
+"settings.section.export_import" = "Экспорт/Импорт";
+"settings.section.database_info" = "Информация о базе данных";
+
+// MARK: - Страница О программе
+"about.version" = "Версия";
+"about.system_requirements" = "Системные требования";
+
+// MARK: - Запись
+"recording.stop" = "Стоп";
+"recording.record" = "Записать";
+"recording.placeholder_recording" = "Нажмите сочетание...";
+"recording.placeholder_example" = "Напр.: ⌘T";
+"recording.placeholder_example_shift" = "Напр.: ⇧⌘T";
+
+// MARK: - Настройки языка
+"settings.language.description" = "Изменить язык интерфейса приложения";
+
+// MARK: - Настройки панели сочетаний
+"settings.show_system_shortcuts" = "Показывать системные сочетания";
+"settings.show_system_shortcuts.description" = "Отображать системные сочетания macOS (⌘Q, ⌘Space и т.д.) на панели";
+
+// MARK: - Метки информации о базе данных
+"database.size" = "Размер базы данных";
+"database.usage_records" = "Записей использования";
+"database.shortcuts_used" = "Использованных сочетаний";
+
+// MARK: - Предложения статистики (дополнительно)
+"statistics.suggestion.no_remapping" = "Вы ещё не использовали функцию переназначения. Вы можете переназначить редко используемые сочетания на более удобные комбинации";
+"statistics.suggestion.diverse_usage" = "Вы хорошо используете разнообразные комбинации сочетаний с равномерным распределением";
+"statistics.suggestion.start_using" = "Начните использовать сочетания для повышения производительности! Keymap автоматически записывает и анализирует ваши привычки использования";
+
+// MARK: - Отображаемое название области приложения
+"scope.global_app" = "Глобально";
+
+// MARK: - Описания политики активации приложения
+"activation_policy.regular" = "Обычное приложение";
+"activation_policy.accessory" = "Фоновое приложение";
+"activation_policy.prohibited" = "Вспомогательный процесс";
+"activation_policy.unknown" = "Неизвестно";
+
+// MARK: - Панель сочетаний
+"panel.search_shortcuts_placeholder" = "Поиск сочетаний...";
+"panel.common_shortcuts_title" = "Часто используемые сочетания";
+
+// MARK: - Описания сочетаний Keymap
+"keymap.shortcut.show_panel" = "Показать панель сочетаний";
+"keymap.shortcut.statistics" = "Статистический анализ";
+"keymap.shortcut.settings" = "Настройки";
+"keymap.shortcut.quit" = "Завершить Keymap";
+
+// MARK: - Описания системных сочетаний - Общие
+"system.quit_app" = "Завершить приложение";
+"system.close_window" = "Закрыть окно";
+"system.hide_app" = "Скрыть текущее приложение";
+"system.hide_others" = "Скрыть другие приложения";
+"system.minimize_window" = "Свернуть окно";
+"system.new_window" = "Новое окно/документ";
+"system.save" = "Сохранить";
+"system.print" = "Печать";
+"system.undo" = "Отменить";
+"system.redo" = "Повторить";
+"system.cut" = "Вырезать";
+"system.copy" = "Копировать";
+"system.paste" = "Вставить";
+"system.select_all" = "Выбрать всё";
+"system.find" = "Найти";
+
+// MARK: - Описания системных сочетаний - Управление окнами
+"system.app_switcher" = "Переключение приложений";
+"system.window_switcher" = "Переключение окон того же приложения";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "Показать рабочий стол";
+"system.fullscreen" = "Переключить полноэкранный режим";
+
+// MARK: - Описания системных сочетаний - Снимок экрана
+"system.screenshot_full" = "Снимок всего экрана";
+"system.screenshot_selection" = "Снимок выбранной области";
+"system.screenshot_window" = "Снимок окна";
+"system.screenshot_menu" = "Инструменты снимка и записи экрана";
+
+// MARK: - Описания системных сочетаний - Spotlight
+"system.spotlight" = "Поиск Spotlight";
+"system.finder_search" = "Окно поиска Finder";
+
+// MARK: - Описания системных сочетаний - Универсальный доступ
+"system.voiceover" = "Включить/выключить VoiceOver";
+"system.zoom" = "Включить/выключить масштабирование";
+"system.invert_colors" = "Инвертировать цвета";
+"system.emoji" = "Эмодзи и символы";

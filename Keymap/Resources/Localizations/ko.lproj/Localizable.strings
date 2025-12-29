@@ -1,0 +1,397 @@
+// 한국어 현지화 문자열
+
+// MARK: - 설정 창
+"settings.title" = "설정";
+"settings.general" = "일반";
+"settings.shortcuts" = "단축키";
+"settings.global_mapping" = "전역 매핑";
+"settings.always_on_apps" = "상주 앱";
+"settings.data" = "데이터";
+"settings.advanced" = "고급";
+
+// MARK: - 일반 설정
+"settings.launch_at_login" = "로그인 시 시작";
+"settings.launch_at_login.description" = "시스템 시작 시 앱이 자동으로 실행됩니다";
+"settings.show_in_dock" = "Dock에 아이콘 표시";
+"settings.show_in_dock.description" = "끄면 메뉴 막대에만 표시됩니다";
+"settings.language" = "언어";
+"settings.language.system" = "시스템 따르기";
+"settings.language.simplified_chinese" = "중국어 간체";
+
+// MARK: - 단축키 설정
+"settings.double_press_threshold" = "%@ 이중 탭 임계값";
+"settings.double_press_threshold.description" = "이중 탭 감도 조정 (작을수록 민감)";
+"settings.trigger_key" = "트리거 단축키";
+"settings.trigger_key.description" = "단축키 패널을 실행하는 방법 선택";
+"settings.trigger_key.double_cmd" = "Cmd 이중 탭";
+"settings.trigger_key.double_option" = "Option 이중 탭";
+"settings.trigger_key.double_control" = "Control 이중 탭";
+"settings.panel_auto_close" = "패널 자동 닫기 지연";
+"settings.panel_auto_close.description" = "0으로 설정하면 자동 닫기가 비활성화됩니다";
+"settings.enable_realtime_detection" = "실시간 충돌 감지 활성화";
+"settings.enable_realtime_detection.description" = "단축키 사용 시 실시간으로 충돌 감지";
+"settings.show_conflict_notifications" = "충돌 알림 표시";
+"settings.show_conflict_notifications.description" = "충돌 감지 시 시스템 알림 표시";
+"settings.enable_usage_tracking" = "사용 통계 추적 활성화";
+"settings.enable_usage_tracking.description" = "단축키 사용 현황을 기록하여 충돌 분석에 사용";
+
+// MARK: - 상주 앱
+"settings.always_on_apps.title" = "상주 앱";
+"settings.always_on_apps.scanning" = "상주 앱 스캔 중...";
+"settings.always_on_apps.empty" = "상주 앱이 감지되지 않았습니다";
+"settings.always_on_apps.empty.hint" = "새로고침 버튼을 클릭하여 시스템의 상주 앱을 스캔하세요";
+"settings.always_on_apps.mark_manually" = "수동 표시";
+
+// MARK: - 전역 매핑
+"settings.global_mapping.title" = "단축키 리매핑";
+"settings.enable_global_remapping" = "전역 단축키 리매핑 활성화";
+"settings.enable_global_remapping.description" = "활성화하면 모든 리매핑 규칙이 적용됩니다";
+"settings.global_mapping.empty" = "매핑 규칙이 없습니다";
+"settings.global_mapping.empty.hint" = "위의 '리매핑 규칙 추가' 버튼을 클릭하여 새 규칙을 생성하세요";
+"settings.global_mapping.rule_count" = "총 %d개의 매핑 규칙";
+"settings.global_mapping.clear_all" = "모두 지우기";
+"settings.global_mapping.confirm_clear" = "모든 매핑 규칙을 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.";
+"settings.global_mapping.add_rule" = "리매핑 규칙 추가";
+"settings.global_mapping.edit_rule" = "리매핑 규칙 편집";
+"settings.global_mapping.source" = "원본 단축키";
+"settings.global_mapping.target" = "대상 단축키";
+"settings.global_mapping.scope" = "앱 범위";
+"settings.global_mapping.scope.global" = "전역";
+"settings.global_mapping.source.description" = "이 단축키를 누르면 리매핑됩니다";
+"settings.global_mapping.target.description" = "이 단축키로 매핑됩니다";
+"settings.global_mapping.scope.description" = "매핑 규칙을 적용할 앱을 선택하세요";
+"settings.global_mapping.scope.readonly" = "앱 범위는 수정할 수 없습니다";
+"settings.global_mapping.add.title" = "매핑 규칙 추가";
+"settings.global_mapping.add.subtitle" = "사용자 지정 단축키 리매핑, 원본 키를 대상 키로 매핑";
+"settings.global_mapping.edit.title" = "매핑 규칙 편집";
+"settings.global_mapping.edit.subtitle" = "단축키 매핑 규칙 수정, 원본 키 또는 대상 키 조정";
+
+// MARK: - 데이터 설정
+"settings.cache_duration" = "캐시 기간";
+"settings.cache_duration.description" = "단축키 추출 결과의 캐시 유효 기간";
+"settings.max_cached_apps" = "최대 캐시 앱 수";
+"settings.max_cached_apps.description" = "메모리에 캐시할 최대 앱 수";
+"settings.clear_cache" = "캐시 지우기";
+"settings.clear_usage_records" = "사용 기록 지우기";
+"settings.clear_all_data" = "모든 데이터 지우기";
+"settings.clear_warning" = "지우기 작업은 되돌릴 수 없습니다. 신중하게 진행하세요";
+"settings.export_remapping_rules" = "리매핑 규칙 내보내기";
+"settings.import_remapping_rules" = "리매핑 규칙 가져오기";
+"settings.export_settings" = "설정 내보내기";
+"settings.export_settings.description" = "백업하여 다른 기기에서 사용할 수 있습니다";
+"settings.database_size" = "데이터베이스 크기:";
+"settings.usage_records_count" = "사용 기록 수:";
+"settings.shortcuts_used_count" = "사용된 단축키:";
+
+// MARK: - 고급 설정
+"settings.log_level" = "로그 수준";
+"settings.log_level.description" = "앱 로그 출력 수준 설정";
+"settings.enable_recording_mode" = "단축키 녹화 모드 활성화";
+"settings.enable_recording_mode.description" = "단축키 녹화 허용 (실험적 기능)";
+
+// MARK: - 정보
+"settings.about.description" = "macOS용 단축키 충돌 감지 및 관리 도구";
+"settings.about.version" = "버전:";
+"settings.about.system_requirements" = "시스템 요구사항:";
+
+// MARK: - 단축키 패널
+"panel.title" = "단축키 패널";
+"panel.search_placeholder" = "단축키 검색...";
+"panel.close_hint" = "ESC 키를 눌러 닫기";
+"panel.conflict_shortcuts" = "충돌 단축키";
+"panel.common_shortcuts" = "자주 사용하는 단축키";
+"panel.loading" = "로딩 중...";
+"panel.statistics" = "통계";
+"panel.settings" = "설정";
+
+// MARK: - 충돌 상세
+"conflict.severity" = "심각도";
+"conflict.type" = "충돌 유형";
+"conflict.conflicting_app" = "충돌 앱";
+"conflict.suggestions" = "제안";
+
+// MARK: - 리매핑 대화상자
+"remapping.title" = "단축키 리매핑";
+"remapping.description" = "단축키를 다른 조합으로 매핑합니다. 현재 앱에서만 적용됩니다";
+"remapping.current_shortcut" = "현재 단축키";
+"remapping.new_shortcut" = "새 단축키";
+"remapping.hint" = "팁: ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + 문자/숫자 사용";
+"remapping.reset" = "재설정";
+
+// MARK: - 메뉴 막대
+"menu.show_panel" = "단축키 패널 표시";
+"menu.statistics" = "통계 분석";
+"menu.settings" = "설정...";
+"menu.about" = "Keymap 정보";
+"menu.quit" = "Keymap 종료";
+"menu.permission_warning" = "⚠️ 손쉬운 사용 권한이 필요합니다";
+"menu.permission_tooltip" = "클릭하여 시스템 설정을 열고 권한을 부여하세요";
+
+// MARK: - 카테고리
+"category.file" = "파일";
+"category.edit" = "편집";
+"category.view" = "보기";
+"category.window" = "윈도우";
+"category.system" = "시스템";
+"category.navigation" = "탐색";
+"category.other" = "기타";
+
+// MARK: - 충돌 유형
+"conflict.type.system" = "시스템 수준";
+"conflict.type.application" = "앱 수준";
+"conflict.type.global" = "전역";
+"conflict.type.functional" = "기능";
+
+// MARK: - 충돌 심각도
+"conflict.severity.high" = "높음";
+"conflict.severity.medium" = "중간";
+"conflict.severity.low" = "낮음";
+
+// MARK: - 사용 컨텍스트
+"usage.context.normal" = "일반";
+"usage.context.conflict" = "충돌";
+"usage.context.remapped" = "리매핑됨";
+
+// MARK: - 해결 전략
+"resolution.strategy.disable" = "비활성화";
+"resolution.strategy.remap" = "리매핑";
+"resolution.strategy.ignore" = "무시";
+"resolution.strategy.manual" = "수동 처리";
+
+// MARK: - 알림
+"notification.permission.title" = "권한이 필요합니다";
+"notification.permission.message" = "시스템 설정에서 Keymap에 손쉬운 사용 권한을 부여해 주세요";
+"notification.permission.message.dock" = "사용하려면 시스템 설정에서 Keymap에 손쉬운 사용 권한을 부여해 주세요";
+"notification.conflict.title" = "단축키 충돌 감지됨";
+"notification.conflict.system" = "시스템 단축키와 충돌";
+"notification.conflict.global" = "%@와(과) 충돌";
+"notification.conflict.application" = "앱 내 중복 정의";
+"notification.conflict.functional" = "기능 충돌";
+"notification.conflict.multiple" = ", 총 %d개의 충돌";
+"notification.conflict.view_details" = "상세 보기";
+"notification.remapping.success.title" = "리매핑 성공";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - 통계 창
+"statistics.title" = "통계 분석";
+"statistics.overview" = "개요";
+"statistics.total_usage" = "총 사용 횟수";
+"statistics.conflicts" = "충돌 횟수";
+"statistics.efficiency_score" = "충돌 없음 비율";
+"statistics.active_apps" = "활성 앱";
+"statistics.refresh" = "새로고침";
+"statistics.export" = "내보내기";
+"statistics.top_shortcuts" = "사용 빈도 순위 (상위 10개)";
+"statistics.no_data" = "데이터가 없습니다";
+"statistics.usage_trend" = "사용 추세";
+"statistics.tracking_disabled" = "사용 통계 추적을 활성화해야 합니다";
+"statistics.tracking_hint_1" = "설정에서 '사용 통계 추적' 기능이 활성화되어 있는지 확인하세요";
+"statistics.tracking_hint_2" = "단축키를 사용하면 시스템이 자동으로 사용 데이터를 기록합니다";
+"statistics.tracking_hint_3" = "데이터는 다음 날부터 추세 그래프에 표시됩니다";
+"statistics.high_conflict_shortcuts" = "높은 충돌 단축키";
+"statistics.no_conflicts" = "훌륭합니다! 현재 충돌이 없습니다";
+"statistics.optimization_suggestions" = "최적화 제안";
+"statistics.no_suggestions" = "제안 없음";
+
+// MARK: - 공통 작업
+"action.save" = "저장";
+"action.cancel" = "취소";
+"action.delete" = "삭제";
+"action.reset" = "재설정";
+"action.confirm" = "확인";
+"action.export" = "내보내기";
+"action.import" = "가져오기";
+"action.refresh" = "새로고침";
+"action.add" = "추가";
+"action.record" = "녹화";
+"action.recording" = "녹화 중...";
+
+// MARK: - 시간 단위
+"time.seconds" = "초";
+"time.hours" = "시간";
+
+// MARK: - 공통 문구
+"common.loading" = "로딩 중...";
+"common.empty" = "비어 있음";
+"common.total" = "총계";
+"common.count" = "개수";
+"common.shortcuts_count" = "%d개의 단축키";
+"common.hours_count" = "%d시간";
+"common.apps_count" = "%d개";
+
+// MARK: - 공통 문구 (보충)
+"common.cancel" = "취소";
+"common.save" = "저장";
+"common.export_success" = "내보내기 성공";
+"common.add_failed" = "추가 실패";
+"common.seconds_format" = "%.2f초";
+"common.seconds" = "%d초";
+"settings.never" = "안 함";
+"settings.calculating" = "계산 중...";
+
+// MARK: - 설정 섹션 제목
+"settings.section.app_behavior" = "앱 동작";
+"settings.section.shortcut_settings" = "단축키 설정";
+"settings.section.always_on_apps" = "상주 앱";
+"settings.section.global_mapping" = "전역 단축키 매핑";
+"settings.section.data_management" = "데이터 관리";
+"settings.section.advanced_settings" = "고급 설정";
+
+// MARK: - 언어 표시 이름 (드롭다운용)
+"settings.language.system_display" = "시스템 따르기";
+"settings.language.simplified_chinese_display" = "중국어 간체";
+"settings.language.english_display" = "English";
+
+// MARK: - 트리거 키 표시 이름 (드롭다운용)
+"settings.trigger_key.double_cmd_display" = "⌘ 이중 탭";
+"settings.trigger_key.double_option_display" = "⌥ 이중 탭";
+"settings.trigger_key.double_control_display" = "⌃ 이중 탭";
+
+// MARK: - 매핑 규칙
+"settings.clear_all" = "모두 지우기";
+"settings.add_mapping" = "매핑 추가";
+"settings.edit_mapping" = "매핑 편집";
+"settings.mapping.add_failed" = "매핑 규칙을 추가할 수 없습니다. 규칙이 유효한지 확인하세요";
+"settings.mapping.cleared" = "모든 매핑 규칙이 지워졌습니다";
+"settings.mapping.rules_saved" = "리매핑 규칙이 저장되었습니다";
+"settings.settings_saved" = "설정이 저장되었습니다";
+
+// MARK: - 창 제목
+"window.settings" = "설정";
+"window.statistics" = "통계 분석";
+
+// MARK: - 통계 창
+"statistics.period.today" = "오늘";
+"statistics.period.week" = "최근 7일";
+"statistics.period.month" = "최근 30일";
+"statistics.period.all" = "전체";
+
+// MARK: - 통계 카드 제목
+"statistics.card.total_usage" = "총 사용 횟수";
+"statistics.card.conflict_count" = "충돌 횟수";
+"statistics.card.efficiency_rate" = "충돌 없음 비율";
+"statistics.card.active_apps" = "활성 앱";
+
+// MARK: - 통계 수량 단위
+"statistics.times" = "회";
+"statistics.count_times" = "%d회";
+
+// MARK: - 통계 제안
+"statistics.suggestion.remapping_enabled" = "%d개의 단축키 리매핑을 생성했습니다. 워크플로우 맞춤 설정을 잘 활용하고 계시네요";
+"statistics.suggestion.usage_concentrated" = "작업의 %.0f%%가 상위 5개 단축키에 집중되어 있습니다. 효율성을 높이려면 더 많은 단축키를 탐색해 보세요";
+"statistics.suggestion.high_conflicts" = "%d개의 충돌이 감지되었습니다. 오조작을 방지하려면 우선순위가 높은 충돌을 해결하는 것이 좋습니다";
+"statistics.suggestion.some_conflicts" = "%d개의 충돌이 발견되었습니다. 오조작을 방지하려면 빠르게 처리하는 것이 좋습니다";
+"statistics.suggestion.conflict_rate_high" = "현재 단축키 충돌 비율이 %.1f%%입니다. 충돌을 줄이려면 단축키 설정을 최적화하는 것이 좋습니다";
+"statistics.suggestion.efficiency_excellent" = "단축키 충돌 없음 비율이 %.1f%%로 높습니다. 모든 작업이 원활하게 실행되고 있습니다. 좋은 습관을 유지하세요!";
+"statistics.suggestion.continuing_usage" = "단축키 기능을 계속 탐색하세요. 현재 %d회 사용했습니다";
+"statistics.suggestion.power_user" = "단축키를 %d회 사용했습니다. 단축키 마스터시네요!";
+"statistics.suggestion.multi_app_user" = "%d개 앱에서 단축키를 사용했습니다. 도구를 활용하여 효율성을 높이는 데 능숙하시네요";
+"statistics.suggestion.explore_more_apps" = "주로 %d개 앱에서 단축키를 사용합니다. 더 많은 자주 사용하는 앱에서 단축키 기능을 탐색해 보세요";
+
+// MARK: - 버튼 (보충)
+"button.view_details" = "상세 보기";
+
+// MARK: - 메뉴 막대
+"menu.show_panel_with_key" = "단축키 패널 표시 (%@)";
+"menu.about_keymap" = "Keymap 정보";
+"menu.quit_keymap" = "Keymap 종료";
+
+// MARK: - 설정 탭 제목
+"settings.tab.general" = "일반";
+"settings.tab.conflictResolution" = "감지";
+"settings.tab.data" = "데이터";
+"settings.tab.about" = "정보";
+
+// MARK: - 설정 섹션 헤더
+"settings.section.detection" = "감지 설정";
+"settings.section.cache" = "캐시 설정";
+"settings.section.cleanup" = "이전 데이터 정리";
+"settings.section.export_import" = "내보내기/가져오기";
+"settings.section.database_info" = "데이터베이스 정보";
+
+// MARK: - 정보 페이지
+"about.version" = "버전";
+"about.system_requirements" = "시스템 요구사항";
+
+// MARK: - 녹화
+"recording.stop" = "중지";
+"recording.record" = "녹화";
+"recording.placeholder_recording" = "단축키를 누르세요...";
+"recording.placeholder_example" = "예: ⌘T";
+"recording.placeholder_example_shift" = "예: ⇧⌘T";
+
+// MARK: - 언어 설정
+"settings.language.description" = "앱 인터페이스 언어 전환";
+
+// MARK: - 단축키 패널 설정
+"settings.show_system_shortcuts" = "시스템 단축키 표시";
+"settings.show_system_shortcuts.description" = "단축키 패널에 macOS 시스템 단축키 (⌘Q, ⌘Space 등) 표시";
+
+// MARK: - 데이터베이스 정보 레이블
+"database.size" = "데이터베이스 크기";
+"database.usage_records" = "사용 기록 수";
+"database.shortcuts_used" = "사용된 단축키";
+
+// MARK: - 통계 제안 (보충)
+"statistics.suggestion.no_remapping" = "아직 단축키 리매핑 기능을 사용하지 않았습니다. 자주 사용하지 않는 단축키를 더 편리한 조합으로 리매핑할 수 있습니다";
+"statistics.suggestion.diverse_usage" = "다양한 단축키 조합을 잘 활용하고 있으며, 사용 분포가 균형 잡혀 있습니다";
+"statistics.suggestion.start_using" = "단축키를 사용하여 생산성을 높여보세요! Keymap이 자동으로 사용 습관을 기록하고 분석합니다";
+
+// MARK: - 앱 범위 표시 이름
+"scope.global_app" = "전역";
+
+// MARK: - 앱 활성화 정책 설명
+"activation_policy.regular" = "일반 앱";
+"activation_policy.accessory" = "백그라운드 앱";
+"activation_policy.prohibited" = "헬퍼 프로세스";
+"activation_policy.unknown" = "알 수 없음";
+
+// MARK: - 단축키 패널
+"panel.search_shortcuts_placeholder" = "단축키 검색...";
+"panel.common_shortcuts_title" = "자주 사용하는 단축키";
+
+// MARK: - Keymap 단축키 설명
+"keymap.shortcut.show_panel" = "단축키 패널 표시";
+"keymap.shortcut.statistics" = "통계 분석";
+"keymap.shortcut.settings" = "설정";
+"keymap.shortcut.quit" = "Keymap 종료";
+
+// MARK: - 시스템 단축키 설명 - 일반
+"system.quit_app" = "앱 종료";
+"system.close_window" = "창 닫기";
+"system.hide_app" = "현재 앱 숨기기";
+"system.hide_others" = "다른 앱 숨기기";
+"system.minimize_window" = "창 최소화";
+"system.new_window" = "새 창/문서";
+"system.save" = "저장";
+"system.print" = "인쇄";
+"system.undo" = "실행 취소";
+"system.redo" = "다시 실행";
+"system.cut" = "잘라내기";
+"system.copy" = "복사";
+"system.paste" = "붙여넣기";
+"system.select_all" = "모두 선택";
+"system.find" = "찾기";
+
+// MARK: - 시스템 단축키 설명 - 창 관리
+"system.app_switcher" = "앱 전환";
+"system.window_switcher" = "같은 앱의 창 전환";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "데스크톱 표시";
+"system.fullscreen" = "전체 화면 전환";
+
+// MARK: - 시스템 단축키 설명 - 스크린샷
+"system.screenshot_full" = "전체 화면 캡처";
+"system.screenshot_selection" = "선택 영역 캡처";
+"system.screenshot_window" = "창 캡처";
+"system.screenshot_menu" = "스크린샷 및 화면 녹화 도구";
+
+// MARK: - 시스템 단축키 설명 - Spotlight
+"system.spotlight" = "Spotlight 검색";
+"system.finder_search" = "Finder 검색 창";
+
+// MARK: - 시스템 단축키 설명 - 손쉬운 사용
+"system.voiceover" = "VoiceOver 켜기/끄기";
+"system.zoom" = "확대/축소 켜기/끄기";
+"system.invert_colors" = "색상 반전";
+"system.emoji" = "이모티콘 및 기호";

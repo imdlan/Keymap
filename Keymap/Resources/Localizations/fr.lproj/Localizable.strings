@@ -1,0 +1,397 @@
+// Chaînes de localisation française
+
+// MARK: - Fenêtre des paramètres
+"settings.title" = "Paramètres";
+"settings.general" = "Général";
+"settings.shortcuts" = "Raccourcis clavier";
+"settings.global_mapping" = "Mappage global";
+"settings.always_on_apps" = "Apps permanentes";
+"settings.data" = "Données";
+"settings.advanced" = "Avancé";
+
+// MARK: - Paramètres généraux
+"settings.launch_at_login" = "Lancer à l'ouverture de session";
+"settings.launch_at_login.description" = "L'app se lancera automatiquement au démarrage du système";
+"settings.show_in_dock" = "Afficher l'icône dans le Dock";
+"settings.show_in_dock.description" = "Si désactivé, l'app n'apparaîtra que dans la barre de menus";
+"settings.language" = "Langue";
+"settings.language.system" = "Suivre le système";
+"settings.language.simplified_chinese" = "Chinois simplifié";
+
+// MARK: - Paramètres des raccourcis
+"settings.double_press_threshold" = "Seuil de double appui %@";
+"settings.double_press_threshold.description" = "Ajuster la sensibilité du double appui (plus petit = plus sensible)";
+"settings.trigger_key" = "Raccourci déclencheur";
+"settings.trigger_key.description" = "Choisir comment déclencher le panneau des raccourcis";
+"settings.trigger_key.double_cmd" = "Double appui Cmd";
+"settings.trigger_key.double_option" = "Double appui Option";
+"settings.trigger_key.double_control" = "Double appui Control";
+"settings.panel_auto_close" = "Délai de fermeture automatique du panneau";
+"settings.panel_auto_close.description" = "Mettre à 0 pour désactiver la fermeture automatique";
+"settings.enable_realtime_detection" = "Activer la détection des conflits en temps réel";
+"settings.enable_realtime_detection.description" = "Détecter les conflits lors de l'utilisation des raccourcis";
+"settings.show_conflict_notifications" = "Afficher les notifications de conflit";
+"settings.show_conflict_notifications.description" = "Afficher des notifications système lors de la détection de conflits";
+"settings.enable_usage_tracking" = "Activer le suivi des statistiques d'utilisation";
+"settings.enable_usage_tracking.description" = "Enregistrer l'utilisation des raccourcis pour l'analyse des conflits";
+
+// MARK: - Apps permanentes
+"settings.always_on_apps.title" = "Apps permanentes";
+"settings.always_on_apps.scanning" = "Recherche des apps permanentes...";
+"settings.always_on_apps.empty" = "Aucune app permanente détectée";
+"settings.always_on_apps.empty.hint" = "Cliquez sur actualiser pour rechercher les apps permanentes du système";
+"settings.always_on_apps.mark_manually" = "Marquer manuellement";
+
+// MARK: - Mappage global
+"settings.global_mapping.title" = "Remappage des raccourcis";
+"settings.enable_global_remapping" = "Activer le remappage global des raccourcis";
+"settings.enable_global_remapping.description" = "Toutes les règles de remappage seront appliquées si activé";
+"settings.global_mapping.empty" = "Aucune règle de mappage";
+"settings.global_mapping.empty.hint" = "Cliquez sur « Ajouter une règle de remappage » ci-dessus pour créer une nouvelle règle";
+"settings.global_mapping.rule_count" = "%d règles de mappage au total";
+"settings.global_mapping.clear_all" = "Tout effacer";
+"settings.global_mapping.confirm_clear" = "Voulez-vous vraiment effacer toutes les règles de mappage ? Cette action ne peut pas être annulée.";
+"settings.global_mapping.add_rule" = "Ajouter une règle de remappage";
+"settings.global_mapping.edit_rule" = "Modifier la règle de remappage";
+"settings.global_mapping.source" = "Raccourci source";
+"settings.global_mapping.target" = "Raccourci cible";
+"settings.global_mapping.scope" = "Portée de l'application";
+"settings.global_mapping.scope.global" = "Global";
+"settings.global_mapping.source.description" = "Ce raccourci sera remappé lorsqu'il sera pressé";
+"settings.global_mapping.target.description" = "Sera mappé vers ce raccourci";
+"settings.global_mapping.scope.description" = "Sélectionner les apps auxquelles cette règle s'applique";
+"settings.global_mapping.scope.readonly" = "La portée de l'application ne peut pas être modifiée";
+"settings.global_mapping.add.title" = "Ajouter une règle de mappage";
+"settings.global_mapping.add.subtitle" = "Remappage personnalisé, mapper la touche source vers la touche cible";
+"settings.global_mapping.edit.title" = "Modifier la règle de mappage";
+"settings.global_mapping.edit.subtitle" = "Modifier la règle de mappage, ajuster la touche source ou cible";
+
+// MARK: - Paramètres des données
+"settings.cache_duration" = "Durée du cache";
+"settings.cache_duration.description" = "Période de validité du cache pour les résultats d'extraction de raccourcis";
+"settings.max_cached_apps" = "Nombre max d'apps en cache";
+"settings.max_cached_apps.description" = "Nombre maximum d'apps à mettre en cache en mémoire";
+"settings.clear_cache" = "Vider le cache";
+"settings.clear_usage_records" = "Effacer les enregistrements d'utilisation";
+"settings.clear_all_data" = "Effacer toutes les données";
+"settings.clear_warning" = "Les opérations d'effacement ne peuvent pas être annulées. Procédez avec prudence";
+"settings.export_remapping_rules" = "Exporter les règles de remappage";
+"settings.import_remapping_rules" = "Importer les règles de remappage";
+"settings.export_settings" = "Exporter les paramètres";
+"settings.export_settings.description" = "Peut être sauvegardé et utilisé sur d'autres appareils";
+"settings.database_size" = "Taille de la base de données :";
+"settings.usage_records_count" = "Enregistrements d'utilisation :";
+"settings.shortcuts_used_count" = "Raccourcis utilisés :";
+
+// MARK: - Paramètres avancés
+"settings.log_level" = "Niveau de journalisation";
+"settings.log_level.description" = "Définir le niveau de sortie des journaux de l'app";
+"settings.enable_recording_mode" = "Activer le mode d'enregistrement des raccourcis";
+"settings.enable_recording_mode.description" = "Permettre l'enregistrement des raccourcis (fonctionnalité expérimentale)";
+
+// MARK: - À propos
+"settings.about.description" = "Outil de détection et de gestion des conflits de raccourcis clavier pour macOS";
+"settings.about.version" = "Version :";
+"settings.about.system_requirements" = "Configuration requise :";
+
+// MARK: - Panneau des raccourcis
+"panel.title" = "Panneau des raccourcis";
+"panel.search_placeholder" = "Rechercher des raccourcis...";
+"panel.close_hint" = "Appuyez sur Échap pour fermer";
+"panel.conflict_shortcuts" = "Raccourcis en conflit";
+"panel.common_shortcuts" = "Raccourcis courants";
+"panel.loading" = "Chargement...";
+"panel.statistics" = "Statistiques";
+"panel.settings" = "Paramètres";
+
+// MARK: - Détails du conflit
+"conflict.severity" = "Gravité";
+"conflict.type" = "Type de conflit";
+"conflict.conflicting_app" = "App en conflit";
+"conflict.suggestions" = "Suggestions";
+
+// MARK: - Dialogue de remappage
+"remapping.title" = "Remapper le raccourci";
+"remapping.description" = "Mapper le raccourci vers une autre combinaison, effectif uniquement dans l'app actuelle";
+"remapping.current_shortcut" = "Raccourci actuel";
+"remapping.new_shortcut" = "Nouveau raccourci";
+"remapping.hint" = "Astuce : Utilisez ⌘(Command) ⇧(Shift) ⌥(Option) ⌃(Control) + lettre/chiffre";
+"remapping.reset" = "Réinitialiser";
+
+// MARK: - Barre de menus
+"menu.show_panel" = "Afficher le panneau des raccourcis";
+"menu.statistics" = "Analyse statistique";
+"menu.settings" = "Paramètres...";
+"menu.about" = "À propos de Keymap";
+"menu.quit" = "Quitter Keymap";
+"menu.permission_warning" = "⚠️ Autorisation d'accessibilité requise";
+"menu.permission_tooltip" = "Cliquez pour ouvrir les Paramètres système et accorder l'autorisation";
+
+// MARK: - Catégories
+"category.file" = "Fichier";
+"category.edit" = "Édition";
+"category.view" = "Affichage";
+"category.window" = "Fenêtre";
+"category.system" = "Système";
+"category.navigation" = "Navigation";
+"category.other" = "Autre";
+
+// MARK: - Types de conflit
+"conflict.type.system" = "Niveau système";
+"conflict.type.application" = "Niveau application";
+"conflict.type.global" = "Global";
+"conflict.type.functional" = "Fonctionnel";
+
+// MARK: - Gravité du conflit
+"conflict.severity.high" = "Élevée";
+"conflict.severity.medium" = "Moyenne";
+"conflict.severity.low" = "Faible";
+
+// MARK: - Contexte d'utilisation
+"usage.context.normal" = "Normal";
+"usage.context.conflict" = "Conflit";
+"usage.context.remapped" = "Remappé";
+
+// MARK: - Stratégie de résolution
+"resolution.strategy.disable" = "Désactiver";
+"resolution.strategy.remap" = "Remapper";
+"resolution.strategy.ignore" = "Ignorer";
+"resolution.strategy.manual" = "Traitement manuel";
+
+// MARK: - Notifications
+"notification.permission.title" = "Autorisation requise";
+"notification.permission.message" = "Veuillez accorder à Keymap l'autorisation d'accessibilité dans les Paramètres système";
+"notification.permission.message.dock" = "Veuillez accorder à Keymap l'autorisation d'accessibilité dans les Paramètres système pour l'utiliser";
+"notification.conflict.title" = "Conflit de raccourci détecté";
+"notification.conflict.system" = "Conflit avec un raccourci système";
+"notification.conflict.global" = "Conflit avec %@";
+"notification.conflict.application" = "Définition en double dans l'app";
+"notification.conflict.functional" = "Conflit fonctionnel";
+"notification.conflict.multiple" = ", %d conflits au total";
+"notification.conflict.view_details" = "Voir les détails";
+"notification.remapping.success.title" = "Remappage réussi";
+"notification.remapping.success.message" = "%@ → %@";
+
+// MARK: - Fenêtre des statistiques
+"statistics.title" = "Analyse statistique";
+"statistics.overview" = "Vue d'ensemble";
+"statistics.total_usage" = "Utilisation totale";
+"statistics.conflicts" = "Conflits";
+"statistics.efficiency_score" = "Taux sans conflit";
+"statistics.active_apps" = "Apps actives";
+"statistics.refresh" = "Actualiser";
+"statistics.export" = "Exporter";
+"statistics.top_shortcuts" = "Classement de fréquence d'utilisation (Top 10)";
+"statistics.no_data" = "Aucune donnée disponible";
+"statistics.usage_trend" = "Tendance d'utilisation";
+"statistics.tracking_disabled" = "Le suivi des statistiques d'utilisation doit être activé";
+"statistics.tracking_hint_1" = "Assurez-vous que « Suivi des statistiques d'utilisation » est activé dans les paramètres";
+"statistics.tracking_hint_2" = "Après l'utilisation des raccourcis, le système enregistrera automatiquement les données";
+"statistics.tracking_hint_3" = "Les données apparaîtront dans le graphique de tendance à partir du lendemain";
+"statistics.high_conflict_shortcuts" = "Raccourcis à fort conflit";
+"statistics.no_conflicts" = "Excellent ! Aucun conflit actuellement";
+"statistics.optimization_suggestions" = "Suggestions d'optimisation";
+"statistics.no_suggestions" = "Aucune suggestion";
+
+// MARK: - Actions courantes
+"action.save" = "Enregistrer";
+"action.cancel" = "Annuler";
+"action.delete" = "Supprimer";
+"action.reset" = "Réinitialiser";
+"action.confirm" = "Confirmer";
+"action.export" = "Exporter";
+"action.import" = "Importer";
+"action.refresh" = "Actualiser";
+"action.add" = "Ajouter";
+"action.record" = "Enregistrer";
+"action.recording" = "Enregistrement...";
+
+// MARK: - Unités de temps
+"time.seconds" = "secondes";
+"time.hours" = "heures";
+
+// MARK: - Phrases courantes
+"common.loading" = "Chargement...";
+"common.empty" = "Vide";
+"common.total" = "Total";
+"common.count" = "Nombre";
+"common.shortcuts_count" = "%d raccourcis";
+"common.hours_count" = "%d heures";
+"common.apps_count" = "%d apps";
+
+// MARK: - Phrases courantes (supplément)
+"common.cancel" = "Annuler";
+"common.save" = "Enregistrer";
+"common.export_success" = "Exportation réussie";
+"common.add_failed" = "Échec de l'ajout";
+"common.seconds_format" = "%.2f secondes";
+"common.seconds" = "%d secondes";
+"settings.never" = "Jamais";
+"settings.calculating" = "Calcul en cours...";
+
+// MARK: - Titres des sections de paramètres
+"settings.section.app_behavior" = "Comportement de l'app";
+"settings.section.shortcut_settings" = "Paramètres des raccourcis";
+"settings.section.always_on_apps" = "Apps permanentes";
+"settings.section.global_mapping" = "Mappage global des raccourcis";
+"settings.section.data_management" = "Gestion des données";
+"settings.section.advanced_settings" = "Paramètres avancés";
+
+// MARK: - Noms d'affichage des langues (pour menu déroulant)
+"settings.language.system_display" = "Suivre le système";
+"settings.language.simplified_chinese_display" = "Chinois simplifié";
+"settings.language.english_display" = "English";
+
+// MARK: - Noms d'affichage des touches de déclenchement (pour menu déroulant)
+"settings.trigger_key.double_cmd_display" = "Double appui ⌘";
+"settings.trigger_key.double_option_display" = "Double appui ⌥";
+"settings.trigger_key.double_control_display" = "Double appui ⌃";
+
+// MARK: - Règles de mappage
+"settings.clear_all" = "Tout effacer";
+"settings.add_mapping" = "Ajouter un mappage";
+"settings.edit_mapping" = "Modifier le mappage";
+"settings.mapping.add_failed" = "Impossible d'ajouter la règle de mappage. Veuillez vérifier si la règle est valide";
+"settings.mapping.cleared" = "Toutes les règles de mappage ont été effacées";
+"settings.mapping.rules_saved" = "Règles de remappage enregistrées";
+"settings.settings_saved" = "Paramètres enregistrés";
+
+// MARK: - Titres des fenêtres
+"window.settings" = "Paramètres";
+"window.statistics" = "Analyse statistique";
+
+// MARK: - Fenêtre des statistiques
+"statistics.period.today" = "Aujourd'hui";
+"statistics.period.week" = "7 derniers jours";
+"statistics.period.month" = "30 derniers jours";
+"statistics.period.all" = "Tout";
+
+// MARK: - Titres des cartes statistiques
+"statistics.card.total_usage" = "Utilisation totale";
+"statistics.card.conflict_count" = "Conflits";
+"statistics.card.efficiency_rate" = "Taux sans conflit";
+"statistics.card.active_apps" = "Apps actives";
+
+// MARK: - Unités de quantité statistique
+"statistics.times" = "fois";
+"statistics.count_times" = "%d fois";
+
+// MARK: - Suggestions statistiques
+"statistics.suggestion.remapping_enabled" = "Vous avez créé %d remappages de raccourcis, vous savez personnaliser les flux de travail";
+"statistics.suggestion.usage_concentrated" = "%.0f%% de vos opérations sont concentrées sur les 5 premiers raccourcis. Vous pouvez explorer plus de raccourcis pour améliorer l'efficacité";
+"statistics.suggestion.high_conflicts" = "%d conflits détectés. Il est recommandé de résoudre les conflits prioritaires pour éviter les erreurs";
+"statistics.suggestion.some_conflicts" = "%d conflits trouvés. Il est recommandé de les traiter rapidement pour éviter les erreurs";
+"statistics.suggestion.conflict_rate_high" = "Le taux de conflit de raccourcis actuel est de %.1f%%. Il est recommandé d'optimiser la configuration pour réduire les conflits";
+"statistics.suggestion.efficiency_excellent" = "Votre taux sans conflit est de %.1f%%, toutes les opérations s'exécutent sans problème. Continuez ainsi !";
+"statistics.suggestion.continuing_usage" = "Continuez à explorer les fonctionnalités de raccourcis, actuellement utilisé %d fois";
+"statistics.suggestion.power_user" = "Vous avez utilisé les raccourcis %d fois, vous êtes un maître des raccourcis !";
+"statistics.suggestion.multi_app_user" = "Vous avez utilisé des raccourcis dans %d apps, vous savez utiliser les outils pour améliorer l'efficacité";
+"statistics.suggestion.explore_more_apps" = "Vous utilisez principalement les raccourcis dans %d apps. Vous pouvez essayer d'explorer les raccourcis dans plus d'apps courantes";
+
+// MARK: - Boutons (supplément)
+"button.view_details" = "Voir les détails";
+
+// MARK: - Barre de menus
+"menu.show_panel_with_key" = "Afficher le panneau des raccourcis (%@)";
+"menu.about_keymap" = "À propos de Keymap";
+"menu.quit_keymap" = "Quitter Keymap";
+
+// MARK: - Titres des onglets de paramètres
+"settings.tab.general" = "Général";
+"settings.tab.conflictResolution" = "Détection";
+"settings.tab.data" = "Données";
+"settings.tab.about" = "À propos";
+
+// MARK: - En-têtes des sections de paramètres
+"settings.section.detection" = "Paramètres de détection";
+"settings.section.cache" = "Paramètres du cache";
+"settings.section.cleanup" = "Effacer les anciennes données";
+"settings.section.export_import" = "Export/Import";
+"settings.section.database_info" = "Informations de la base de données";
+
+// MARK: - Page À propos
+"about.version" = "Version";
+"about.system_requirements" = "Configuration requise";
+
+// MARK: - Enregistrement
+"recording.stop" = "Arrêter";
+"recording.record" = "Enregistrer";
+"recording.placeholder_recording" = "Appuyez sur un raccourci...";
+"recording.placeholder_example" = "Ex : ⌘T";
+"recording.placeholder_example_shift" = "Ex : ⇧⌘T";
+
+// MARK: - Paramètres de langue
+"settings.language.description" = "Changer la langue de l'interface de l'app";
+
+// MARK: - Paramètres du panneau des raccourcis
+"settings.show_system_shortcuts" = "Afficher les raccourcis système";
+"settings.show_system_shortcuts.description" = "Afficher les raccourcis système macOS (⌘Q, ⌘Space, etc.) dans le panneau";
+
+// MARK: - Labels d'informations de base de données
+"database.size" = "Taille de la base de données";
+"database.usage_records" = "Enregistrements d'utilisation";
+"database.shortcuts_used" = "Raccourcis utilisés";
+
+// MARK: - Suggestions statistiques (supplément)
+"statistics.suggestion.no_remapping" = "Vous n'avez pas encore utilisé la fonction de remappage. Vous pouvez remapper les raccourcis peu utilisés vers des combinaisons plus pratiques";
+"statistics.suggestion.diverse_usage" = "Vous utilisez bien des combinaisons de raccourcis diverses avec une distribution équilibrée";
+"statistics.suggestion.start_using" = "Commencez à utiliser les raccourcis pour augmenter votre productivité ! Keymap enregistrera et analysera automatiquement vos habitudes";
+
+// MARK: - Nom d'affichage de la portée de l'app
+"scope.global_app" = "Global";
+
+// MARK: - Descriptions de la politique d'activation de l'app
+"activation_policy.regular" = "App normale";
+"activation_policy.accessory" = "App en arrière-plan";
+"activation_policy.prohibited" = "Processus auxiliaire";
+"activation_policy.unknown" = "Inconnu";
+
+// MARK: - Panneau des raccourcis
+"panel.search_shortcuts_placeholder" = "Rechercher des raccourcis...";
+"panel.common_shortcuts_title" = "Raccourcis courants";
+
+// MARK: - Descriptions des raccourcis Keymap
+"keymap.shortcut.show_panel" = "Afficher le panneau des raccourcis";
+"keymap.shortcut.statistics" = "Analyse statistique";
+"keymap.shortcut.settings" = "Paramètres";
+"keymap.shortcut.quit" = "Quitter Keymap";
+
+// MARK: - Descriptions des raccourcis système - Général
+"system.quit_app" = "Quitter l'application";
+"system.close_window" = "Fermer la fenêtre";
+"system.hide_app" = "Masquer l'app actuelle";
+"system.hide_others" = "Masquer les autres apps";
+"system.minimize_window" = "Réduire la fenêtre";
+"system.new_window" = "Nouvelle fenêtre/document";
+"system.save" = "Enregistrer";
+"system.print" = "Imprimer";
+"system.undo" = "Annuler";
+"system.redo" = "Rétablir";
+"system.cut" = "Couper";
+"system.copy" = "Copier";
+"system.paste" = "Coller";
+"system.select_all" = "Tout sélectionner";
+"system.find" = "Rechercher";
+
+// MARK: - Descriptions des raccourcis système - Gestion des fenêtres
+"system.app_switcher" = "Basculer entre les apps";
+"system.window_switcher" = "Basculer entre les fenêtres de la même app";
+"system.mission_control" = "Mission Control";
+"system.show_desktop" = "Afficher le bureau";
+"system.fullscreen" = "Basculer en plein écran";
+
+// MARK: - Descriptions des raccourcis système - Capture d'écran
+"system.screenshot_full" = "Capturer l'écran entier";
+"system.screenshot_selection" = "Capturer la zone sélectionnée";
+"system.screenshot_window" = "Capturer la fenêtre";
+"system.screenshot_menu" = "Outils de capture et d'enregistrement d'écran";
+
+// MARK: - Descriptions des raccourcis système - Spotlight
+"system.spotlight" = "Recherche Spotlight";
+"system.finder_search" = "Fenêtre de recherche Finder";
+
+// MARK: - Descriptions des raccourcis système - Accessibilité
+"system.voiceover" = "Activer/désactiver VoiceOver";
+"system.zoom" = "Activer/désactiver le zoom";
+"system.invert_colors" = "Inverser les couleurs";
+"system.emoji" = "Emoji et symboles";
